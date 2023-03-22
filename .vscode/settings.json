@@ -44,6 +44,9 @@
   ],
   "C_Cpp_Runner.useAddressSanitizer": false,
   "files.associations": {
-    "raylib.h": "c"
+    "raylib.h": "c",
+    "stdio.h": "c",
+    "stdlib.h": "c",
+    "numbers": "c"
   }
 }
