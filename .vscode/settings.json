@@ -47,6 +47,7 @@
     "raylib.h": "c",
     "stdio.h": "c",
     "stdlib.h": "c",
-    "numbers": "c"
+    "numbers": "c",
+    "entity.h": "c"
   }
 }
