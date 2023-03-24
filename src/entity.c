@@ -43,14 +43,16 @@ void SetMovementSpeeds(Entity* e, float walkSpeed, float runSpeed) {
 
 /** Updates Player Movement by adding speed to position vectors */
 void UpdateEntityVectors(Entity* e, int tileSize) {
-	float distX = abs(e->position.x - (float)e->targetWP.x * tileSize);
-	float distY = abs(e->position.y - (float)e->targetWP.y * tileSize);
+	int x = e->targetWP.x - e->worldPos.x;
+	int signX = (x > 0) - (x < 0);
+	int y = e->targetWP.y - e->worldPos.y;
+	int signY = (y > 0) - (y < 0);
 
-	// Second Condition is just a bandaid solution, if ever movement glitches & player moves past their target position
-	//		Idea is that a the target position will never be more than 1 tile away, so if ever it does, 
-	//			then something is wrong
-	// @NOTECOLT pls find a better way to do this
-	if ((distX < 0.005 && distY < 0.005 )|| (distX > tileSize + 0.005 || distY > tileSize + 0.005)) {
+	float distX = ((float)e->targetWP.x * tileSize - e->position.x) * signX;
+	float distY = ((float)e->targetWP.y * tileSize - e->position.y) * signY;
+
+	// Conditions: If player moves close enough to target position or past the boundaries, affix player to grid
+	if ((distX < 0.005 && distY < 0.005 ) || (distX < 0 || distY < 0)) {
 		e->worldPos = e->targetWP;
 		e->position = (Vector2){
 			.x = e->worldPos.x * tileSize,
@@ -64,26 +66,17 @@ void UpdateEntityVectors(Entity* e, int tileSize) {
 
 	// If current position of the entity does not match where it needs to be, then move to those coordinates respectively
 	// There is no diagonal movement
-
-	int x = e->targetWP.x - e->worldPos.x;
-	int signX = (x > 0) - (x < 0);
-	int y = e->targetWP.y - e->worldPos.y;
-	int signY = (y > 0) - (y < 0);
-
 	if (e->worldPos.x * signX < e->targetWP.x * signX) {
-		e->position.x += signX * e->speed * GetFrameTime();
+		if (!e->isRunning)
+			e->position.x += signX * e->speed * GetFrameTime();
+		else
+			e->position.x += signX * e->runSpeed * GetFrameTime();
 	} else if (e->worldPos.y * signY < e->targetWP.y * signY) {
-		e->position.y += signY * e->speed * GetFrameTime();	
+		if (!e->isRunning)
+			e->position.y += signY * e->speed * GetFrameTime();	
+		else	
+			e->position.y += signY * e->runSpeed * GetFrameTime();	
 	}
-	// if (e->worldPos.x != e->targetWP.x) {
-	// 	int x = e->targetWP.x - e->worldPos.x;
-	// 	int sign = (x > 0) - (x < 0);
-	// 	e->position.x += sign * e->speed * GetFrameTime();
-	// } else if (e->worldPos.y != e->targetWP.y) {
-	// 	int y = e->targetWP.y - e->worldPos.y;
-	// 	int sign = (y > 0) - (y < 0);
-	// 	e->position.y += sign * e->speed * GetFrameTime();	
-	// }
 }
 
 void RenderEntity(Entity e, int tileSize) {
@@ -96,8 +89,13 @@ void DrawEntityDebugText(Entity e, int tileSize) {
 	DrawText(TextFormat("worldPos: (%d, %d)", e.worldPos.x, e.worldPos.y), 5, 75, 30, BLACK);
 	DrawText(TextFormat("targetWP: (%d, %d)", e.targetWP.x, e.targetWP.y), 5, 110, 30, BLACK);
 
-	float distX = abs(e.position.x - (float)e.targetWP.x * tileSize);
-	float distY = abs(e.position.y - (float)e.targetWP.y * tileSize);
+	int x = e.targetWP.x - e.worldPos.x;
+	int signX = (x > 0) - (x < 0);
+	int y = e.targetWP.y - e.worldPos.y;
+	int signY = (y > 0) - (y < 0);
+	
+	float distX = ((float)e.targetWP.x * tileSize - e.position.x) * signX;
+	float distY = ((float)e.targetWP.y * tileSize - e.position.y) * signY;
 	DrawText(TextFormat("distance: (%f, %f)", distX, distY), 5, 140, 30, BLACK);
 	DrawText(TextFormat("isMoving: %d", e.isMoving), 5, 175, 30, BLACK);
 

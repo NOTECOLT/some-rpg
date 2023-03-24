@@ -9,7 +9,7 @@ Vector2Int WORLD_SIZE = {
 };
 
 int P_SPEED_WLK = 350;
-int P_SPEED_RUN = 425;
+int P_SPEED_RUN = 450;
 
 /*
 TODO:
@@ -65,7 +65,9 @@ int main() {
 		// 1 - INPUT
 		//--------------------------------------------------
 		if (!player->isMoving) {
-			if (IsKeyDown(KEY_RIGHT))
+			player->isRunning = (IsKeyDown(KEY_LEFT_SHIFT)) ? 1 : 0;
+
+			if (IsKeyDown(KEY_RIGHT)) 
 				player->targetWP = (Vector2Int){.x = player->worldPos.x + 1, .y = player->worldPos.y};
 			else if (IsKeyDown(KEY_LEFT))
 				player->targetWP = (Vector2Int){.x = player->worldPos.x - 1, .y = player->worldPos.y};
@@ -73,10 +75,11 @@ int main() {
 				player->targetWP = (Vector2Int){.x = player->worldPos.x, .y = player->worldPos.y + 1};
 			else if (IsKeyDown(KEY_UP))
 				player->targetWP = (Vector2Int){.x = player->worldPos.x, .y = player->worldPos.y - 1};
-			else
+		 	else
 				player->targetWP = (Vector2Int){.x = player->worldPos.x, .y = player->worldPos.y};
-				
 		}
+
+		
 
 		// 2 - PHYSICS
 		//--------------------------------------------------
