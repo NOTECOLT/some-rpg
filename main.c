@@ -58,7 +58,7 @@ int main() {
 	//--------------------------------------------------
 	Entity* player = InitEntity((Vector2Int){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
 	SetMovementSpeeds(player, P_SPEED_WLK, P_SPEED_RUN);
-	SetSprite(player, "./assets/sprites/characters/player.png");
+	//SetSprite(player, "./assets/sprites/characters/player.png");
 
 	while (!WindowShouldClose()) {
 		// 1 - INPUT
@@ -95,7 +95,7 @@ int main() {
 		camera.target = (Vector2){.x = player->position.x + (TILE_SIZE / 2), .y = player->position.y + (TILE_SIZE / 2),};
 		camera.offset = (Vector2){.x = screenWidth / 2, .y = screenHeight / 2};
 		BeginMode2D(camera);
-
+;
 		RenderWorld();
 		RenderEntity(*player, TILE_SIZE);
 

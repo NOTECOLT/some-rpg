@@ -1,15 +1,18 @@
+//------------------------------------------------------------------------------------------
+/** ENTITY.C
+ * Contains the entity struct and any/all functions relating to it.
+ * Entities are created in the heap
+*/
+//------------------------------------------------------------------------------------------
+
 #include <stdlib.h>
 #include <string.h>
 #include "raylib.h"
+#include "vector.h"
+#include "sprite.h"
 
 // STRUCTS & ENUMS
 //------------------------------------------------------------------------------------------
-
-/** Vector2 Struct that uses integers instead of vectors */
-typedef struct vector2Int {
-    int x;
-    int y;
-} Vector2Int;
 
 /** Defines the type of entity */
 typedef enum entityType {
@@ -20,7 +23,8 @@ typedef enum entityType {
 /** An Entity is any moving/interactable object in the overworld */
 typedef struct entity {
 	EntityType type;
-	Texture2D sprite;
+	// Texture2D sprite;
+	Sprite* spr;
 
 	Vector2 position;		// Refers to the position of the player with respect to the screen / global coordinate system  
     Vector2Int worldPos;    // Refers to the position of player relative to the world grid
@@ -38,14 +42,18 @@ typedef struct entity {
 
 /** Creates a new entity in the world 
  * - Sets speed & runSpeed variables initialized to 0
- * - sprite field is left uninitialized
+ * - sprite is set to NULL
  * 
 */
 Entity* InitEntity(Vector2Int worldPos, EntityType type, int tileSize) {
-	Entity* e = malloc(sizeof(Entity));
-	if (e == NULL) return NULL;
+	Entity* e = MemAlloc(sizeof(Entity));
+	if (e == NULL) {
+		printf("[INIT ENTITY] [MEM ERROR] Failed to allocate memory for entity at (%d, %d)\n", worldPos.x, worldPos.y);
+		return NULL;
+	}
 
 	e->type = type;
+	e->spr = NULL;
 
 	e->worldPos = worldPos;
 	e->targetWP = worldPos;
@@ -64,12 +72,15 @@ Entity* InitEntity(Vector2Int worldPos, EntityType type, int tileSize) {
  * 
 */
 void FreeEntity(Entity* e) {
-	if (e == NULL) return; // Theres nothing to free
+	if (e == NULL) { 
+		printf("[FREE ENTITY] No memory at %p to be freed\n", e);
+		return;
+	} // Theres nothing to free
 
 	// we first free any dynamically allocated memory inside the entity then free the entity itself
-	//if (e->spritePath != NULL) free(e->spritePath);
+	if (e->spr != NULL) free(e->spr);
 
-	free(e);
+	MemFree(e);
 }
 
 /** Initialize movement speeds (walk & run speeds) of an entity */
@@ -83,7 +94,8 @@ void SetSprite(Entity* e, char* spritePath) {
 	// strdup() duplicates a string and dynamically allocates it new data using malloc
 	//e->spritePath = strdup(spritePath);
 
-	e->sprite = LoadTexture(spritePath);	
+	//e->sprite = LoadTexture(spritePath);	
+	e->spr = InitSprite(spritePath, (Vector2Int){18, 22}, (Vector2Int){13, 21}, 7.0f);
 }
 
 /** Updates Player Movement by adding speed to position vectors */
@@ -127,12 +139,16 @@ void UpdateEntityVectors(Entity* e, int tileSize) {
 }
 
 void RenderEntity(Entity e, int tileSize) {
-	DrawTextureRec(
-		e.sprite, 
-		(Rectangle){18, 22, 13, 21}, 
-		(Vector2){.x = e.position.x, .y = e.position.y}, 
-		WHITE);
-	//DrawRectangle(e.position.x, e.position.y, tileSize, tileSize, RED);
+	if (e.spr != NULL) 
+		RenderSprite(*(e.spr), e.position);
+	else {
+		DrawRectangle(e.position.x, e.position.y, tileSize, tileSize, MAGENTA);
+	}
+	// DrawTextureRec(
+	// 	e.spr->texture, 
+	// 	(Rectangle){18, 22, 13, 21}, 
+	// 	(Vector2){.x = e.position.x, .y = e.position.y}, 
+	// 	WHITE);
 }
 
 /** Renders all debug info relating an entity */

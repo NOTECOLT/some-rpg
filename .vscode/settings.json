@@ -48,6 +48,7 @@
     "stdio.h": "c",
     "stdlib.h": "c",
     "numbers": "c",
-    "entity.h": "c"
+    "entity.h": "c",
+    "sprite.c": "cpp"
   }
 }

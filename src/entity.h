@@ -1,7 +1,15 @@
-#include "raylib.h"
+//------------------------------------------------------------------------------------------
+/** ENTITY.C
+ * Contains the entity struct and any/all functions relating to it.
+ * Entities are created in the heap
+*/
+//------------------------------------------------------------------------------------------
+
+#ifndef ENTITY_H
+#define ENTITY_H
+
 #include "entity.c"
 
-typedef struct vector2Int Vector2Int;
 typedef enum entityType EntityType;
 typedef struct entity Entity;
 
@@ -12,3 +20,5 @@ void UpdateEntityVectors(Entity* e, int tileSize);
 void RenderEntity(Entity e, int tileSize);
 
 void DrawEntityDebugText(Entity e, int tileSize);
+
+#endif
