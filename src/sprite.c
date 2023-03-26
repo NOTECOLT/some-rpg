@@ -1,14 +1,16 @@
 #include "raylib.h"
-#include "vector.h"
+// #include "vector.h"
 
 // STRUCTS & ENUMS
 //------------------------------------------------------------------------------------------
 
+/** A sprite not only features the */
 typedef struct sprite {
     Texture2D texture;
-    Vector2Int size;     // Height and Width of the texture
-    Vector2Int origin;
+    Vector2 size;     // Height and Width of the texture
+    Vector2 origin;
     float scale;
+    float rotation;
 } Sprite;
 
 
@@ -18,7 +20,7 @@ typedef struct sprite {
 /** Initializes a Sprite struct
  * 
 */
-Sprite* InitSprite(char* path, Vector2Int origin, Vector2Int size, float scale) {
+Sprite* InitSprite(char* path, Vector2 origin, Vector2 size, float scale) {
     Sprite* s = MemAlloc(sizeof(Sprite));
     if (s == NULL) {
 		printf("[INIT SPRITE] [MEM ERROR] Failed to allocate memory for sprite at path %s\n", path);
@@ -29,16 +31,18 @@ Sprite* InitSprite(char* path, Vector2Int origin, Vector2Int size, float scale) 
     s->size = size;
     s->origin = origin;
     s->scale = scale;
+    s->rotation = 0;
 
     return s;
 }
 
-void RenderSprite(Sprite s, Vector2 position) {
+/** Renders a sprite according to the values placed by the struct */
+void RenderSprite(Sprite s, Vector2 position, Vector2 offset) {
     Rectangle spriteSrc = {
         s.origin.x,
         s.origin.y,
-        s.origin.x + s.size.x,
-        s.origin.y + s.size.y    
+        s.size.x,
+        s.size.y    
     };
 
     Rectangle spriteDst = {
@@ -48,5 +52,5 @@ void RenderSprite(Sprite s, Vector2 position) {
         s.size.y * s.scale
     };
 
-    DrawTexturePro(s.texture, spriteSrc, spriteDst, (Vector2){0, 0}, 0, WHITE);
+    DrawTexturePro(s.texture, spriteSrc, spriteDst, offset, s.rotation, WHITE);
 }

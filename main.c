@@ -2,7 +2,6 @@
 //------------------------------------------------------------------------------------------
 /*
 TODO:
-- (make fork first) test with using without using pointers? idk
 - Placeholder Sprites
 - Tiled Map Editor
 
@@ -19,7 +18,7 @@ NOTE TO SELF: Uncomment -Wl,--subsystem,windows in the Makefile to hide the cons
 #include "src/entity.h"
 
 int TILE_SIZE = 40;
-Vector2Int WORLD_SIZE = {
+Vector2 WORLD_SIZE = {
 	.x = 39,
 	.y = 22
 };
@@ -56,9 +55,9 @@ int main() {
 
 	// PLAYER INITIALIZATION
 	//--------------------------------------------------
-	Entity* player = InitEntity((Vector2Int){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
+	Entity* player = InitEntity((Vector2){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
 	SetMovementSpeeds(player, P_SPEED_WLK, P_SPEED_RUN);
-	//SetSprite(player, "./assets/sprites/characters/player.png");
+	SetSprite(player, "./assets/sprites/characters/player.png");
 
 	while (!WindowShouldClose()) {
 		// 1 - INPUT
@@ -67,19 +66,17 @@ int main() {
 			player->isRunning = (IsKeyDown(KEY_LEFT_SHIFT)) ? 1 : 0;
 
 			if (IsKeyDown(KEY_RIGHT)) 
-				player->targetWP = (Vector2Int){.x = player->worldPos.x + 1, .y = player->worldPos.y};
+				player->targetWP = (Vector2){.x = player->worldPos.x + 1, .y = player->worldPos.y};
 			else if (IsKeyDown(KEY_LEFT))
-				player->targetWP = (Vector2Int){.x = player->worldPos.x - 1, .y = player->worldPos.y};
+				player->targetWP = (Vector2){.x = player->worldPos.x - 1, .y = player->worldPos.y};
 			else if (IsKeyDown(KEY_DOWN))
-				player->targetWP = (Vector2Int){.x = player->worldPos.x, .y = player->worldPos.y + 1};
+				player->targetWP = (Vector2){.x = player->worldPos.x, .y = player->worldPos.y + 1};
 			else if (IsKeyDown(KEY_UP))
-				player->targetWP = (Vector2Int){.x = player->worldPos.x, .y = player->worldPos.y - 1};
+				player->targetWP = (Vector2){.x = player->worldPos.x, .y = player->worldPos.y - 1};
 		 	else
-				player->targetWP = (Vector2Int){.x = player->worldPos.x, .y = player->worldPos.y};
+				player->targetWP = (Vector2){.x = player->worldPos.x, .y = player->worldPos.y};
 		}
-
 		
-
 		// 2 - PHYSICS
 		//--------------------------------------------------
 

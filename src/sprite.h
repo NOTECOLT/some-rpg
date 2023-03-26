@@ -5,7 +5,7 @@
 
 typedef struct sprite Sprite;
 
-Sprite* InitSprite(char* path, Vector2Int origin, Vector2Int size, float scale);
-void RenderSprite(Sprite s, Vector2 position);
+Sprite* InitSprite(char* path, Vector2 origin, Vector2 size, float scale);
+void RenderSprite(Sprite s, Vector2 position, Vector2 offset);
 
 #endif
