@@ -1,4 +1,20 @@
+
+//------------------------------------------------------------------------------------------
+/*
+TODO:
+- (make fork first) test with using without using pointers? idk
+- Placeholder Sprites
+- Tiled Map Editor
+
+- Entity List
+- Render Queue
+- Debug Info Display
+
+NOTE TO SELF: Uncomment -Wl,--subsystem,windows in the Makefile to hide the console window
+*/
+//------------------------------------------------------------------------------------------
 #include <stdlib.h>
+#include <stdio.h>
 #include "raylib.h"
 #include "src/entity.h"
 
@@ -10,19 +26,6 @@ Vector2Int WORLD_SIZE = {
 
 int P_SPEED_WLK = 350;
 int P_SPEED_RUN = 450;
-
-/*
-TODO:
-- Grid Based Movement - FIX THIS YO
-- Run Movement
-- Placeholder Sprites
-- Tiled Map Editor
-
-- Entity List
-- Render Queue
-- Debug Info Display
-
-*/
 
 /** Draws the world */
 void RenderWorld() {
@@ -53,13 +56,9 @@ int main() {
 
 	// PLAYER INITIALIZATION
 	//--------------------------------------------------
-	Entity* player = InitEntity((Vector2Int){.x = 0, .y = 0}, TILE_SIZE);
+	Entity* player = InitEntity((Vector2Int){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
 	SetMovementSpeeds(player, P_SPEED_WLK, P_SPEED_RUN);
-
-	if (player == NULL) {
-		// INSERT SOME KIND OF ERROR MESSAGE HERE
-		return 1;
-	}
+	SetSprite(player, "./assets/sprites/characters/player.png");
 
 	while (!WindowShouldClose()) {
 		// 1 - INPUT
@@ -110,7 +109,7 @@ int main() {
 		frameCounter++;
 	}
 	
-	free(player);
+	FreeEntity(player);
 
 	CloseWindow();
 

@@ -1,28 +1,52 @@
 #include <stdlib.h>
+#include <string.h>
 #include "raylib.h"
 
+// STRUCTS & ENUMS
+//------------------------------------------------------------------------------------------
+
+/** Vector2 Struct that uses integers instead of vectors */
 typedef struct vector2Int {
     int x;
     int y;
 } Vector2Int;
 
+/** Defines the type of entity */
+typedef enum entityType {
+	PLAYER,
+	ENEMY
+} EntityType;
+
 /** An Entity is any moving/interactable object in the overworld */
 typedef struct entity {
+	EntityType type;
+	Texture2D sprite;
+
 	Vector2 position;		// Refers to the position of the player with respect to the screen / global coordinate system  
     Vector2Int worldPos;    // Refers to the position of player relative to the world grid
+	Vector2Int targetWP;	// Entity's target world vector. Each entity will constantly move to this location if it is not already.
 
-	Vector2Int targetWP;	// Entity's target world vector. Each entity will constantly move to this location if it is not already
-
-	int isMoving;
-	int isRunning;
+	int isMoving;		// 1 if the entity is moving, 0 otherwise
+	int isRunning;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
 	
-	float speed;
-	float runSpeed;
+	float speed;		// Speed of the entity whilst walking
+	float runSpeed;		// Speed of the entity wihile running
 } Entity;
 
-/** Creates a new entity in the world */
-Entity* InitEntity(Vector2Int worldPos, int tileSize) {
+// FUNCTIONS
+//------------------------------------------------------------------------------------------
+
+/** Creates a new entity in the world 
+ * - Sets speed & runSpeed variables initialized to 0
+ * - sprite field is left uninitialized
+ * 
+*/
+Entity* InitEntity(Vector2Int worldPos, EntityType type, int tileSize) {
 	Entity* e = malloc(sizeof(Entity));
+	if (e == NULL) return NULL;
+
+	e->type = type;
+
 	e->worldPos = worldPos;
 	e->targetWP = worldPos;
 	e->position = (Vector2){.x = worldPos.x * tileSize, .y = worldPos.y * tileSize};
@@ -36,9 +60,30 @@ Entity* InitEntity(Vector2Int worldPos, int tileSize) {
 	return e;
 }
 
+/** Frees an entity and any dynamically allocated memory within the entity (typically strings & arrays)
+ * 
+*/
+void FreeEntity(Entity* e) {
+	if (e == NULL) return; // Theres nothing to free
+
+	// we first free any dynamically allocated memory inside the entity then free the entity itself
+	//if (e->spritePath != NULL) free(e->spritePath);
+
+	free(e);
+}
+
+/** Initialize movement speeds (walk & run speeds) of an entity */
 void SetMovementSpeeds(Entity* e, float walkSpeed, float runSpeed) {
 	e->speed = walkSpeed;
 	e->runSpeed = runSpeed;
+}
+
+/** Initialize movement speeds (walk & run speeds) of an entity */
+void SetSprite(Entity* e, char* spritePath) {
+	// strdup() duplicates a string and dynamically allocates it new data using malloc
+	//e->spritePath = strdup(spritePath);
+
+	e->sprite = LoadTexture(spritePath);	
 }
 
 /** Updates Player Movement by adding speed to position vectors */
@@ -48,6 +93,8 @@ void UpdateEntityVectors(Entity* e, int tileSize) {
 	int y = e->targetWP.y - e->worldPos.y;
 	int signY = (y > 0) - (y < 0);
 
+	// Distance takes the signed distance from target position to position
+	//		Positive values indicate that the entity is moving towards target
 	float distX = ((float)e->targetWP.x * tileSize - e->position.x) * signX;
 	float distY = ((float)e->targetWP.y * tileSize - e->position.y) * signY;
 
@@ -80,7 +127,12 @@ void UpdateEntityVectors(Entity* e, int tileSize) {
 }
 
 void RenderEntity(Entity e, int tileSize) {
-	DrawRectangle(e.position.x, e.position.y, tileSize, tileSize, RED);
+	DrawTextureRec(
+		e.sprite, 
+		(Rectangle){18, 22, 13, 21}, 
+		(Vector2){.x = e.position.x, .y = e.position.y}, 
+		WHITE);
+	//DrawRectangle(e.position.x, e.position.y, tileSize, tileSize, RED);
 }
 
 /** Renders all debug info relating an entity */
@@ -96,7 +148,7 @@ void DrawEntityDebugText(Entity e, int tileSize) {
 	
 	float distX = ((float)e.targetWP.x * tileSize - e.position.x) * signX;
 	float distY = ((float)e.targetWP.y * tileSize - e.position.y) * signY;
+
 	DrawText(TextFormat("distance: (%f, %f)", distX, distY), 5, 140, 30, BLACK);
 	DrawText(TextFormat("isMoving: %d", e.isMoving), 5, 175, 30, BLACK);
-
 }
