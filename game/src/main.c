@@ -54,7 +54,7 @@ int main() {
 	// WORLD INITIALIZATION
 	//--------------------------------------------------
 	//TileMap* map = cute_tiled_load_map_from_memory(memory, size, 0);
-	LoadMap("./assets/maps/testmap.json");
+	LoadMap("..\\..\\resources\\maps\\testmap.json");
 	RenderMap();
 	WORLD_SIZE = (Vector2) {
 		.x = GetMapWidth(),
@@ -65,7 +65,7 @@ int main() {
 	//--------------------------------------------------
 	Entity* player = InitEntity((Vector2){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
 	SetMovementSpeeds(player, P_SPEED_WLK, P_SPEED_RUN);
-	SetSprite(player, "./assets/sprites/characters/player.png");
+	SetSprite(player, "..\\..\\resources\\sprites\\characters\\player.png");
 
 	// CAMERA INITIALIZATION
 	//--------------------------------------------------
