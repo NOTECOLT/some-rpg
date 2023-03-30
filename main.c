@@ -2,8 +2,12 @@
 //------------------------------------------------------------------------------------------
 /*
 TODO:
-- Placeholder Sprites
 - Tiled Map Editor
+	- need to eventually modify this so that maploader can load multiple maps at once then call upon each when transitioning
+		- either that or maps are loaded directly at each scene change
+	- Scene Loader
+	
+- Spritesheet animations
 
 - Entity List
 - Render Queue
@@ -16,6 +20,7 @@ NOTE TO SELF: Uncomment -Wl,--subsystem,windows in the Makefile to hide the cons
 #include <stdio.h>
 #include "raylib.h"
 #include "src/entity.h"
+#include "src/maploader.h"
 
 int TILE_SIZE = 40;
 Vector2 WORLD_SIZE = {
@@ -46,18 +51,28 @@ int main() {
 	SetTargetFPS(60);
 	int frameCounter = 0;
 
-	// CAMERA INITIALIZATION
+	// WORLD INITIALIZATION
 	//--------------------------------------------------
-	Camera2D camera;
-	
-	camera.rotation = 0;
-	camera.zoom = 1;
+	//TileMap* map = cute_tiled_load_map_from_memory(memory, size, 0);
+	LoadMap("./assets/maps/testmap.json");
+	RenderMap();
+	WORLD_SIZE = (Vector2) {
+		.x = GetMapWidth(),
+		.y = GetMapHeight()
+	};
 
 	// PLAYER INITIALIZATION
 	//--------------------------------------------------
 	Entity* player = InitEntity((Vector2){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
 	SetMovementSpeeds(player, P_SPEED_WLK, P_SPEED_RUN);
 	SetSprite(player, "./assets/sprites/characters/player.png");
+
+	// CAMERA INITIALIZATION
+	//--------------------------------------------------
+	Camera2D camera;
+	
+	camera.rotation = 0;
+	camera.zoom = 1;
 
 	while (!WindowShouldClose()) {
 		// 1 - INPUT
@@ -92,7 +107,7 @@ int main() {
 		camera.target = (Vector2){.x = player->position.x + (TILE_SIZE / 2), .y = player->position.y + (TILE_SIZE / 2),};
 		camera.offset = (Vector2){.x = screenWidth / 2, .y = screenHeight / 2};
 		BeginMode2D(camera);
-;
+
 		RenderWorld();
 		RenderEntity(*player, TILE_SIZE);
 
