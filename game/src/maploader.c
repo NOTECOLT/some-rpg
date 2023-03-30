@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #define CUTE_TILED_IMPLEMENTATION
-#include "lib/cute_tiled.h"
+#include "lib\cute_tiled.h"
 
 #include "raylib.h"
+#include "maploader.h"
 
 
 // STRUCTS, ENUMS, & GLOBALS

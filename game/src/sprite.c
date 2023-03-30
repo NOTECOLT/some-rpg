@@ -1,18 +1,7 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "raylib.h"
 #include "sprite.h"
-
-// STRUCTS & ENUMS
-//------------------------------------------------------------------------------------------
-
-/** A sprite not only features the */
-typedef struct sprite {
-    Texture2D texture;
-    Vector2 size;     // Height and Width of the texture
-    Vector2 origin;
-    float scale;
-    float rotation;
-} Sprite;
-
 
 // FUNCTIONS
 //------------------------------------------------------------------------------------------
