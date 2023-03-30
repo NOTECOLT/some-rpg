@@ -1,5 +1,5 @@
 #include "raylib.h"
-// #include "vector.h"
+#include "sprite.h"
 
 // STRUCTS & ENUMS
 //------------------------------------------------------------------------------------------

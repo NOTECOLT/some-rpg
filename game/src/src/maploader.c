@@ -17,7 +17,7 @@ typedef struct tileset {
 } Tileset;
 
 TileMap* LOADED_MAP = NULL;
-TileMap* LOADED_TILESET = NULL;
+CuteTileset* LOADED_TILESET = NULL;
 
 // FUNCTIONS
 //------------------------------------------------------------------------------------------

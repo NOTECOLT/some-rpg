@@ -19,8 +19,8 @@ NOTE TO SELF: Uncomment -Wl,--subsystem,windows in the Makefile to hide the cons
 #include <stdlib.h>
 #include <stdio.h>
 #include "raylib.h"
-#include "src/entity.h"
-#include "src/maploader.h"
+#include "entity.h"
+#include "maploader.h"
 
 int TILE_SIZE = 40;
 Vector2 WORLD_SIZE = {

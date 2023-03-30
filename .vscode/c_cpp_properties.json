@@ -3,8 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "D:/AppData/raylib/raylib/src/**",
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/_lib/**",
+                "${workspaceFolder}/game/**"
             ],
             "defines": [
                 "_DEBUG",

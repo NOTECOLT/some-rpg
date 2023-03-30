@@ -1,7 +1,7 @@
 #ifndef MAPLOADER_H
 #define MAPLOADER_H
 
-#include "maploader.c"
+// #include "maploader.c"
 
 typedef struct tileset Tileset;
 

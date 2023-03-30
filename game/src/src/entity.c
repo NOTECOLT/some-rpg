@@ -4,8 +4,8 @@
  * Entities are created in the heap
 */
 //------------------------------------------------------------------------------------------
-
-// #include <stdlib.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "raylib.h"
 // #include "vector.h"
 #include "sprite.h"

@@ -1,7 +1,7 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
-#include "sprite.c"
+// #include "sprite.c"
 
 typedef struct sprite Sprite;
 
