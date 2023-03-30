@@ -49,6 +49,9 @@
     "stdlib.h": "c",
     "numbers": "c",
     "entity.h": "c",
-    "sprite.c": "cpp"
+    "sprite.c": "c",
+    "cute_tiled.h": "c",
+    "sprite.h": "c",
+    "maploader.h": "c"
   }
 }

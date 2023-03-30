@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------
-/** ENTITY.C
+/** ENTITY.H
  * Contains the entity struct and any/all functions relating to it.
  * Entities are created in the heap
 */
