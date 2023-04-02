@@ -54,6 +54,8 @@ int main() {
 	// WORLD INITIALIZATION
 	//--------------------------------------------------
 	//TileMap* map = cute_tiled_load_map_from_memory(memory, size, 0);
+	
+	printf("WORKING DIRECTORY %s\n", GetWorkingDirectory());
 	LoadMap("..\\..\\resources\\maps\\testmap.json");
 	RenderMap();
 	WORLD_SIZE = (Vector2) {

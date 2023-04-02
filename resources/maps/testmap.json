@@ -105,7 +105,7 @@
         {
          "columns":1,
          "firstgid":1,
-         "image":"..\/..\/topdown\/assets\/sprites\/tilesets\/grass.png",
+         "image":"..\\..\\resources\\tilesets\\grass.png",
          "imageheight":16,
          "imagewidth":16,
          "margin":0,
@@ -116,16 +116,43 @@
          "tilewidth":16
         }, 
         {
+         "columns":6,
          "firstgid":2,
-         "source":"..\/tilesets\/plains.tsx"
+         "image":"..\\..\\resources\\tilesets\\plains.png",
+         "imageheight":192,
+         "imagewidth":96,
+         "margin":0,
+         "name":"plains",
+         "spacing":0,
+         "tilecount":72,
+         "tileheight":16,
+         "tilewidth":16
         }, 
         {
+         "columns":4,
          "firstgid":74,
-         "source":"..\/tilesets\/fences.tsx"
+         "image":"..\\..\\resources\\tilesets\\fences.png",
+         "imageheight":64,
+         "imagewidth":64,
+         "margin":0,
+         "name":"fences",
+         "spacing":0,
+         "tilecount":16,
+         "tileheight":16,
+         "tilewidth":16
         }, 
         {
+         "columns":16,
          "firstgid":90,
-         "source":"..\/tilesets\/objects.tsx"
+         "image":"..\\..\\resources\\tilesets\\objects.png",
+         "imageheight":208,
+         "imagewidth":256,
+         "margin":0,
+         "name":"objects",
+         "spacing":0,
+         "tilecount":208,
+         "tileheight":16,
+         "tilewidth":16
         }],
  "tilewidth":16,
  "type":"map",
