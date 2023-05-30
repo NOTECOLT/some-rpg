@@ -105,7 +105,7 @@
         {
          "columns":1,
          "firstgid":1,
-         "image":"..\\..\\resources\\tilesets\\grass.png",
+         "image":"resources\\tilesets\\grass.png",
          "imageheight":16,
          "imagewidth":16,
          "margin":0,
@@ -118,7 +118,7 @@
         {
          "columns":6,
          "firstgid":2,
-         "image":"..\\..\\resources\\tilesets\\plains.png",
+         "image":"resources\\tilesets\\plains.png",
          "imageheight":192,
          "imagewidth":96,
          "margin":0,
@@ -131,7 +131,7 @@
         {
          "columns":4,
          "firstgid":74,
-         "image":"..\\..\\resources\\tilesets\\fences.png",
+         "image":"resources\\tilesets\\fences.png",
          "imageheight":64,
          "imagewidth":64,
          "margin":0,
@@ -144,7 +144,7 @@
         {
          "columns":16,
          "firstgid":90,
-         "image":"..\\..\\resources\\tilesets\\objects.png",
+         "image":"resources\\tilesets\\objects.png",
          "imageheight":208,
          "imagewidth":256,
          "margin":0,

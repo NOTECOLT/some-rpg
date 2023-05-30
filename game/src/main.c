@@ -13,6 +13,8 @@ TODO:
 - Render Queue
 - Debug Info Display
 
+TODO: Fix VSCode Tasks.json so that I can debug within the editor lol
+
 NOTE TO SELF: Uncomment -Wl,--subsystem,windows in the Makefile to hide the console window
 */
 //------------------------------------------------------------------------------------------
@@ -56,8 +58,8 @@ int main() {
 	//TileMap* map = cute_tiled_load_map_from_memory(memory, size, 0);
 	
 	printf("WORKING DIRECTORY %s\n", GetWorkingDirectory());
-	LoadMap("..\\..\\resources\\maps\\testmap.json");
-	RenderMap();
+	LoadMap("resources\\maps\\testmap.json");
+	
 	WORLD_SIZE = (Vector2) {
 		.x = GetMapWidth(),
 		.y = GetMapHeight()
@@ -67,7 +69,7 @@ int main() {
 	//--------------------------------------------------
 	Entity* player = InitEntity((Vector2){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
 	SetMovementSpeeds(player, P_SPEED_WLK, P_SPEED_RUN);
-	SetSprite(player, "..\\..\\resources\\sprites\\characters\\player.png");
+	SetSprite(player, "resources\\sprites\\characters\\player.png");
 
 	// CAMERA INITIALIZATION
 	//--------------------------------------------------
@@ -110,7 +112,8 @@ int main() {
 		camera.offset = (Vector2){.x = screenWidth / 2, .y = screenHeight / 2};
 		BeginMode2D(camera);
 
-		RenderWorld();
+		// RenderWorld();
+		RenderMap();
 		RenderEntity(*player, TILE_SIZE);
 
 		EndMode2D();
@@ -124,6 +127,7 @@ int main() {
 	}
 	
 	FreeEntity(player);
+	FreeTileset();
 
 	CloseWindow();
 
