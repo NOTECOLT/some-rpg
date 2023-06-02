@@ -3,8 +3,10 @@
 /*
 TODO:
 - Tiled Map Editor
-	- need to eventually modify this so that maploader can load multiple maps at once then call upon each when transitioning
-		- either that or maps are loaded directly at each scene change
+	- Changes it so that I load not just individual tiles but whole ass maps
+		- Will now treat maps as single textures instead to just save me from any frustration
+		- Can probably do a tile loader + integrated tile editor somewhere down the line, but not now
+	- Fix up the Tiled system pls
 	- Scene Loader
 	
 - Spritesheet animations
