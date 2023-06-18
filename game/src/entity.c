@@ -18,7 +18,7 @@
  * 
 */
 Entity* InitEntity(Vector2 worldPos, EntityType type, int tileSize) {
-	Entity* e = MemAlloc(sizeof(Entity));
+	Entity* e = malloc(sizeof(Entity));
 	if (e == NULL) {
 		printf("[INIT ENTITY] [MEM ERROR] Failed to allocate memory for entity at (%f, %f)\n", worldPos.x, worldPos.y);
 		return NULL;
@@ -50,9 +50,9 @@ void FreeEntity(Entity* e) {
 	} // Theres nothing to free
 
 	// we first free any dynamically allocated memory inside the entity then free the entity itself
-	if (e->spr != NULL) free(e->spr);
+	if (e->spr != NULL) FreeSprite(e->spr);
 
-	MemFree(e);
+	free(e);
 }
 
 /** Initialize movement speeds (walk & run speeds) of an entity */

@@ -2,11 +2,9 @@
 //------------------------------------------------------------------------------------------
 /*
 TODO:
-- Tiled Map Editor
-	- Changes it so that I load not just individual tiles but whole ass maps
-		- Will now treat maps as single textures instead to just save me from any frustration
-		- Can probably do a tile loader + integrated tile editor somewhere down the line, but not now
-	- Fix up the Tiled system pls
+- Tilemap
+	- I realize i need to do a tilemap system instead of loading a single png for the entire map
+	- 		Question is, do i want to build it from scratch? :thinking:
 	- Scene Loader
 	
 - Spritesheet animations
@@ -31,6 +29,8 @@ Vector2 WORLD_SIZE = {
 	.x = 39,
 	.y = 22
 };
+
+Map* LOADED_MAP;
 
 int P_SPEED_WLK = 350;
 int P_SPEED_RUN = 450;
@@ -57,15 +57,14 @@ int main() {
 
 	// WORLD INITIALIZATION
 	//--------------------------------------------------
-	//TileMap* map = cute_tiled_load_map_from_memory(memory, size, 0);
 	
 	printf("WORKING DIRECTORY %s\n", GetWorkingDirectory());
-	LoadMap("resources\\maps\\testmap.json");
+	LOADED_MAP = ("resources\\maps\\testmap.json");
 	
-	WORLD_SIZE = (Vector2) {
-		.x = GetMapWidth(),
-		.y = GetMapHeight()
-	};
+	// WORLD_SIZE = (Vector2) {
+	// 	.x = GetMapWidth(),
+	// 	.y = GetMapHeight()
+	// };
 
 	// PLAYER INITIALIZATION
 	//--------------------------------------------------
@@ -115,7 +114,7 @@ int main() {
 		BeginMode2D(camera);
 
 		// RenderWorld();
-		RenderMap();
+		// RenderMap();
 		RenderEntity(*player, TILE_SIZE);
 
 		EndMode2D();
@@ -127,9 +126,9 @@ int main() {
 
 		frameCounter++;
 	}
-	
+
+	FreeMap(LOADED_MAP);
 	FreeEntity(player);
-	FreeTileset();
 
 	CloseWindow();
 

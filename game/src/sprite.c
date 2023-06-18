@@ -10,11 +10,12 @@
  * 
 */
 Sprite* InitSprite(char* path, Vector2 origin, Vector2 size, float scale) {
-    Sprite* s = MemAlloc(sizeof(Sprite));
+    Sprite* s = malloc(sizeof(Sprite));
     if (s == NULL) {
 		printf("[INIT SPRITE] [MEM ERROR] Failed to allocate memory for sprite at path %s\n", path);
 		return NULL;
 	}
+
 
     s->texture = LoadTexture(path);
     s->size = size;
