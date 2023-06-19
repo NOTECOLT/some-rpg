@@ -21,7 +21,7 @@ using Raylib_cs;
 namespace Topdown {
     static class Game {
 
-        // int TILE_SIZE = 40;
+        const int tileSize = 40;
         // Vector2 WORLD_SIZE = {
         //     .x = 39,
         //     .y = 22
@@ -29,8 +29,8 @@ namespace Topdown {
 
         // Map* LOADED_MAP;
 
-        // int P_SPEED_WLK = 350;
-        // int P_SPEED_RUN = 450;
+        const int playerWalkSpeed = 350;
+        const int playerRunSpeed = 450;
 
         public static void Main() {
 
@@ -56,9 +56,9 @@ namespace Topdown {
             // PLAYER INITIALIZATION
             //--------------------------------------------------
             
-            Entity player = new Entity(new Vector2(0, 0), EntityType.PLAYER, TILE_SIZE);
+            Entity player = new(new Vector2(0, 0), EntityType.PLAYER, tileSize);
             //Entity* player = InitEntity((Vector2){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
-            player.SetMovementSpeeds(P_SPEED_WLK, P_SPEED_RUN);
+            player.SetMovementSpeeds(playerWalkSpeed, playerRunSpeed);
             player.SetSprite("resources\\sprites\\characters\\player.png");
 
             // CAMERA INITIALIZATION
@@ -71,45 +71,45 @@ namespace Topdown {
             while (!Raylib.WindowShouldClose()) {
                 // 1 - INPUT
                 //--------------------------------------------------
-                if (!player->isMoving) {
-                    player->isRunning = (IsKeyDown(KEY_LEFT_SHIFT)) ? 1 : 0;
+                if (!player.isMoving) {
+                    player.isRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
 
-                    if (IsKeyDown(KEY_RIGHT)) 
-                        player->targetWP = (Vector2){.x = player->worldPos.x + 1, .y = player->worldPos.y};
-                    else if (IsKeyDown(KEY_LEFT))
-                        player->targetWP = (Vector2){.x = player->worldPos.x - 1, .y = player->worldPos.y};
-                    else if (IsKeyDown(KEY_DOWN))
-                        player->targetWP = (Vector2){.x = player->worldPos.x, .y = player->worldPos.y + 1};
-                    else if (IsKeyDown(KEY_UP))
-                        player->targetWP = (Vector2){.x = player->worldPos.x, .y = player->worldPos.y - 1};
+                    if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
+                        player.targetWP = new(player.worldPos.X + 1, player.worldPos.Y);
+                    else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
+						player.targetWP = new(player.worldPos.X - 1, player.worldPos.Y);
+                    else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
+						player.targetWP = new(player.worldPos.X, player.worldPos.Y + 1);
+                    else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
+						player.targetWP = new(player.worldPos.X, player.worldPos.Y - 1);
                     else
-                        player->targetWP = (Vector2){.x = player->worldPos.x, .y = player->worldPos.y};
+						player.targetWP = new(player.worldPos.X, player.worldPos.Y);
                 }
                 
                 // 2 - PHYSICS
                 //--------------------------------------------------
 
-                UpdateEntityVectors(player, TILE_SIZE);
-                camera.target = (Vector2){.x = player->position.x, .y = player->position.y};
+                player.UpdateEntityVectors(tileSize);
 
                 // 3 - RENDERING
                 //--------------------------------------------------
 
                 Raylib.BeginDrawing();
-                Raylib.ClearBackground(RAYWHITE);
+					Raylib.ClearBackground(Color.RAYWHITE);
 
-                camera.target = (Vector2){.x = player->position.x + (TILE_SIZE / 2), .y = player->position.y + (TILE_SIZE / 2),};
-                camera.offset = (Vector2){.x = screenWidth / 2, .y = screenHeight / 2};
-                Raylib.BeginMode2D(camera);
+					camera.target = new(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
+					camera.target = new(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
+					camera.offset = new(screenWidth / 2, screenHeight / 2);
+					Raylib.BeginMode2D(camera);
 
-                // RenderWorld();
-                // RenderMap();
-                RenderEntity(*player, TILE_SIZE);
+					// RenderWorld();
+					// RenderMap();
+					player.RenderEntity(tileSize);
 
-                Raylib.EndMode2D();
+					Raylib.EndMode2D();
 
-                Raylib.DrawText(Raylib.TextFormat("f: %d; fps: %d", frameCounter, Raylib.GetFPS()), 5, 5, 30, Color.BLACK);
-                //DrawEntityDebugText(*player, TILE_SIZE);
+					Raylib.DrawText($"f: {frameCounter}; fps: {Raylib.GetFPS()}", 5, 5, 30, Color.BLACK);
+					player.DrawEntityDebugText(tileSize);
 
                 Raylib.EndDrawing();
 
