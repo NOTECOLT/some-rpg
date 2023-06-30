@@ -24,7 +24,7 @@ namespace Topdown {
 		public Map(string name, string path, Vector2 size) {
 			this.name = name;
 			tilemapPath = path;
-			tilemap = new Tilemap(path, 32, 32);
+			tilemap = new Tilemap(path, 16, 16);
 			this.size = size;
 		}
 
@@ -63,7 +63,8 @@ namespace Topdown {
 		public void RenderMap() {
 			for (int i = 0; i < data.GetLength(0); i++) {
 				for (int j = 0; j < data.GetLength(1); j++) {
-					tilemap.ReturnTileSprite(data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0));
+					if (data[i,j] != - 1)
+						tilemap.ReturnTileSprite(data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0));
 				}
 			}
 		}

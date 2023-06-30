@@ -60,7 +60,6 @@ namespace Topdown {
             //--------------------------------------------------
             
             Entity player = new Entity(new Vector2(0, 0), EntityType.PLAYER, tileSize);
-            //Entity* player = InitEntity((Vector2){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
             player.SetMovementSpeeds(playerWalkSpeed, playerRunSpeed);
             player.SetSprite("resources\\sprites\\characters\\player.png");
 
