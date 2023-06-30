@@ -1,7 +1,5 @@
 //------------------------------------------------------------------------------------------
-/** ENTITY
- * Contains the entity struct and any/all functions relating to it.
- * Entities are created in the heap
+/* ENTITY
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
@@ -24,39 +22,25 @@ namespace Topdown {
 		//------------------------------------------------------------------------------------------
 
 		public EntityType type;
-		public Sprite? sprite;
+		public Sprite sprite;
 
 		public Vector2 position;	// Refers to the position of the player with respect to the screen / global coordinate system  
     	public Vector2 worldPos;    // Refers to the position of player relative to the world grid
 		public Vector2 targetWP;	// Entity's target world vector. Each entity will constantly move to this location if it is not already.
 
 
-		public bool isMoving;		// 1 if the entity is moving, 0 otherwise
-		public bool isRunning;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
+		public bool isMoving = false;		// 1 if the entity is moving, 0 otherwise
+		public bool isRunning = false;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
 		
-		public float speed;			// Speed of the entity whilst walking
-		public float runSpeed;		// Speed of the entity wihile running
+		public float speed = 0;			// Speed of the entity whilst walking
+		public float runSpeed = 0;		// Speed of the entity wihile running
 		
-		/// <summary>
-		/**	Creates a new entity in the world 
-		* - Sets speed & runSpeed variables initialized to 0
- 		* - sprite is set to NULL
-		*/
-		/// </summary>
 		public Entity(Vector2 worldPos, EntityType type, int tileSize) {
 			this.type = type;
-			sprite = null;
 
 			this.worldPos = worldPos;
 			targetWP = worldPos;
 			position = new Vector2(worldPos.X * tileSize, worldPos.Y * tileSize); 
-			//e->position = (Vector2){.x = worldPos.x * tileSize, .y = worldPos.y * tileSize};
-
-			isMoving = false;
-			isRunning = false;
-
-			speed = 0;
-			runSpeed = 0;
 		}
 
 		// FUNCTIONS
@@ -76,8 +60,8 @@ namespace Topdown {
 		/// Initialize sprites of an entity
 		/// </summary>
 		/// <param name="path"></param>
-		public void SetSprite(String path) {
-			sprite = new(path, new Vector2(18, 22), new Vector2(13, 21), 2.0f);
+		public void SetSprite(string path) {
+			sprite = new Sprite(path, new Vector2(18, 22), new Vector2(13, 21), 2.0f);
 		}
 
 		/// <summary>
@@ -126,10 +110,9 @@ namespace Topdown {
 		/// <param name="tileSize"></param>
 		public void RenderEntity(int tileSize) {
 			if (sprite != null) {
-				Vector2 sprPos = new(position.X + tileSize/2, position.Y + tileSize);
-				Vector2 offset = new(sprite.size.X * sprite.scale / 2, sprite.size.Y * sprite.scale);
+				Vector2 sprPos = new Vector2(position.X + tileSize/2, position.Y + tileSize);
+				Vector2 offset = new Vector2(sprite.size.X * sprite.scale / 2, sprite.size.Y * sprite.scale);
 			
-
 				sprite.RenderSprite(sprPos, offset);
 			} else {
 				Raylib.DrawRectangle((int)position.X, (int)position.Y, tileSize, tileSize, Color.MAGENTA);

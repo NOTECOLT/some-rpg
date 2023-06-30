@@ -19,9 +19,11 @@ using System.Numerics;
 using Raylib_cs;
 
 namespace Topdown {
+
+
     static class Game {
 
-        const int tileSize = 40;
+        const int tileSize = 32;
         // Vector2 WORLD_SIZE = {
         //     .x = 39,
         //     .y = 22
@@ -29,8 +31,8 @@ namespace Topdown {
 
         // Map* LOADED_MAP;
 
-        const int playerWalkSpeed = 350;
-        const int playerRunSpeed = 450;
+        const int playerWalkSpeed = 250;
+        const int playerRunSpeed = 350;
 
         public static void Main() {
 
@@ -45,9 +47,10 @@ namespace Topdown {
 
             // WORLD INITIALIZATION
             //--------------------------------------------------
+            Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
+            Map map = Map.LoadMap("resources\\maps\\testmap.json");
             
-            //LOADED_MAP = ("resources\\maps\\testmap.json");
-            
+
             // WORLD_SIZE = (Vector2) {
             // 	.x = GetMapWidth(),
             // 	.y = GetMapHeight()
@@ -56,7 +59,7 @@ namespace Topdown {
             // PLAYER INITIALIZATION
             //--------------------------------------------------
             
-            Entity player = new(new Vector2(0, 0), EntityType.PLAYER, tileSize);
+            Entity player = new Entity(new Vector2(0, 0), EntityType.PLAYER, tileSize);
             //Entity* player = InitEntity((Vector2){.x = 0, .y = 0}, PLAYER, TILE_SIZE);
             player.SetMovementSpeeds(playerWalkSpeed, playerRunSpeed);
             player.SetSprite("resources\\sprites\\characters\\player.png");
@@ -75,15 +78,15 @@ namespace Topdown {
                     player.isRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
 
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
-                        player.targetWP = new(player.worldPos.X + 1, player.worldPos.Y);
+                        player.targetWP = new Vector2(player.worldPos.X + 1, player.worldPos.Y);
                     else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
-						player.targetWP = new(player.worldPos.X - 1, player.worldPos.Y);
+						player.targetWP = new Vector2(player.worldPos.X - 1, player.worldPos.Y);
                     else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
-						player.targetWP = new(player.worldPos.X, player.worldPos.Y + 1);
+						player.targetWP = new Vector2(player.worldPos.X, player.worldPos.Y + 1);
                     else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
-						player.targetWP = new(player.worldPos.X, player.worldPos.Y - 1);
+						player.targetWP = new Vector2(player.worldPos.X, player.worldPos.Y - 1);
                     else
-						player.targetWP = new(player.worldPos.X, player.worldPos.Y);
+						player.targetWP = new Vector2(player.worldPos.X, player.worldPos.Y);
                 }
                 
                 // 2 - PHYSICS
@@ -97,13 +100,14 @@ namespace Topdown {
                 Raylib.BeginDrawing();
 					Raylib.ClearBackground(Color.RAYWHITE);
 
-					camera.target = new(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
-					camera.target = new(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
-					camera.offset = new(screenWidth / 2, screenHeight / 2);
+					camera.target = new Vector2(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
+					camera.target = new Vector2(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
+					camera.offset = new Vector2(screenWidth / 2, screenHeight / 2);
 					Raylib.BeginMode2D(camera);
 
 					// RenderWorld();
-					// RenderMap();
+                    if (map != null)
+					    map.RenderMap();
 					player.RenderEntity(tileSize);
 
 					Raylib.EndMode2D();

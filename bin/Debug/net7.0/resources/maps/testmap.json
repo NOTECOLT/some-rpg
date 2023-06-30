@@ -1,0 +1,15 @@
+{
+   "name": "e",
+   "texture": {
+      "id": 0,
+      "width": 0,
+      "height": 0,
+      "mipmaps": 0,
+      "format": 0
+   },
+   "texturePath": "",
+   "size": {
+      "X": 2.0,
+      "Y": 3.0
+   }
+}

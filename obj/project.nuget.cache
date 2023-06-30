@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "NAvkymsHGvQpp4BVj6LVdZCoBY3Z6r8HaRatkqOVdEMvr3hmlrBMGeTfp4IgQ7UwthgocwBMvbaIK1tx5TolkA==",
+  "dgSpecHash": "glQfCX6SyN0zXbsXOAgw1ata243P6Z0pDpNG8TurvecrRMwtvoZRMhSf6UQwv/TAnjrpdvd1/YTzd06s/yhIBg==",
   "success": true,
   "projectFilePath": "C:\\Users\\d27th\\Documents\\Game Dev\\some-rpg\\topdown\\topdown.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\d27th\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\d27th\\.nuget\\packages\\raylib-cs\\4.5.0.1\\raylib-cs.4.5.0.1.nupkg.sha512",
     "C:\\Users\\d27th\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512"
   ],
