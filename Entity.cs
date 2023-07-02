@@ -92,7 +92,7 @@ namespace Topdown {
 			// If current position of the entity does not match where it needs to be, then move to those coordinates respectively
 			// There is no diagonal movement
 			if (worldPos.X * signX < targetWP.X * signX) {
-				if (isRunning)
+				if (!isRunning)
 					position.X += signX * speed * Raylib.GetFrameTime();
 				else
 					position.X += signX * runSpeed * Raylib.GetFrameTime();

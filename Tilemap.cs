@@ -39,13 +39,13 @@ namespace Topdown {
 		/// By loading in the tile positions from the start, we don't need to calculate the position
 		/// of the tile with every call.
 		/// </summary>
-        public void LoadTilePositions() {
+        private void LoadTilePositions() {
             int n = 0;
             for (int i = 0; i < (size.Y / tileSize.Y); i++) {
                 for (int j = 0; j < (size.X / tileSize.X); j++) {
-                    tilePositions[n] = new Vector2(i * tileSize.X, j * tileSize.Y);
+                    tilePositions[n] = new Vector2(j * tileSize.X, i * tileSize.Y);
                     n++;
-                }
+				}
             }
         }
 
@@ -56,6 +56,11 @@ namespace Topdown {
 		/// <param name="id"></param>
 		/// <returns></returns>
         public Sprite ReturnTileSprite(int id) {
+            if (id >= tilePositions.Length || id < 0) {
+                Console.WriteLine($"[TILEMAP] [WARNING] INVALID TILE ID OF {id}");
+                return null;
+            }
+
             Sprite spr = new Sprite() {
                 texture = tilemapTexture,
 				origin = tilePositions[id],

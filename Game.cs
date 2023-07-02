@@ -1,9 +1,9 @@
 ﻿//------------------------------------------------------------------------------------------
 /*
 TODO:
-- Tilemap
-	- I realize i need to do a tilemap system instead of loading a single png for the entire map
-	- 		Question is, do i want to build it from scratch? :thinking:
+- Movement: DO MOVEMENT BETTER? But i can put this on the backburner naman i think
+- simple tilemap editor? Or something
+-   Need something to handle collisions and stuff
 	- Scene Loader
 	
 - Spritesheet animations
@@ -15,32 +15,31 @@ TODO:
 WELCOME TO C#! lol
 */
 //------------------------------------------------------------------------------------------
+using System.Collections;
 using System.Numerics;
 using Raylib_cs;
 
 namespace Topdown {
-
-
+    enum GameState {
+        OVERWORLD,
+        DEBUG_MAPEDIT
+    }
     static class Game {
+		const bool devMode = true;
 
+        // RANDOM CONSTANTS, will eventually move these values
         const int tileSize = 32;
-        // Vector2 WORLD_SIZE = {
-        //     .x = 39,
-        //     .y = 22
-        // };
+        const int playerWalkSpeed = 200;
+        const int playerRunSpeed = 300;
 
-        // Map* LOADED_MAP;
-
-        const int playerWalkSpeed = 250;
-        const int playerRunSpeed = 350;
+		const int screenWidth = 960;
+		const int screenHeight = 720;
 
         public static void Main() {
+			GameState gameState = GameState.OVERWORLD;
 
             // WINDOW INITIALIZATION
             //--------------------------------------------------
-            const int screenWidth = 960;
-            const int screenHeight = 720;
-
             Raylib.InitWindow(screenWidth, screenHeight, "test");
             Raylib.SetTargetFPS(60);
             int frameCounter = 0;
@@ -50,12 +49,6 @@ namespace Topdown {
             Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
             Map map = Map.LoadMap("resources\\maps\\testmap.json");
             
-
-            // WORLD_SIZE = (Vector2) {
-            // 	.x = GetMapWidth(),
-            // 	.y = GetMapHeight()
-            // };
-
             // PLAYER INITIALIZATION
             //--------------------------------------------------
             
@@ -65,61 +58,104 @@ namespace Topdown {
 
             // CAMERA INITIALIZATION
             //--------------------------------------------------
-            Camera2D camera;
+            Camera2D camera = new Camera2D();
             
             camera.rotation = 0;
             camera.zoom = 1;
 
             while (!Raylib.WindowShouldClose()) {
-                // 1 - INPUT
-                //--------------------------------------------------
-                if (!player.isMoving) {
-                    player.isRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
-
-                    if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
-                        player.targetWP = new Vector2(player.worldPos.X + 1, player.worldPos.Y);
-                    else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
-						player.targetWP = new Vector2(player.worldPos.X - 1, player.worldPos.Y);
-                    else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
-						player.targetWP = new Vector2(player.worldPos.X, player.worldPos.Y + 1);
-                    else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
-						player.targetWP = new Vector2(player.worldPos.X, player.worldPos.Y - 1);
-                    else
-						player.targetWP = new Vector2(player.worldPos.X, player.worldPos.Y);
-                }
-                
-                // 2 - PHYSICS
-                //--------------------------------------------------
-
-                player.UpdateEntityVectors(tileSize);
-
-                // 3 - RENDERING
-                //--------------------------------------------------
-
-                Raylib.BeginDrawing();
-					Raylib.ClearBackground(Color.RAYWHITE);
-
-					camera.target = new Vector2(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
-					camera.target = new Vector2(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
-					camera.offset = new Vector2(screenWidth / 2, screenHeight / 2);
-					Raylib.BeginMode2D(camera);
-
-					// RenderWorld();
-                    if (map != null)
-					    map.RenderMap();
-					player.RenderEntity(tileSize);
-
-					Raylib.EndMode2D();
-
-					Raylib.DrawText($"f: {frameCounter}; fps: {Raylib.GetFPS()}", 5, 5, 30, Color.BLACK);
-					player.DrawEntityDebugText(tileSize);
-
-                Raylib.EndDrawing();
-
-                frameCounter++;
+				if (devMode) {
+					if (Raylib.IsKeyReleased(KeyboardKey.KEY_P)) {
+						// switch(gameState) {
+						// 	case GameState.OVERWORLD:
+						// 		gameState = GameState.DEBUG_MAPEDIT;
+						// 		break;
+						// 	case GameState.DEBUG_MAPEDIT:
+						// 		gameState = GameState.OVERWORLD;
+						// 		break;
+						// 	default:
+						// 		break;
+						// }
+						gameState = (GameState)(((int)gameState + 1) % Enum.GetNames(typeof(GameState)).Length);
+						Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {gameState}");
+					}
+				}
+				
+				switch (gameState) {
+					case GameState.OVERWORLD:
+						OverworldGameLoop(player, camera, map, frameCounter);
+						break;
+					case GameState.DEBUG_MAPEDIT:
+						DebugMapEditLoop();
+						break;
+					default:
+						break;
+				}
             }
 
             Raylib.CloseWindow();
         }
-    }
+
+		// GAME STATE LOOPS
+		//--------------------------------------------------
+
+		/// <summary>
+		/// Main Overworld Game Loop.
+		/// <para>In this state, the player can see their avatar walking around. </para>
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="camera"></param>
+		/// <param name="map"></param>
+		/// <param name="frameCounter"></param>
+        public static void OverworldGameLoop(Entity player, Camera2D camera, Map map, int frameCounter) {
+			// 1 - INPUT
+			//--------------------------------------------------
+			if (!player.isMoving) {
+				player.isRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
+
+				if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
+					player.targetWP = new Vector2(player.worldPos.X + 1, player.worldPos.Y);
+				else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
+					player.targetWP = new Vector2(player.worldPos.X - 1, player.worldPos.Y);
+				else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
+					player.targetWP = new Vector2(player.worldPos.X, player.worldPos.Y + 1);
+				else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
+					player.targetWP = new Vector2(player.worldPos.X, player.worldPos.Y - 1);
+				else
+					player.targetWP = new Vector2(player.worldPos.X, player.worldPos.Y);
+			}
+			
+			// 2 - PHYSICS
+			//--------------------------------------------------
+
+			player.UpdateEntityVectors(tileSize);
+
+			// 3 - RENDERING
+			//--------------------------------------------------
+
+			Raylib.BeginDrawing();
+				Raylib.ClearBackground(Color.RAYWHITE);
+
+				camera.target = new Vector2(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
+				camera.target = new Vector2(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
+				camera.offset = new Vector2(screenWidth / 2, screenHeight / 2);
+				Raylib.BeginMode2D(camera);
+
+					if (map != null)
+						map.RenderMap();
+					player.RenderEntity(tileSize);
+
+				Raylib.EndMode2D();
+
+				Raylib.DrawText($"f: {frameCounter}; fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.BLACK);
+				player.DrawEntityDebugText(tileSize);
+
+			Raylib.EndDrawing();
+
+			frameCounter++;
+        }
+		public static void DebugMapEditLoop() {
+
+		}
+	}
 }
