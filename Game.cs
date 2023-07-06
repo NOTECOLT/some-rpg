@@ -65,28 +65,18 @@ namespace Topdown {
 
             while (!Raylib.WindowShouldClose()) {
 				if (devMode) {
-					if (Raylib.IsKeyReleased(KeyboardKey.KEY_P)) {
-						// switch(gameState) {
-						// 	case GameState.OVERWORLD:
-						// 		gameState = GameState.DEBUG_MAPEDIT;
-						// 		break;
-						// 	case GameState.DEBUG_MAPEDIT:
-						// 		gameState = GameState.OVERWORLD;
-						// 		break;
-						// 	default:
-						// 		break;
-						// }
+					if (Raylib.IsKeyReleased(KeyboardKey.KEY_F3)) {
 						gameState = (GameState)(((int)gameState + 1) % Enum.GetNames(typeof(GameState)).Length);
-						Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {gameState}");
+						Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {gameState} on frame {frameCounter}");
 					}
 				}
 				
 				switch (gameState) {
 					case GameState.OVERWORLD:
-						OverworldGameLoop(player, camera, map, frameCounter);
+						OverworldGameLoop(ref player, ref camera, ref map, ref frameCounter);
 						break;
 					case GameState.DEBUG_MAPEDIT:
-						DebugMapEditLoop();
+						DebugMapEditLoop(ref player, ref camera, ref map, ref frameCounter);
 						break;
 					default:
 						break;
@@ -107,7 +97,37 @@ namespace Topdown {
 		/// <param name="camera"></param>
 		/// <param name="map"></param>
 		/// <param name="frameCounter"></param>
-        public static void OverworldGameLoop(Entity player, Camera2D camera, Map map, int frameCounter) {
+        public static void DebugMapEditLoop(ref Entity player, ref Camera2D camera, ref Map map, ref int frameCounter) {
+			// 1 - INPUT
+			//--------------------------------------------------
+			
+			// 2 - PHYSICS
+			//--------------------------------------------------
+
+			// 3 - RENDERING
+			//--------------------------------------------------
+
+			Raylib.BeginDrawing();
+				Raylib.ClearBackground(Color.RAYWHITE);
+
+				camera.target = new Vector2(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
+				camera.target = new Vector2(player.position.X + (tileSize / 2), player.position.Y + (tileSize / 2));
+				camera.offset = new Vector2(screenWidth / 2, screenHeight / 2);
+				Raylib.BeginMode2D(camera);
+
+					if (map != null)
+						map.RenderMap();
+
+				Raylib.EndMode2D();
+
+				Raylib.DrawText($"f: {frameCounter}; fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.BLACK);
+				Raylib.DrawText($"Mode: DEBUG MAP EDIT", 5, 40, 30, Color.BLACK);
+
+			Raylib.EndDrawing();
+
+			frameCounter++;
+        }
+		public static void OverworldGameLoop(ref Entity player, ref Camera2D camera, ref Map map, ref int frameCounter) {
 			// 1 - INPUT
 			//--------------------------------------------------
 			if (!player.isMoving) {
@@ -148,14 +168,12 @@ namespace Topdown {
 				Raylib.EndMode2D();
 
 				Raylib.DrawText($"f: {frameCounter}; fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.BLACK);
-				player.DrawEntityDebugText(tileSize);
+				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.BLACK);
+				player.DrawEntityDebugText(tileSize, new Vector2(5, 75));
 
 			Raylib.EndDrawing();
 
 			frameCounter++;
-        }
-		public static void DebugMapEditLoop() {
-
 		}
 	}
 }

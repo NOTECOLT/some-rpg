@@ -69,7 +69,7 @@ namespace Topdown {
 		/// </summary>
 		/// <param name="tileSize"></param>
 		public void UpdateEntityVectors(int tileSize) {
-			int x = (int)(targetWP.X - worldPos.Y);
+			int x = (int)(targetWP.X - worldPos.X);
 			int signX = Convert.ToInt32(x > 0) - Convert.ToInt32(x < 0);		// remember false = 0, true = 1
 			int y = (int)(targetWP.Y - worldPos.Y);
 			int signY = Convert.ToInt32(y > 0) - Convert.ToInt32(y < 0);
@@ -78,8 +78,9 @@ namespace Topdown {
 			//		Positive values indicate that the entity is moving towards target
 			float distX = (targetWP.X * tileSize - position.X) * signX;
 			float distY = (targetWP.Y * tileSize - position.Y) * signY;
+			//Console.WriteLine($"distance: {distX}, {distY}");
 
-			// Conditions: If player moves close enough to target position or past the boundaries, affix player to grid
+			// Conditions: If player moves close enough to target position or past the boundaries, snap player to grid
 			if ((distX < 0.005 && distY < 0.005 ) || (distX < 0 || distY < 0)) {
 				worldPos = targetWP;
 				position = new Vector2(worldPos.X * tileSize, worldPos.Y * tileSize);
@@ -123,10 +124,10 @@ namespace Topdown {
 		/// Renders all debug info relating an entity
 		/// </summary>
 		/// <param name="tileSize"></param>
-		public void DrawEntityDebugText(int tileSize) {
-			Raylib.DrawText($"position: ({position.X}, {position.Y})", 5, 40, 30, Color.BLACK);
-			Raylib.DrawText($"worldPos: ({worldPos.X}, {worldPos.Y})", 5, 75, 30, Color.BLACK);
-			Raylib.DrawText($"targetWP: ({targetWP.X}, {targetWP.Y})", 5, 110, 30, Color.BLACK);
+		public void DrawEntityDebugText(int tileSize, Vector2 pos) {
+			Raylib.DrawText($"position: ({position.X}, {position.Y})", (int)pos.X, (int)pos.Y, 30, Color.BLACK);
+			Raylib.DrawText($"worldPos: ({worldPos.X}, {worldPos.Y})", (int)pos.X, (int)pos.Y + 35, 30, Color.BLACK);
+			Raylib.DrawText($"targetWP: ({targetWP.X}, {targetWP.Y})", (int)pos.X, (int)pos.Y + 70, 30, Color.BLACK);
 
 			int x = (int)(targetWP.X - worldPos.Y);
 			int signX = Convert.ToInt32(x > 0) - Convert.ToInt32(x < 0);		// remember false = 0, true = 1
@@ -136,8 +137,8 @@ namespace Topdown {
 			float distX = (targetWP.X * tileSize - position.X) * signX;
 			float distY = (targetWP.Y * tileSize - position.Y) * signY;
 
-			Raylib.DrawText($"distance: {distX}, {distY}", 5, 140, 30, Color.BLACK);
-			Raylib.DrawText($"isMoving: {isMoving}", 5, 175, 30, Color.BLACK);
+			Raylib.DrawText($"distance: {distX}, {distY}", (int)pos.X, (int)pos.Y + 105, 30, Color.BLACK);
+			Raylib.DrawText($"isMoving: {isMoving}", (int)pos.X, (int)pos.Y + 140, 30, Color.BLACK);
 		}
 	}
 }
