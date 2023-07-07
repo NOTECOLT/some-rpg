@@ -10,25 +10,33 @@ namespace Topdown {
     /// A sprite not only features the texture, but also other information pertaining to it
     /// </summary>
     class Sprite {
+		// FIELDS
+		//------------------------------------------------------------------------------------------
+        private Texture2D _texture;
+        private Vector2 _size;     // Height and Width of the texture
+        private Vector2 _origin;
+        private float _scale;
+        private float _rotation; 
+
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
+		public Vector2 Size { get { return _size; } set { _size = value; } }
+		public float Scale { get { return _scale; } set { _scale = value; } }
 
-        public Texture2D texture;
-        public Vector2 size;     // Height and Width of the texture
-        public Vector2 origin;
-        public float scale;
-        public float rotation; 
+        public Sprite(string path, Vector2 origin, Vector2 size, float scale, float rotation) {
+			_texture = Raylib.LoadTexture(path);
+			_size = size;
+			_origin = origin;
+			_scale = scale;
+			_rotation = rotation;
+        }
 
-		public Sprite() {
-			
-		}
-
-        public Sprite(string path, Vector2 origin, Vector2 size, float scale) {
-			texture = Raylib.LoadTexture(path);
-			this.size = size;
-			this.origin = origin;
-			this.scale = scale;
-			rotation = 0;
+        public Sprite(Texture2D texture, Vector2 origin, Vector2 size, float scale, float rotation) {
+			_texture = texture;
+			_size = size;
+			_origin = origin;
+			_scale = scale;
+			_rotation = rotation;
         }
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
@@ -39,10 +47,10 @@ namespace Topdown {
 		/// <param name="position"></param>
 		/// <param name="offset"></param>
 		public void RenderSprite(Vector2 position, Vector2 offset) {
-			Rectangle spriteSrc = new Rectangle(origin.X, origin.Y, size.X, size.Y);
-			Rectangle spriteDst = new Rectangle(position.X, position.Y, size.X * scale, size.Y * scale);
+			Rectangle spriteSrc = new Rectangle(_origin.X, _origin.Y, _size.X, _size.Y);
+			Rectangle spriteDst = new Rectangle(position.X, position.Y, _size.X * _scale, _size.Y * _scale);
 
-			Raylib.DrawTexturePro(texture, spriteSrc, spriteDst, offset, rotation, Color.WHITE);
+			Raylib.DrawTexturePro(_texture, spriteSrc, spriteDst, offset, _rotation, Color.WHITE);
 		}
     }
 }

@@ -7,12 +7,15 @@ using Raylib_cs;
 
 namespace Topdown {
     class Tilemap {
-		// PROPERTIES
+		// FIELDS
 		//------------------------------------------------------------------------------------------
-        public Texture2D tilemapTexture;
-        public Vector2 size;
-        public Vector2 tileSize;
-        public Vector2[] tilePositions;
+        private Texture2D _tilemapTexture;
+        private Vector2 _size;
+        private Vector2 _tileSize;
+        private Vector2[] _tilePositions;
+
+		// PROPERTIES
+		//------------------------------------------------------------------------------------------      
 
         public Tilemap(string path, float tileWidth, float tileHeight) {
             Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
@@ -21,13 +24,13 @@ namespace Topdown {
                 return;
             }
 
-            tilemapTexture = Raylib.LoadTexture(path);
-            tileSize = new Vector2(tileWidth, tileHeight);
-            size = new Vector2(tilemapTexture.width, tilemapTexture.height);
+            _tilemapTexture = Raylib.LoadTexture(path);
+            _tileSize = new Vector2(tileWidth, tileHeight);
+            _size = new Vector2(_tilemapTexture.width, _tilemapTexture.height);
 
 			// Loads in all tilemap textures right when the tilemap is constructed
-            int tileCapacity = (int)(size.X / tileSize.X) * (int)(size.Y / tileSize.Y);			
-            tilePositions = new Vector2[tileCapacity];
+            int tileCapacity = (int)(_size.X / _tileSize.X) * (int)(_size.Y / _tileSize.Y);			
+            _tilePositions = new Vector2[tileCapacity];
 			LoadTilePositions();
         }
 
@@ -41,9 +44,9 @@ namespace Topdown {
 		/// </summary>
         private void LoadTilePositions() {
             int n = 0;
-            for (int i = 0; i < (size.Y / tileSize.Y); i++) {
-                for (int j = 0; j < (size.X / tileSize.X); j++) {
-                    tilePositions[n] = new Vector2(j * tileSize.X, i * tileSize.Y);
+            for (int i = 0; i < (_size.Y / _tileSize.Y); i++) {
+                for (int j = 0; j < (_size.X / _tileSize.X); j++) {
+                    _tilePositions[n] = new Vector2(j * _tileSize.X, i * _tileSize.Y);
                     n++;
 				}
             }
@@ -56,18 +59,12 @@ namespace Topdown {
 		/// <param name="id"></param>
 		/// <returns></returns>
         public Sprite ReturnTileSprite(int id) {
-            if (id >= tilePositions.Length || id < 0) {
+            if (id >= _tilePositions.Length || id < 0) {
                 Console.WriteLine($"[TILEMAP] [WARNING] INVALID TILE ID OF {id}");
                 return null;
             }
 
-            Sprite spr = new Sprite() {
-                texture = tilemapTexture,
-				origin = tilePositions[id],
-				size = tileSize,
-				scale = 2.0f,
-				rotation = 0
-            };
+            Sprite spr = new Sprite(_tilemapTexture, _tilePositions[id], _tileSize, 2.0f, 0);
             return spr;
         }
     }

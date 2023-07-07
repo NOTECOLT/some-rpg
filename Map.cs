@@ -12,20 +12,24 @@ namespace Topdown {
 		//------------------------------------------------------------------------------------------
 		static public List<Map> mapList = new List<Map>();
 
-		// PROPERTIES
+		// FIELDS
 		//------------------------------------------------------------------------------------------
+        private string _name = "";
+		private string _tilemapPath = "";
+		private Tilemap _tilemap;
+		private Vector2 _size;
+		private int[,] _data;
 
-        public string name = "";
-		public string tilemapPath = "";
-		public Tilemap tilemap;
-		public Vector2 size;
-		public int[,] data;
+		// Properties
+		//------------------------------------------------------------------------------------------
+		public Tilemap Tilemap { get { return _tilemap; } }
+		public Vector2 Size { get { return _size; } }
 
 		public Map(string name, string path, Vector2 size) {
-			this.name = name;
-			tilemapPath = path;
-			tilemap = new Tilemap(path, 16, 16);
-			this.size = size;
+			_name = name;
+			_tilemapPath = path;
+			_tilemap = new Tilemap(path, 16, 16);
+			_size = size;
 		}
 
 		// STATIC FUNCTIONS
@@ -45,15 +49,15 @@ namespace Topdown {
 				"WARNING: FILEIO: File name provided is not valid"
 				Everything still works fine tho (like it still deserializes)
 			*/
-			Console.WriteLine($"{JsonConvert.SerializeObject(mapJSON)}");
+			// Console.WriteLine($"{JsonConvert.SerializeObject(mapJSON)}");
 
 			if (mapJSON == null) {
 				Console.WriteLine($"[MAP LOADER] [WARNING] Path {path} contains invalid map json");
 				return null;
 			}
 
-			Map map = new Map(mapJSON.name, mapJSON.tilemapPath, mapJSON.size) {
-				data = mapJSON.data,
+			Map map = new Map(mapJSON.Name, mapJSON.TilemapPath, mapJSON.Size) {
+				_data = mapJSON.Data,
 			};
 			return map;
 		}
@@ -61,10 +65,10 @@ namespace Topdown {
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
 		public void RenderMap() {
-			for (int i = 0; i < data.GetLength(0); i++) {
-				for (int j = 0; j < data.GetLength(1); j++) {
-					if (data[i,j] != - 1)
-						tilemap.ReturnTileSprite(data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0));
+			for (int i = 0; i < _data.GetLength(0); i++) {
+				for (int j = 0; j < _data.GetLength(1); j++) {
+					if (_data[i,j] != -1)
+						_tilemap.ReturnTileSprite(_data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0));
 				}
 			}
 		}
@@ -75,18 +79,18 @@ namespace Topdown {
 	/// <para>Needed so there aren't any errors when deserializing json files using JSONConvert </para>
 	/// </summary>
 	class MapJSON {
-		// PROPERTIES
+		// PUBLIC PROPERTIES
 		//------------------------------------------------------------------------------------------
-		public string name = "";
-		public string tilemapPath = "";
-		public Vector2 size;
-		public int[,] data;
+		public string Name = "";
+		public string TilemapPath = "";
+		public Vector2 Size;
+		public int[,] Data;
 
 		public MapJSON(string name, string path, Vector2 size) {
-			this.name = name;
-			tilemapPath = path;
-			this.size = size;
-            data = new int[(int)size.X, (int)size.Y];
+			Name = name;
+			TilemapPath = path;
+			Size = size;
+            Data = new int[(int)size.X, (int)size.Y];
 		}
 	}
 }
