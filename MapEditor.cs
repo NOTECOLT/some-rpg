@@ -6,15 +6,19 @@ using System.Numerics;
 using Raylib_cs;
 
 namespace Topdown {
+	/// <summary>
+	/// Houses all logic and code for the MapEditor in Debug Mode
+	/// </summary>
     class MapEditor {
 		// CONSTANTS
 		//------------------------------------------------------------------------------------------
-		private const float PANEL_WIDTH = Globals.SCREEN_WIDTH * 0.25f;
+		private const float SIDEBAR_WIDTH = Globals.SCREEN_WIDTH * 0.25f;
 
 		// FIELDS
 		//------------------------------------------------------------------------------------------
         private Tilemap _loadedTilemap = null;
 		private Map _loadedMap = null;
+		private int _selectedSprite = -1;
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------	
@@ -22,7 +26,6 @@ namespace Topdown {
 
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
-
 		/// <summary>
 		/// Main Map Editor Loop
 		/// </summary>
@@ -30,24 +33,32 @@ namespace Topdown {
 		/// <param name="camera"></param>
 		/// <param name="loadedMap"></param>
 		/// <param name="frameCounter"></param>
-        public void MapEditorLoop(Entity player, Camera2D camera, int frameCounter) {
+        public void MapEditorLoop(ref Camera2D camera) {
+			camera.target = new Vector2(_loadedMap.Size.X * Globals.TILE_SIZE / 2, _loadedMap.Size.Y * Globals.TILE_SIZE / 2);
+			camera.offset = new Vector2((Globals.SCREEN_WIDTH - SIDEBAR_WIDTH) / 2, Globals.SCREEN_HEIGHT / 2);
+
 			// 1 - INPUT
 			//--------------------------------------------------
-			
-			// 2 - PHYSICS
-			//--------------------------------------------------
+			if (Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT)) {
+				Vector2 mousePosition = Raylib.GetMousePosition();
+				if (mousePosition.X >= Globals.SCREEN_WIDTH - SIDEBAR_WIDTH) {
+					SelectTileInput(mousePosition);
+				}
+			}
 
-			// 3 - RENDERING
+			if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
+				Vector2 mousePosition = Raylib.GetScreenToWorld2D(Raylib.GetMousePosition(), camera);
+				// Console.WriteLine($"({mousePosition.X}, {mousePosition.Y})");
+				if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < _loadedMap.Size.X * Globals.TILE_SIZE && mousePosition.Y < _loadedMap.Size.Y * Globals.TILE_SIZE) { 
+					PlaceTileInput(mousePosition);
+				}
+			}
+
+			// 2 - RENDERING
 			//--------------------------------------------------
 
 			Raylib.BeginDrawing();
 				Raylib.ClearBackground(Color.RAYWHITE);
-
-				if (_loadedMap != null)
-					camera.target = new Vector2((_loadedMap.Size.X * Globals.TILE_SIZE) / 2, (_loadedMap.Size.Y * Globals.TILE_SIZE) / 2);
-				else
-					camera.target = new Vector2(player.Position.X + (Globals.TILE_SIZE / 2), player.Position.Y + (Globals.TILE_SIZE / 2));
-				camera.offset = new Vector2(Globals.SCREEN_WIDTH * 0.375f, Globals.SCREEN_HEIGHT / 2);
 				
 				Raylib.BeginMode2D(camera);
 					
@@ -58,19 +69,53 @@ namespace Topdown {
 
 				Raylib.EndMode2D();
 
-				Raylib.DrawRectangle((int)(Globals.SCREEN_WIDTH - PANEL_WIDTH), 0, (int)PANEL_WIDTH, Globals.SCREEN_HEIGHT, Color.LIGHTGRAY);
+				RenderSidebar();
 
-				for (int i = 0; i < _loadedTilemap.Tiles; i++) {
-					float posX = (Globals.SCREEN_WIDTH - PANEL_WIDTH) + (Globals.TILE_SIZE * i);
-					float posY = Globals.TILE_SIZE * i;
-					_loadedTilemap.ReturnTileSprite(i).RenderSprite(new Vector2(posX, posY), new Vector2(0, 0), 2.0f);
-				}
-
-				Raylib.DrawText($"f: {frameCounter}; fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.BLACK);
+				Raylib.DrawText($"fps: {Raylib.GetFPS()}", 5, 5, 30, Color.BLACK);
 				Raylib.DrawText($"Mode: DEBUG MAP EDIT", 5, 40, 30, Color.BLACK);
 
 			Raylib.EndDrawing();
         }
+
+		private void RenderSidebar() {
+			Raylib.DrawRectangle((int)(Globals.SCREEN_WIDTH - SIDEBAR_WIDTH), 0, (int)SIDEBAR_WIDTH, Globals.SCREEN_HEIGHT, Color.LIGHTGRAY);
+
+			// TILEMAP TILES
+			//--------------------------------------------------
+			for (int i = 0; i < _loadedTilemap.Tiles; i++) { 
+				float tilePosX = (Globals.SCREEN_WIDTH - SIDEBAR_WIDTH) + (i % MathF.Floor(SIDEBAR_WIDTH / Globals.TILE_SIZE) * Globals.TILE_SIZE);
+				float tilePosY = MathF.Floor(i / MathF.Floor(SIDEBAR_WIDTH / Globals.TILE_SIZE)) * Globals.TILE_SIZE;
+				Color color = (i == _selectedSprite) ? Color.RED : Color.WHITE;
+				_loadedTilemap.ReturnTileSprite(i).RenderSprite(new Vector2(tilePosX, tilePosY), new Vector2(0, 0), 2.0f, color);
+			}
+		}
+
+		/// <summary>
+		/// Receives input on a mouse click and interpolates it to output a selected tile
+		/// <para>Onle requires reverse computation of what it took to render the tiles in the sidebar</para>
+		/// </summary>
+		/// <param name="mousePosition"></param>
+		private void SelectTileInput(Vector2 mousePosition) {	
+			float hitX = MathF.Floor(((mousePosition.X - (Globals.SCREEN_WIDTH - SIDEBAR_WIDTH)) / Globals.TILE_SIZE) % MathF.Floor(SIDEBAR_WIDTH / Globals.TILE_SIZE));
+			float hitY = MathF.Floor(mousePosition.Y / Globals.TILE_SIZE);
+			//Console.WriteLine($"{hitX}, {hitY}");
+			
+			int i = (int)MathF.Floor(hitX + (MathF.Floor(SIDEBAR_WIDTH / Globals.TILE_SIZE) * hitY));
+
+			if ( i >= 0 && i < _loadedTilemap.Tiles) {
+				//Console.WriteLine($"Tile Selected: {i}");
+				_selectedSprite = i;
+			} else {
+				_selectedSprite = -1;
+			}
+		}
+
+		private void PlaceTileInput(Vector2 mousePosition) {
+			int hitX = (int)MathF.Floor(mousePosition.X / Globals.TILE_SIZE);
+			int hitY = (int)MathF.Floor(mousePosition.Y / Globals.TILE_SIZE);
+			// Console.WriteLine($"MousePos: ({mousePosition.X}, {mousePosition.Y}); Tile: ({hitX},{hitY})");
+			LoadedMap.SetTile(hitX, hitY, _selectedSprite);
+		}
 
 		public void LoadMap(Map map) {
 			_loadedMap = map;

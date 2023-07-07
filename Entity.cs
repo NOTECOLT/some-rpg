@@ -120,7 +120,7 @@ namespace Topdown {
 				Vector2 sprPos = new Vector2(_position.X + tileSize/2, _position.Y + tileSize);
 				Vector2 offset = new Vector2(_sprite.Size.X /** scale / 2*/, _sprite.Size.Y * scale);
 
-				_sprite.RenderSprite(sprPos, offset, scale);
+				_sprite.RenderSprite(sprPos, offset, scale, Color.WHITE);
 			} else {
 				Raylib.DrawRectangle((int)_position.X, (int)_position.Y, tileSize, tileSize, Color.MAGENTA);
 			}

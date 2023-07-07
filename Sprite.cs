@@ -43,11 +43,11 @@ namespace Topdown {
 		/// </summary>
 		/// <param name="position"></param>
 		/// <param name="offset"></param>
-		public void RenderSprite(Vector2 position, Vector2 offset, float scale) {
+		public void RenderSprite(Vector2 position, Vector2 offset, float scale, Color color) {
 			Rectangle spriteSrc = new Rectangle(_origin.X, _origin.Y, _size.X, _size.Y);
 			Rectangle spriteDst = new Rectangle(position.X, position.Y, _size.X * scale, _size.Y * scale);
 
-			Raylib.DrawTexturePro(_texture, spriteSrc, spriteDst, offset, _rotation, Color.WHITE);
+			Raylib.DrawTexturePro(_texture, spriteSrc, spriteDst, offset, _rotation, color);
 		}
     }
 }

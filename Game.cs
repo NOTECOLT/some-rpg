@@ -37,7 +37,7 @@ namespace Topdown {
 		public const int SCREEN_WIDTH = 960;
 		public const int SCREEN_HEIGHT = 720;
 
-		public const float WORLD_SCALE = 2.0f;
+		public const float WORLD_SCALE = 2.0f;	// This value scales sprites to fit with the tilesize
 	}
 
     static class Game {
@@ -55,14 +55,14 @@ namespace Topdown {
             // WORLD INITIALIZATION
             //--------------------------------------------------
             Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
-            Map map = Map.LoadMap("resources\\maps\\testmap.json");
+            Map map = Map.LoadMap("resources/maps/testmap.json");
             
             // PLAYER INITIALIZATION
             //--------------------------------------------------
             
             Entity player = new Entity(new Vector2(0, 0), EntityType.PLAYER, Globals.TILE_SIZE);
             player.SetMovementSpeeds(Globals.PLAYER_WALKSPEED, Globals.PLAYER_RUNSPEED);
-            player.SetSprite("resources\\sprites\\characters\\player.png");
+            player.SetSprite("resources/sprites/characters/player.png");
 
             // CAMERA INITIALIZATION
             //--------------------------------------------------
@@ -91,7 +91,7 @@ namespace Topdown {
 						OverworldGameLoop(ref player, ref camera, ref map, frameCounter);
 						break;
 					case DebugState.DEBUG_MAPEDIT:
-						mapEditor.MapEditorLoop(player, camera, frameCounter);
+						mapEditor.MapEditorLoop(ref camera);
 						break;
 					default:
 						break;
@@ -130,6 +130,12 @@ namespace Topdown {
 				else
 					player.TargetWP = new Vector2(player.WorldPos.X, player.WorldPos.Y);
 			}
+
+			// if (Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT)) {
+			// 	Vector2 mousePosition = Raylib.GetScreenToWorld2D(Raylib.GetMousePosition(), camera);
+			// 	Console.WriteLine($"({mousePosition.X}, {mousePosition.Y})");
+			// }
+
 			
 			// 2 - PHYSICS
 			//--------------------------------------------------
@@ -141,7 +147,6 @@ namespace Topdown {
 
 			Raylib.BeginDrawing();
 				Raylib.ClearBackground(Color.RAYWHITE);
-
 				camera.target = new Vector2(player.Position.X + (Globals.TILE_SIZE / 2), player.Position.Y + (Globals.TILE_SIZE / 2));
 				camera.offset = new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2);
 				Raylib.BeginMode2D(camera);

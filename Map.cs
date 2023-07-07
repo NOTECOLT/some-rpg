@@ -68,9 +68,15 @@ namespace Topdown {
 			for (int i = 0; i < _data.GetLength(0); i++) {
 				for (int j = 0; j < _data.GetLength(1); j++) {
 					if (_data[i,j] != -1)
-						_tilemap.ReturnTileSprite(_data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0), scale);
+						_tilemap.ReturnTileSprite(_data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0), scale, Color.WHITE);
 				}
 			}
+		}
+
+		public void SetTile(int x, int y, int id) {
+			if (x >= 0 && y >= 0 && x < _size.X && y < _size.Y)
+				if (id >= -1 && id < _tilemap.Tiles)
+					_data[x,y] = id;
 		}
     }
 
