@@ -64,11 +64,11 @@ namespace Topdown {
 
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
-		public void RenderMap() {
+		public void RenderMap(float scale) {
 			for (int i = 0; i < _data.GetLength(0); i++) {
 				for (int j = 0; j < _data.GetLength(1); j++) {
 					if (_data[i,j] != -1)
-						_tilemap.ReturnTileSprite(_data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0));
+						_tilemap.ReturnTileSprite(_data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0), scale);
 				}
 			}
 		}

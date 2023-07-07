@@ -68,7 +68,7 @@ namespace Topdown {
 		/// </summary>
 		/// <param name="path"></param>
 		public void SetSprite(string path) {
-			_sprite = new Sprite(path, new Vector2(18, 22), new Vector2(13, 21), 2.0f, 0);
+			_sprite = new Sprite(path, new Vector2(18, 22), new Vector2(13, 21), 0);
 		}
 
 		/// <summary>
@@ -115,12 +115,12 @@ namespace Topdown {
 		/// Renders the entity at the proper world position
 		/// </summary>
 		/// <param name="tileSize"></param>
-		public void RenderEntity(int tileSize) {
+		public void RenderEntity(int tileSize, float scale) {
 			if (_sprite != null) {
 				Vector2 sprPos = new Vector2(_position.X + tileSize/2, _position.Y + tileSize);
-				Vector2 offset = new Vector2(_sprite.Size.X * _sprite.Scale / 2, _sprite.Size.Y * _sprite.Scale);
-			
-				_sprite.RenderSprite(sprPos, offset);
+				Vector2 offset = new Vector2(_sprite.Size.X /** scale / 2*/, _sprite.Size.Y * scale);
+
+				_sprite.RenderSprite(sprPos, offset, scale);
 			} else {
 				Raylib.DrawRectangle((int)_position.X, (int)_position.Y, tileSize, tileSize, Color.MAGENTA);
 			}

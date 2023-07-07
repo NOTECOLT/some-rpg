@@ -13,9 +13,11 @@ namespace Topdown {
         private Vector2 _size;
         private Vector2 _tileSize;
         private Vector2[] _tilePositions;
+        private int _tiles;
 
 		// PROPERTIES
-		//------------------------------------------------------------------------------------------      
+		//------------------------------------------------------------------------------------------
+        public int Tiles { get { return _tiles; } }
 
         public Tilemap(string path, float tileWidth, float tileHeight) {
             Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
@@ -29,8 +31,8 @@ namespace Topdown {
             _size = new Vector2(_tilemapTexture.width, _tilemapTexture.height);
 
 			// Loads in all tilemap textures right when the tilemap is constructed
-            int tileCapacity = (int)(_size.X / _tileSize.X) * (int)(_size.Y / _tileSize.Y);			
-            _tilePositions = new Vector2[tileCapacity];
+            _tiles = (int)(_size.X / _tileSize.X) * (int)(_size.Y / _tileSize.Y);			
+            _tilePositions = new Vector2[_tiles];
 			LoadTilePositions();
         }
 
@@ -64,7 +66,7 @@ namespace Topdown {
                 return null;
             }
 
-            Sprite spr = new Sprite(_tilemapTexture, _tilePositions[id], _tileSize, 2.0f, 0);
+            Sprite spr = new Sprite(_tilemapTexture, _tilePositions[id], _tileSize, 0);
             return spr;
         }
     }

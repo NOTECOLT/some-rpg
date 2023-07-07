@@ -36,6 +36,8 @@ namespace Topdown {
 
 		public const int SCREEN_WIDTH = 960;
 		public const int SCREEN_HEIGHT = 720;
+
+		public const float WORLD_SCALE = 2.0f;
 	}
 
     static class Game {
@@ -145,8 +147,8 @@ namespace Topdown {
 				Raylib.BeginMode2D(camera);
 
 					if (map != null)
-						map.RenderMap();
-					player.RenderEntity(Globals.TILE_SIZE);
+						map.RenderMap(Globals.WORLD_SCALE);
+					player.RenderEntity(Globals.TILE_SIZE, Globals.WORLD_SCALE);
 
 				Raylib.EndMode2D();
 
