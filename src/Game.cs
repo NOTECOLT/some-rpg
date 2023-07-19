@@ -2,6 +2,9 @@
 /*
 TODO:
 - simple tilemap editor? Or something
+-	multiple tilemaps per map
+- 	layers
+
 -   Need something to handle collisions and stuff
 	- Scene Loader
 	

@@ -13,13 +13,15 @@ namespace Topdown {
         private Vector2 _size;
         private Vector2 _tileSize;
         private Vector2[] _tilePositions;
-        private int _tiles;
+        private int _tileCapacity;
+        private int _firstID;
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-        public int Tiles { get { return _tiles; } }
+        public int TileCapacity { get { return _tileCapacity; } }
+        public int FirstID { get { return _firstID; } }
 
-        public Tilemap(string path, float tileWidth, float tileHeight) {
+        public Tilemap(string path, float tileWidth, float tileHeight, int firstID = 0) {
             Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
             if (!File.Exists(path)) {
                 Console.WriteLine($"[TILEMAP LOADER] [ERROR] {path} does not exist in directory!\nCannot load texture.");
@@ -29,16 +31,43 @@ namespace Topdown {
             _tilemapTexture = Raylib.LoadTexture(path);
             _tileSize = new Vector2(tileWidth, tileHeight);
             _size = new Vector2(_tilemapTexture.width, _tilemapTexture.height);
+            _firstID = firstID;
 
 			// Loads in all tilemap textures right when the tilemap is constructed
-            _tiles = (int)(_size.X / _tileSize.X) * (int)(_size.Y / _tileSize.Y);			
-            _tilePositions = new Vector2[_tiles];
+            _tileCapacity = (int)(_size.X / _tileSize.X) * (int)(_size.Y / _tileSize.Y);			
+            _tilePositions = new Vector2[_tileCapacity];
 			LoadTilePositions();
+        }
+
+		// STATIC FUNCTIONS
+		//------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Returns a sprite given an id and an array of tilemaps
+        /// </summary>
+        /// <param name="tilemaps"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static Sprite ReturnTileSpriteFromArray(Tilemap[] tilemaps, int id) {
+            foreach (Tilemap tm in tilemaps) {
+                if (id >= tm._firstID && id < tm._firstID + tm._tileCapacity) {
+                    Sprite spr = new Sprite(tm._tilemapTexture, tm._tilePositions[id - tm._firstID], tm._tileSize, 0);
+                    return spr;
+                }
+            }
+
+            return null;
+        }
+
+        public static int GetTotalTileArrayCapacity(Tilemap[] tilemaps) {
+            int sum = 0;
+            foreach (Tilemap tm in tilemaps) {
+                sum += tm._tileCapacity;
+            }
+            return sum;
         }
 
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
-
 		/// <summary>
 		/// <para>Each tile must be referenced by it's id, then retrieved from the original texture file</para>
 		/// By loading in the tile positions from the start, we don't need to calculate the position
@@ -61,7 +90,7 @@ namespace Topdown {
 		/// <param name="id"></param>
 		/// <returns></returns>
         public Sprite ReturnTileSprite(int id) {
-            if (id >= _tilePositions.Length || id < 0) {
+            if (id >= _tilePositions.Length || id < _firstID) {
                 Console.WriteLine($"[TILEMAP] [WARNING] INVALID TILE ID OF {id}");
                 return null;
             }

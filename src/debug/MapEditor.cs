@@ -16,7 +16,7 @@ namespace Topdown {
 
 		// FIELDS
 		//------------------------------------------------------------------------------------------
-        private Tilemap _loadedTilemap = null;
+        private Tilemap[] _loadedTilemaps = null;
 		private Map _loadedMap = null;
 		private int _selectedSprite = -1;
 
@@ -82,11 +82,11 @@ namespace Topdown {
 
 			// TILEMAP TILES
 			//--------------------------------------------------
-			for (int i = 0; i < _loadedTilemap.Tiles; i++) { 
+			for (int i = 0; i < Tilemap.GetTotalTileArrayCapacity(_loadedTilemaps); i++) { 
 				float tilePosX = (Globals.SCREEN_WIDTH - SIDEBAR_WIDTH) + (i % MathF.Floor(SIDEBAR_WIDTH / Globals.TILE_SIZE) * Globals.TILE_SIZE);
 				float tilePosY = MathF.Floor(i / MathF.Floor(SIDEBAR_WIDTH / Globals.TILE_SIZE)) * Globals.TILE_SIZE;
 				Color color = (i == _selectedSprite) ? Color.RED : Color.WHITE;
-				_loadedTilemap.ReturnTileSprite(i).RenderSprite(new Vector2(tilePosX, tilePosY), new Vector2(0, 0), 2.0f, color);
+				Tilemap.ReturnTileSpriteFromArray(_loadedTilemaps, i).RenderSprite(new Vector2(tilePosX, tilePosY), new Vector2(0, 0), 2.0f, color);
 			}
 		}
 
@@ -102,7 +102,7 @@ namespace Topdown {
 			
 			int i = (int)MathF.Floor(hitX + (MathF.Floor(SIDEBAR_WIDTH / Globals.TILE_SIZE) * hitY));
 
-			if ( i >= 0 && i < _loadedTilemap.Tiles) {
+			if ( i >= 0 && i < Tilemap.GetTotalTileArrayCapacity(_loadedTilemaps)) {
 				//Console.WriteLine($"Tile Selected: {i}");
 				_selectedSprite = i;
 			} else {
@@ -119,7 +119,7 @@ namespace Topdown {
 
 		public void LoadMap(Map map) {
 			_loadedMap = map;
-			_loadedTilemap = map.Tilemap;
+			_loadedTilemaps = map.Tilemaps;
 		}
 	}
 }

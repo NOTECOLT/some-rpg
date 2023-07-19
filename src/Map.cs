@@ -18,14 +18,14 @@ namespace Topdown {
 		// FIELDS
 		//------------------------------------------------------------------------------------------
         private string _name = "";
-		private string _tilemapPath = "";
-		private Tilemap _tilemap;
+		private string[] _tilemapPaths;
+		private Tilemap[] _tilemaps;
 		private Vector2 _size;
 		private int[,] _data;
 
 		// Properties
 		//------------------------------------------------------------------------------------------
-		public Tilemap Tilemap { get { return _tilemap; } }
+		public Tilemap[] Tilemaps { get { return _tilemaps; } }
 		public Vector2 Size { get { return _size; } }
 
 		/// <summary>
@@ -34,10 +34,17 @@ namespace Topdown {
 		/// <param name="name"></param>
 		/// <param name="path">Specifies the path to the tilemap</param>
 		/// <param name="size"></param>
-		public Map(string name, string path, Vector2 size) {
+		public Map(string name, string[] paths, Vector2 size) {
 			_name = name;
-			_tilemapPath = path;
-			_tilemap = new Tilemap(path, 16, 16);
+			_tilemapPaths = paths;
+			_tilemaps = new Tilemap[paths.Length];
+
+			int runningID = 0;
+			for (int i = 0; i < paths.Length; i++) {
+				runningID += (i > 0) ? _tilemaps[i - 1].TileCapacity : 0;
+				_tilemaps[i] = new Tilemap(paths[i], 16, 16, runningID);
+			}
+				
 			_size = size;
 		}
 
@@ -65,7 +72,7 @@ namespace Topdown {
 				return null;
 			}
 
-			Map map = new Map(mapJSON.Name, mapJSON.TilemapPath, mapJSON.Size);
+			Map map = new Map(mapJSON.Name, mapJSON.TilemapPaths, mapJSON.Size);
 
 			// In case that the size of the map in the JSON is not equal to the actual dimensions of the data,
 			//		We just create a map with the specified size, and then copy the data from the JSON to the map obj
@@ -90,7 +97,7 @@ namespace Topdown {
 		/// <param name="map"></param>
 		/// <param name="path"></param>
 		public static void SaveMap(Map map, string path) {
-			MapJSON json = new MapJSON(map._name, map._tilemapPath, map._size);
+			MapJSON json = new MapJSON(map._name, map._tilemapPaths, map._size);
 			json.Data = map._data;
 
 			string text = JsonConvert.SerializeObject(json);
@@ -109,14 +116,15 @@ namespace Topdown {
 			for (int i = 0; i < _data.GetLength(0); i++) {
 				for (int j = 0; j < _data.GetLength(1); j++) {
 					if (_data[i,j] != -1)
-						_tilemap.ReturnTileSprite(_data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0), scale, Color.WHITE);
+						Tilemap.ReturnTileSpriteFromArray(_tilemaps, _data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0), scale, Color.WHITE);
+						//_tilemaps.ReturnTileSprite();
 				}
 			}
 		}
 
 		public void SetTile(int x, int y, int id) {
 			if (x >= 0 && y >= 0 && x < _size.X && y < _size.Y)
-				if (id >= -1 && id < _tilemap.Tiles)
+				if (id >= -1 && id < Tilemap.GetTotalTileArrayCapacity(_tilemaps))
 					_data[x,y] = id;
 		}
     }
@@ -129,7 +137,7 @@ namespace Topdown {
 		// PUBLIC PROPERTIES
 		//------------------------------------------------------------------------------------------
 		public string Name = "";
-		public string TilemapPath = "";
+		public string[] TilemapPaths;
 		public Vector2 Size;
 		public int[,] Data;
 
@@ -137,11 +145,11 @@ namespace Topdown {
 		/// Initializes a new mapJSON object
 		/// </summary>
 		/// <param name="name"></param>
-		/// <param name="path">Specifies the path to the tilemap</param>
+		/// <param name="paths">Specifies the path to the tilemap</param>
 		/// <param name="size"></param>
-		public MapJSON(string name, string path, Vector2 size) {
+		public MapJSON(string name, string[] paths, Vector2 size) {
 			Name = name;
-			TilemapPath = path;
+			TilemapPaths = paths;
 			Size = size;
             Data = new int[(int)size.X, (int)size.Y];
 		}
