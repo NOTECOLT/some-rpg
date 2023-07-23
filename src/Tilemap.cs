@@ -58,6 +58,11 @@ namespace Topdown {
             return null;
         }
 
+        /// <summary>
+        /// Returns the total capacity across all tilemaps in a given array
+        /// </summary>
+        /// <param name="tilemaps"></param>
+        /// <returns></returns>
         public static int GetTotalTileArrayCapacity(Tilemap[] tilemaps) {
             int sum = 0;
             foreach (Tilemap tm in tilemaps) {

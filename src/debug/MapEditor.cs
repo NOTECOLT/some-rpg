@@ -114,7 +114,7 @@ namespace Topdown {
 			int hitX = (int)MathF.Floor(mousePosition.X / Globals.TILE_SIZE);
 			int hitY = (int)MathF.Floor(mousePosition.Y / Globals.TILE_SIZE);
 			// Console.WriteLine($"MousePos: ({mousePosition.X}, {mousePosition.Y}); Tile: ({hitX},{hitY})");
-			LoadedMap.SetTile(hitX, hitY, _selectedSprite);
+			LoadedMap.SetTile(hitX, hitY, 0, _selectedSprite);
 		}
 
 		public void LoadMap(Map map) {

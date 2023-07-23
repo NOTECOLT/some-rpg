@@ -20,13 +20,13 @@ namespace Topdown {
         private string _name = "";
 		private string[] _tilemapPaths;
 		private Tilemap[] _tilemaps;
-		private Vector2 _size;
-		private int[,] _data;
+		private Vector3 _size;
+		private int[,,] _data;
 
 		// Properties
 		//------------------------------------------------------------------------------------------
 		public Tilemap[] Tilemaps { get { return _tilemaps; } }
-		public Vector2 Size { get { return _size; } }
+		public Vector3 Size { get { return _size; } }
 
 		/// <summary>
 		/// Creates a new map object
@@ -34,7 +34,7 @@ namespace Topdown {
 		/// <param name="name"></param>
 		/// <param name="path">Specifies the path to the tilemap</param>
 		/// <param name="size"></param>
-		public Map(string name, string[] paths, Vector2 size) {
+		public Map(string name, string[] paths, Vector3 size) {
 			_name = name;
 			_tilemapPaths = paths;
 			_tilemaps = new Tilemap[paths.Length];
@@ -76,13 +76,16 @@ namespace Topdown {
 
 			// In case that the size of the map in the JSON is not equal to the actual dimensions of the data,
 			//		We just create a map with the specified size, and then copy the data from the JSON to the map obj
-			map._data = new int[(int)mapJSON.Size.X,(int)mapJSON.Size.Y];
+			map._data = new int[(int)mapJSON.Size.X, (int)mapJSON.Size.Y, (int)mapJSON.Size.Z];
 			for (int i = 0; i < map._size.X; i++) {
 				for (int j = 0; j < map._size.Y; j++) {
-					if (i < mapJSON.Data.GetLength(0) && j < mapJSON.Data.GetLength(1))
-						map._data[i,j] = mapJSON.Data[i,j];
-					else
-						map._data[i,j] = -1;
+					for (int k = 0; k < map._size.Z; k++) {
+						if (i < mapJSON.data.GetLength(0) && j < mapJSON.data.GetLength(1) && k < mapJSON.data.GetLength(2))
+							map._data[i,j,k] = mapJSON.data[i,j,k];
+						else
+							map._data[i,j,k] = -1;
+					}
+
 				}
 			}
 
@@ -98,7 +101,7 @@ namespace Topdown {
 		/// <param name="path"></param>
 		public static void SaveMap(Map map, string path) {
 			MapJSON json = new MapJSON(map._name, map._tilemapPaths, map._size);
-			json.Data = map._data;
+			json.data = map._data;
 
 			string text = JsonConvert.SerializeObject(json);
 			
@@ -115,17 +118,19 @@ namespace Topdown {
 		public void RenderMap(float scale) {
 			for (int i = 0; i < _data.GetLength(0); i++) {
 				for (int j = 0; j < _data.GetLength(1); j++) {
-					if (_data[i,j] != -1)
-						Tilemap.ReturnTileSpriteFromArray(_tilemaps, _data[i,j]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0), scale, Color.WHITE);
-						//_tilemaps.ReturnTileSprite();
+					for (int k = 0; k < _data.GetLength(2); k++) {
+						if (_data[i,j,k] != -1)
+							Tilemap.ReturnTileSpriteFromArray(_tilemaps, _data[i,j,k]).RenderSprite(new Vector2(i * 32, j * 32), new Vector2(0, 0), scale, Color.WHITE);
+							//_tilemaps.ReturnTileSprite();
+					}
 				}
 			}
 		}
 
-		public void SetTile(int x, int y, int id) {
+		public void SetTile(int x, int y, int z, int id) {
 			if (x >= 0 && y >= 0 && x < _size.X && y < _size.Y)
 				if (id >= -1 && id < Tilemap.GetTotalTileArrayCapacity(_tilemaps))
-					_data[x,y] = id;
+					_data[x,y,z] = id;
 		}
     }
 
@@ -138,8 +143,8 @@ namespace Topdown {
 		//------------------------------------------------------------------------------------------
 		public string Name = "";
 		public string[] TilemapPaths;
-		public Vector2 Size;
-		public int[,] Data;
+		public Vector3 Size;
+		public int[,,] data; // TODO: ADJUST EVERYTHING TO FIT THIS
 
 		/// <summary>
 		/// Initializes a new mapJSON object
@@ -147,11 +152,15 @@ namespace Topdown {
 		/// <param name="name"></param>
 		/// <param name="paths">Specifies the path to the tilemap</param>
 		/// <param name="size"></param>
-		public MapJSON(string name, string[] paths, Vector2 size) {
+		public MapJSON(string name, string[] paths, Vector3 size) {
 			Name = name;
 			TilemapPaths = paths;
 			Size = size;
-            Data = new int[(int)size.X, (int)size.Y];
+            data = new int[(int)size.X, (int)size.Y, (int)size.Z];
+			// NOTE: Array representation is very different from the representation seen ingame
+			//	First axis denotes Y-axis
+			// 	Second axis denotes X-axis
+			// 	Third axis denotes layer
 		}
 	}
 }
