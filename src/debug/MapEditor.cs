@@ -3,6 +3,7 @@
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
+using GUI;
 using Raylib_cs;
 
 namespace Topdown {
@@ -23,6 +24,8 @@ namespace Topdown {
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------	
 		public Map LoadedMap { get { return _loadedMap; } }
+
+		public Button TestButton;
 
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
@@ -54,6 +57,10 @@ namespace Topdown {
 				}
 			}
 
+			if (TestButton.IsClicked(Raylib.GetMousePosition())) {
+				Console.WriteLine("Button Pressed!");
+			}
+
 			// 2 - RENDERING
 			//--------------------------------------------------
 
@@ -70,6 +77,7 @@ namespace Topdown {
 				Raylib.EndMode2D();
 
 				RenderSidebar();
+				TestButton.Render();
 
 				Raylib.DrawText($"fps: {Raylib.GetFPS()}", 5, 5, 30, Color.BLACK);
 				Raylib.DrawText($"Mode: DEBUG MAP EDIT", 5, 40, 30, Color.BLACK);
@@ -98,7 +106,6 @@ namespace Topdown {
 		private void SelectTileInput(Vector2 mousePosition) {	
 			float hitX = MathF.Floor(((mousePosition.X - (Globals.SCREEN_WIDTH - SIDEBAR_WIDTH)) / Globals.TILE_SIZE) % MathF.Floor(SIDEBAR_WIDTH / Globals.TILE_SIZE));
 			float hitY = MathF.Floor(mousePosition.Y / Globals.TILE_SIZE);
-			//Console.WriteLine($"{hitX}, {hitY}");
 			
 			int i = (int)MathF.Floor(hitX + (MathF.Floor(SIDEBAR_WIDTH / Globals.TILE_SIZE) * hitY));
 

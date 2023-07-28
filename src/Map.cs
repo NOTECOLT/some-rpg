@@ -23,7 +23,7 @@ namespace Topdown {
 		private Vector3 _size;
 		private int[,,] _data;
 
-		// Properties
+		// PROPERTIES
 		//------------------------------------------------------------------------------------------
 		public Tilemap[] Tilemaps { get { return _tilemaps; } }
 		public Vector3 Size { get { return _size; } }
@@ -77,17 +77,7 @@ namespace Topdown {
 			// In case that the size of the map in the JSON is not equal to the actual dimensions of the data,
 			//		We just create a map with the specified size, and then copy the data from the JSON to the map obj
 			map._data = new int[(int)mapJSON.Size.X, (int)mapJSON.Size.Y, (int)mapJSON.Size.Z];
-			for (int i = 0; i < map._size.X; i++) {
-				for (int j = 0; j < map._size.Y; j++) {
-					for (int k = 0; k < map._size.Z; k++) {
-						if (i < mapJSON.data.GetLength(0) && j < mapJSON.data.GetLength(1) && k < mapJSON.data.GetLength(2))
-							map._data[i,j,k] = mapJSON.data[i,j,k];
-						else
-							map._data[i,j,k] = -1;
-					}
-
-				}
-			}
+			CopyMapData(mapJSON.data, new Vector3 (mapJSON.data.GetLength(0), mapJSON.data.GetLength(1), mapJSON.data.GetLength(2)), ref map._data, map._size);
 
 			Console.WriteLine($"[MAP LOADER] Map succesfully loaded from file at {path}.");
 
@@ -111,6 +101,26 @@ namespace Topdown {
 				Console.WriteLine("$[MAP SAVER] File at {path} does exist! Will overwrite.");
 
 			File.WriteAllText(path, text);
+		}
+
+		/// <summary>
+		/// Copies Map Data from one array to another, and fills any remaining overflow data with empty cells (-1)
+		/// </summary>
+		/// <param name="srcData"></param>
+		/// <param name="srcSize"></param>
+		/// <param name="dstData"></param>
+		/// <param name="dstSize"></param>
+		public static void CopyMapData(int[,,] srcData, Vector3 srcSize, ref int[,,] dstData, Vector3 dstSize) {
+			for (int i = 0; i < dstSize.X; i++) {
+				for (int j = 0; j < dstSize.Y; j++) {
+					for (int k = 0; k < dstSize.Z; k++) {
+						if (i < srcSize.X && j < srcSize.Y && k < srcSize.Z)
+							dstData[i,j,k] = srcData[i,j,k];
+						else
+							dstData[i,j,k] = -1;
+					}
+				}
+			}
 		}
 
 		// FUNCTIONS

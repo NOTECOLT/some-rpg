@@ -1,5 +1,7 @@
 //------------------------------------------------------------------------------------------
-/* TILEMAP
+/*  TILEMAP
+    TODO: CheckCollisionPointRect() might be a good function to use here?
+    TODO: Also, try to revise this with integration with built up GUI Classes?
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;

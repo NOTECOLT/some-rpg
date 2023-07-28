@@ -4,8 +4,11 @@ TODO:
 //	simple tilemap editor? Or something
 //	multiple tilemaps per map
 /// TODO: layers
+/// TODO: UI Elements (mainly buttons)
+/// TODO: Scene Loader
+	-- Why? Need to be initialize UI elements in a scene before its main render loop
+	-- Otherwise we would be constantly re-initializing UI elements with every frame
 /	Need something to handle collisions and stuff
-	Scene Loader
 	
 - Spritesheet animations
 
@@ -19,6 +22,7 @@ WELCOME TO C#! lol
 using System.Collections;
 using System.Numerics;
 using Raylib_cs;
+using GUI;
 
 namespace Topdown {
     enum DebugState {
@@ -77,6 +81,7 @@ namespace Topdown {
             //--------------------------------------------------
 			MapEditor mapEditor = new MapEditor();
 			mapEditor.LoadMap(map);
+			mapEditor.TestButton = new Button(new(100, 100), new(100, 50), "Test", Color.PINK);
 
             while (!Raylib.WindowShouldClose()) {
 				if (devMode) {
