@@ -9,7 +9,7 @@ namespace Topdown {
 	/// <summary>
 	/// Defines the type of entity
 	/// </summary>
-	enum EntityType {
+	public enum EntityType {
 		PLAYER,
 		ENEMY	
 	}
@@ -17,7 +17,7 @@ namespace Topdown {
 	/// <summary>
 	/// An Entity is any moving/interactable object in the overworld
 	/// </summary>
-	class Entity {
+	public class Entity {
 		// FIELDS
 		//------------------------------------------------------------------------------------------
 		private EntityType _type;

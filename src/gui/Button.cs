@@ -5,7 +5,7 @@
 using System.Numerics;
 using Raylib_cs;
 
-namespace GUI {
+namespace Topdown.GUI {
     public class Button {
 		// FIELDS
 		//------------------------------------------------------------------------------------------

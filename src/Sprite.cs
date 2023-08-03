@@ -10,7 +10,7 @@ namespace Topdown {
     /// <para>A sprite not only features the texture, but also other information pertaining to it.</para>
 	/// <para>Sprite class should take care of some of the math required to render sprites on to the screen.</para>
     /// </summary>
-    class Sprite {
+    public class Sprite {
 		// FIELDS
 		//------------------------------------------------------------------------------------------
         private Texture2D _texture;

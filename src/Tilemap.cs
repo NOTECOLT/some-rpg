@@ -8,7 +8,7 @@ using System.Numerics;
 using Raylib_cs;
 
 namespace Topdown {
-    class Tilemap {
+    public class Tilemap {
 		// FIELDS
 		//------------------------------------------------------------------------------------------
         private Texture2D _tilemapTexture;

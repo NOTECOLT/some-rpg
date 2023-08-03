@@ -3,14 +3,15 @@
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
-using GUI;
 using Raylib_cs;
+using Topdown.GUI;
+using Topdown.Engine;
 
 namespace Topdown {
 	/// <summary>
 	/// Houses all logic and code for the MapEditor in Debug Mode
 	/// </summary>
-    class MapEditor {
+    class MapEditorScene : IScene {
 		// CONSTANTS
 		//------------------------------------------------------------------------------------------
 		private const float SIDEBAR_WIDTH = Globals.SCREEN_WIDTH * 0.25f;
@@ -20,25 +21,33 @@ namespace Topdown {
         private Tilemap[] _loadedTilemaps = null;
 		private Map _loadedMap = null;
 		private int _selectedSprite = -1;
+		private Camera2D _camera;
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------	
 		public Map LoadedMap { get { return _loadedMap; } }
 
-		public Button TestButton;
 
-		// FUNCTIONS
-		//------------------------------------------------------------------------------------------
-		/// <summary>
-		/// Main Map Editor Loop
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="camera"></param>
-		/// <param name="loadedMap"></param>
-		/// <param name="frameCounter"></param>
-        public void MapEditorLoop(ref Camera2D camera) {
-			camera.target = new Vector2(_loadedMap.Size.X * Globals.TILE_SIZE / 2, _loadedMap.Size.Y * Globals.TILE_SIZE / 2);
-			camera.offset = new Vector2((Globals.SCREEN_WIDTH - SIDEBAR_WIDTH) / 2, Globals.SCREEN_HEIGHT / 2);
+		// UI ELEMENTS
+        //------------------------------------------------------------------------------------------
+		private Button _testButton;
+
+		public MapEditorScene() {
+			_camera = new Camera2D() {
+				rotation = 0,
+				zoom = 1
+			};
+		}
+
+        // SCENE FUNCTIONS
+        //------------------------------------------------------------------------------------------
+        public void Load() {
+			_testButton = new Button(new(100, 100), new(100, 50), "Test", Color.PINK);
+        }
+
+        public void Update() {
+			_camera.target = new Vector2(_loadedMap.Size.X * Globals.TILE_SIZE / 2, _loadedMap.Size.Y * Globals.TILE_SIZE / 2);
+			_camera.offset = new Vector2((Globals.SCREEN_WIDTH - SIDEBAR_WIDTH) / 2, Globals.SCREEN_HEIGHT / 2);
 
 			// 1 - INPUT
 			//--------------------------------------------------
@@ -50,14 +59,14 @@ namespace Topdown {
 			}
 
 			if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
-				Vector2 mousePosition = Raylib.GetScreenToWorld2D(Raylib.GetMousePosition(), camera);
+				Vector2 mousePosition = Raylib.GetScreenToWorld2D(Raylib.GetMousePosition(), _camera);
 				// Console.WriteLine($"({mousePosition.X}, {mousePosition.Y})");
 				if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < _loadedMap.Size.X * Globals.TILE_SIZE && mousePosition.Y < _loadedMap.Size.Y * Globals.TILE_SIZE) { 
 					PlaceTileInput(mousePosition);
 				}
 			}
 
-			if (TestButton.IsClicked(Raylib.GetMousePosition())) {
+			if (_testButton.IsClicked(Raylib.GetMousePosition())) {
 				Console.WriteLine("Button Pressed!");
 			}
 
@@ -67,7 +76,7 @@ namespace Topdown {
 			Raylib.BeginDrawing();
 				Raylib.ClearBackground(Color.RAYWHITE);
 				
-				Raylib.BeginMode2D(camera);
+				Raylib.BeginMode2D(_camera);
 					
 					if (_loadedMap != null) {
 						_loadedMap.RenderMap(2.0f);
@@ -77,7 +86,7 @@ namespace Topdown {
 				Raylib.EndMode2D();
 
 				RenderSidebar();
-				TestButton.Render();
+				_testButton.Render();
 
 				Raylib.DrawText($"fps: {Raylib.GetFPS()}", 5, 5, 30, Color.BLACK);
 				Raylib.DrawText($"Mode: DEBUG MAP EDIT", 5, 40, 30, Color.BLACK);
@@ -85,7 +94,11 @@ namespace Topdown {
 			Raylib.EndDrawing();
         }
 
-		private void RenderSidebar() {
+        public void Unload() {
+        }
+        // FUNCTIONS
+        //------------------------------------------------------------------------------------------
+        private void RenderSidebar() {
 			Raylib.DrawRectangle((int)(Globals.SCREEN_WIDTH - SIDEBAR_WIDTH), 0, (int)SIDEBAR_WIDTH, Globals.SCREEN_HEIGHT, Color.LIGHTGRAY);
 
 			// TILEMAP TILES

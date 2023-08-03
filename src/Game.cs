@@ -22,7 +22,8 @@ WELCOME TO C#! lol
 using System.Collections;
 using System.Numerics;
 using Raylib_cs;
-using GUI;
+using Topdown.GUI;
+using Topdown.Engine;
 
 namespace Topdown {
     enum DebugState {
@@ -56,7 +57,6 @@ namespace Topdown {
             //--------------------------------------------------
             Raylib.InitWindow(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT, "test");
             Raylib.SetTargetFPS(60);
-            int frameCounter = 0;
 
             // WORLD INITIALIZATION
             //--------------------------------------------------
@@ -70,24 +70,20 @@ namespace Topdown {
             player.SetMovementSpeeds(Globals.PLAYER_WALKSPEED, Globals.PLAYER_RUNSPEED);
             player.SetSprite("resources/sprites/characters/player.png");
 
-            // CAMERA INITIALIZATION
+            // SCENE INITIALIZATION
             //--------------------------------------------------
-            Camera2D camera = new Camera2D();
-            
-            camera.rotation = 0;
-            camera.zoom = 1;
+			
+			SceneLoader sceneLoader = new SceneLoader();
 
-            // MAP EDITOR
-            //--------------------------------------------------
-			MapEditor mapEditor = new MapEditor();
-			mapEditor.LoadMap(map);
-			mapEditor.TestButton = new Button(new(100, 100), new(100, 50), "Test", Color.PINK);
+			OverworldScene overworldScene = new OverworldScene(player, map);
+			MapEditorScene mapEditorScene = new MapEditorScene();
+			mapEditorScene.LoadMap(map);
 
             while (!Raylib.WindowShouldClose()) {
 				if (devMode) {
 					if (Raylib.IsKeyReleased(KeyboardKey.KEY_F3)) {
 						if (debugState == DebugState.DEBUG_MAPEDIT) {
-							map = mapEditor.LoadedMap;
+							map = mapEditorScene.LoadedMap;
 							Map.SaveMap(map, "resources/maps/testmap.json");
 						}
 							
@@ -95,83 +91,22 @@ namespace Topdown {
 						Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {debugState}");
 					}
 				}
+
+				sceneLoader.UpdateCurrentScene();
 				
 				switch (debugState) {
 					case DebugState.GAME:
-						OverworldGameLoop(ref player, ref camera, ref map, frameCounter);
+						sceneLoader.LoadScene(overworldScene);
 						break;
 					case DebugState.DEBUG_MAPEDIT:
-						mapEditor.MapEditorLoop(ref camera);
+						sceneLoader.LoadScene(mapEditorScene);
 						break;
 					default:
 						break;
 				}
-
-				frameCounter++;
             }
 
             Raylib.CloseWindow();
         }
-
-		// GAME STATE LOOPS
-		//--------------------------------------------------
-		/// <summary>
-		/// Main Overworld Game Loop.
-		/// <para>In this state, the player can see their avatar walking around. </para>
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="camera"></param>
-		/// <param name="map"></param>
-		/// <param name="frameCounter"></param>
-		public static void OverworldGameLoop(ref Entity player, ref Camera2D camera, ref Map map, int frameCounter) {
-			// 1 - INPUT
-			//--------------------------------------------------
-			if (!player.IsMoving) {
-				player.IsRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
-
-				if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
-					player.TargetWP = new Vector2(player.WorldPos.X + 1, player.WorldPos.Y);
-				else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
-					player.TargetWP = new Vector2(player.WorldPos.X - 1, player.WorldPos.Y);
-				else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
-					player.TargetWP = new Vector2(player.WorldPos.X, player.WorldPos.Y + 1);
-				else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
-					player.TargetWP = new Vector2(player.WorldPos.X, player.WorldPos.Y - 1);
-				else
-					player.TargetWP = new Vector2(player.WorldPos.X, player.WorldPos.Y);
-			}
-
-			// if (Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT)) {
-			// 	Vector2 mousePosition = Raylib.GetScreenToWorld2D(Raylib.GetMousePosition(), camera);
-			// 	Console.WriteLine($"({mousePosition.X}, {mousePosition.Y})");
-			// }
-
-			
-			// 2 - PHYSICS
-			//--------------------------------------------------
-
-			player.UpdateEntityVectors(Globals.TILE_SIZE);
-
-			// 3 - RENDERING
-			//--------------------------------------------------
-
-			Raylib.BeginDrawing();
-				Raylib.ClearBackground(Color.RAYWHITE);
-				camera.target = new Vector2(player.Position.X + (Globals.TILE_SIZE / 2), player.Position.Y + (Globals.TILE_SIZE / 2));
-				camera.offset = new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2);
-				Raylib.BeginMode2D(camera);
-
-					if (map != null)
-						map.RenderMap(Globals.WORLD_SCALE);
-					player.RenderEntity(Globals.TILE_SIZE, Globals.WORLD_SCALE);
-
-				Raylib.EndMode2D();
-
-				Raylib.DrawText($"f: {frameCounter}; fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.BLACK);
-				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.BLACK);
-				player.DrawEntityDebugText(Globals.TILE_SIZE, new Vector2(5, 75));
-
-			Raylib.EndDrawing();
-		}
 	}
 }

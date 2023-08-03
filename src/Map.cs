@@ -10,7 +10,7 @@ namespace Topdown {
 	/// <summary>
 	/// Map Object. Does not serialize into json object.
 	/// </summary>
-    class Map {
+    public class Map {
 		// STATIC VARIABLES
 		//------------------------------------------------------------------------------------------
 		static public List<Map> mapList = new List<Map>();
