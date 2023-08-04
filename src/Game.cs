@@ -82,11 +82,6 @@ namespace Topdown {
             while (!Raylib.WindowShouldClose()) {
 				if (devMode) {
 					if (Raylib.IsKeyReleased(KeyboardKey.KEY_F3)) {
-						if (debugState == DebugState.DEBUG_MAPEDIT) {
-							map = mapEditorScene.LoadedMap;
-							Map.SaveMap(map, "resources/maps/testmap.json");
-						}
-							
 						debugState = (DebugState)(((int)debugState + 1) % Enum.GetNames(typeof(DebugState)).Length);
 						Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {debugState}");
 					}

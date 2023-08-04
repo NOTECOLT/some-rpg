@@ -98,7 +98,7 @@ namespace Topdown {
 			if (!File.Exists(path))
 				Console.WriteLine($"[MAP SAVER] File at {path} does not exist! Will create new file.");
 			else
-				Console.WriteLine("$[MAP SAVER] File at {path} does exist! Will overwrite.");
+				Console.WriteLine($"[MAP SAVER] File at {path} does exist! Will overwrite.");
 
 			File.WriteAllText(path, text);
 		}

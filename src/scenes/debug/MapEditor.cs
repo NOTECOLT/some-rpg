@@ -30,7 +30,8 @@ namespace Topdown {
 
 		// UI ELEMENTS
         //------------------------------------------------------------------------------------------
-		private Button _testButton;
+		private Button ui_saveButton;
+		private Button ui_loadButton;
 
 		public MapEditorScene() {
 			_camera = new Camera2D() {
@@ -42,8 +43,9 @@ namespace Topdown {
         // SCENE FUNCTIONS
         //------------------------------------------------------------------------------------------
         public void Load() {
-			_testButton = new Button(new(100, 100), new(100, 50), "Test", Color.PINK);
-        }
+			ui_saveButton = new Button(new Vector2(5, 35), new Vector2(150, 40), "Save Map", new FontProperties(30, Color.BLACK), Color.LIGHTGRAY);
+			ui_loadButton = new Button(new Vector2(160, 35), new Vector2(150, 40), "Load Map", new FontProperties(30, Color.BLACK), Color.LIGHTGRAY);
+		}
 
         public void Update() {
 			_camera.target = new Vector2(_loadedMap.Size.X * Globals.TILE_SIZE / 2, _loadedMap.Size.Y * Globals.TILE_SIZE / 2);
@@ -60,14 +62,13 @@ namespace Topdown {
 
 			if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
 				Vector2 mousePosition = Raylib.GetScreenToWorld2D(Raylib.GetMousePosition(), _camera);
-				// Console.WriteLine($"({mousePosition.X}, {mousePosition.Y})");
 				if (mousePosition.X > 0 && mousePosition.Y > 0 && mousePosition.X < _loadedMap.Size.X * Globals.TILE_SIZE && mousePosition.Y < _loadedMap.Size.Y * Globals.TILE_SIZE) { 
 					PlaceTileInput(mousePosition);
 				}
 			}
 
-			if (_testButton.IsClicked(Raylib.GetMousePosition())) {
-				Console.WriteLine("Button Pressed!");
+			if (ui_saveButton.IsClicked(Raylib.GetMousePosition())) {
+				Map.SaveMap(_loadedMap, "resources/maps/testmap.json");
 			}
 
 			// 2 - RENDERING
@@ -86,10 +87,10 @@ namespace Topdown {
 				Raylib.EndMode2D();
 
 				RenderSidebar();
-				_testButton.Render();
+				ui_saveButton.Render();
+				ui_loadButton.Render();
 
-				Raylib.DrawText($"fps: {Raylib.GetFPS()}", 5, 5, 30, Color.BLACK);
-				Raylib.DrawText($"Mode: DEBUG MAP EDIT", 5, 40, 30, Color.BLACK);
+				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Mode: DEBUG MAP EDIT", 5, 5, 24, Color.BLACK);
 
 			Raylib.EndDrawing();
         }
