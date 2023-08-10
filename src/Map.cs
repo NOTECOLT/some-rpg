@@ -55,7 +55,12 @@ namespace Topdown {
 		/// </summary>
 		/// <param name="path"></param>
 		/// <returns></returns>
-		public static Map LoadMap(string path) {
+		public static Map CreateMapFromPath(string path) {
+			if (!File.Exists(path)) {
+				Console.WriteLine($"[MAP LOADER] File {path} not found!");
+				return null;
+			}
+
 			string fileText = File.ReadAllText(path);
 			Console.WriteLine($"[MAP LOADER] JSON File Read: \n{fileText}");
 

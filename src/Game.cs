@@ -4,8 +4,9 @@ TODO:
 //	simple tilemap editor? Or something
 //	multiple tilemaps per map
 /// TODO: layers
-/// TODO: UI Elements (mainly buttons)
-/// TODO: Scene Loader
+/// TODO: TILED MAP EDITOR
+// TODO: UI Elements (mainly buttons)
+// TODO: Scene Loader
 	-- Why? Need to be initialize UI elements in a scene before its main render loop
 	-- Otherwise we would be constantly re-initializing UI elements with every frame
 /	Need something to handle collisions and stuff
@@ -61,7 +62,7 @@ namespace Topdown {
             // WORLD INITIALIZATION
             //--------------------------------------------------
             Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
-            Map map = Map.LoadMap("resources/maps/testmap.json");
+            Map map = Map.CreateMapFromPath("resources/maps/testmap.json");
             
             // PLAYER INITIALIZATION
             //--------------------------------------------------
@@ -79,26 +80,28 @@ namespace Topdown {
 			MapEditorScene mapEditorScene = new MapEditorScene();
 			mapEditorScene.LoadMap(map);
 
+			sceneLoader.LoadScene(overworldScene);
+
             while (!Raylib.WindowShouldClose()) {
 				if (devMode) {
 					if (Raylib.IsKeyReleased(KeyboardKey.KEY_F3)) {
 						debugState = (DebugState)(((int)debugState + 1) % Enum.GetNames(typeof(DebugState)).Length);
 						Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {debugState}");
+
+						switch (debugState) {
+							case DebugState.GAME:
+								sceneLoader.LoadScene(overworldScene);
+								break;
+							case DebugState.DEBUG_MAPEDIT:
+								sceneLoader.LoadScene(mapEditorScene);
+								break;
+							default:
+								break;
+						}
 					}
 				}
 
 				sceneLoader.UpdateCurrentScene();
-				
-				switch (debugState) {
-					case DebugState.GAME:
-						sceneLoader.LoadScene(overworldScene);
-						break;
-					case DebugState.DEBUG_MAPEDIT:
-						sceneLoader.LoadScene(mapEditorScene);
-						break;
-					default:
-						break;
-				}
             }
 
             Raylib.CloseWindow();

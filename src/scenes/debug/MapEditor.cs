@@ -30,8 +30,10 @@ namespace Topdown {
 
 		// UI ELEMENTS
         //------------------------------------------------------------------------------------------
-		private Button ui_saveButton;
-		private Button ui_loadButton;
+		private Button ui_saveMapBtn;
+		private Button ui_loadMapBtn;
+		private TextField ui_loadMapField;
+		private Button ui_newMapBtn;
 
 		public MapEditorScene() {
 			_camera = new Camera2D() {
@@ -43,8 +45,10 @@ namespace Topdown {
         // SCENE FUNCTIONS
         //------------------------------------------------------------------------------------------
         public void Load() {
-			ui_saveButton = new Button(new Vector2(5, 35), new Vector2(150, 40), "Save Map", new FontProperties(30, Color.BLACK), Color.LIGHTGRAY);
-			ui_loadButton = new Button(new Vector2(160, 35), new Vector2(150, 40), "Load Map", new FontProperties(30, Color.BLACK), Color.LIGHTGRAY);
+			ui_saveMapBtn = new Button(new Vector2(5, 35), new Vector2(150, 40), "Save Map", new FontProperties(30, Color.BLACK), Color.LIGHTGRAY);
+			ui_loadMapBtn = new Button(new Vector2(160, 35), new Vector2(150, 40), "Load Map", new FontProperties(30, Color.BLACK), Color.LIGHTGRAY);
+			ui_loadMapField = new TextField(new Vector2(5, 80), new Vector2(300, 40), 200, new FontProperties(30, Color.BLACK), Color.LIGHTGRAY);
+			ui_newMapBtn = new Button(new Vector2(215, 35), new Vector2(150, 40), "New Map", new FontProperties(30, Color.BLACK), Color.LIGHTGRAY);
 		}
 
         public void Update() {
@@ -67,11 +71,39 @@ namespace Topdown {
 				}
 			}
 
-			if (ui_saveButton.IsClicked(Raylib.GetMousePosition())) {
+			// 2 - UI
+			//--------------------------------------------------			
+
+			if (ui_saveMapBtn.IsClicked(Raylib.GetMousePosition())) {
 				Map.SaveMap(_loadedMap, "resources/maps/testmap.json");
 			}
 
-			// 2 - RENDERING
+			if (ui_loadMapBtn.IsClicked(Raylib.GetMousePosition())) {
+				ui_loadMapField.Enabled = true;
+				ui_loadMapField.IsAcceptingText = true;
+			}
+
+			if (ui_loadMapField.Enabled) {
+				if (Raylib.IsKeyReleased(KeyboardKey.KEY_ESCAPE)) {
+					ui_loadMapField.Enabled = false;
+					ui_loadMapField.IsAcceptingText = false;
+					ui_loadMapField.ResetTextField();
+				}
+
+				if (Raylib.IsKeyReleased(KeyboardKey.KEY_ENTER)) {
+					string filepath = ui_loadMapField.Text;
+					Map map = Map.CreateMapFromPath(filepath);
+					LoadMap(map);
+
+					ui_loadMapField.Enabled = false;
+					ui_loadMapField.IsAcceptingText = false;
+					ui_loadMapField.ResetTextField();
+				}
+			}
+			
+			ui_loadMapField.UpdateTextField();
+
+			// 3 - RENDERING
 			//--------------------------------------------------
 
 			Raylib.BeginDrawing();
@@ -87,8 +119,9 @@ namespace Topdown {
 				Raylib.EndMode2D();
 
 				RenderSidebar();
-				ui_saveButton.Render();
-				ui_loadButton.Render();
+				ui_saveMapBtn.Render();
+				ui_loadMapBtn.Render();
+				ui_loadMapField.Render();
 
 				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Mode: DEBUG MAP EDIT", 5, 5, 24, Color.BLACK);
 
@@ -139,6 +172,7 @@ namespace Topdown {
 		}
 
 		public void LoadMap(Map map) {
+			if (map == null) return;
 			_loadedMap = map;
 			_loadedTilemaps = map.Tilemaps;
 		}
