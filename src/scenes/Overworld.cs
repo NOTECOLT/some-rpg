@@ -1,6 +1,7 @@
 using System.Numerics;
 using Raylib_cs;
 using Topdown.Engine;
+using TiledCS;
 
 namespace Topdown {
 	/// <summary>
@@ -9,25 +10,33 @@ namespace Topdown {
     public class OverworldScene : IScene {
         private Entity _player;
         private Camera2D _camera;
-        private Map _map;
+        private TiledMap _map;
+		private Dictionary<int, TiledTileset> _tilesets;
+		private Dictionary<TiledTileset, Texture2D> _tilesetTextures;
 
 		/// <summary>
 		/// Overworld Scene must be initialized with a map and player data
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="map"></param>
-        public OverworldScene(Entity player, Map map) {
+        public OverworldScene(Entity player, TiledMap map, Dictionary<int, TiledTileset> tilesets) {
             _player = player;
             _camera = new Camera2D() {
 				rotation = 0,
 				zoom = 1
 			};
             _map = map;
+			_tilesets = tilesets;
         }
 
 		// SCENE FUNCTIONS
         //------------------------------------------------------------------------------------------
         public void Load() {
+			_tilesetTextures = new Dictionary<TiledTileset, Texture2D>();
+			
+			foreach (KeyValuePair<int, TiledTileset> entry in _tilesets) {
+				_tilesetTextures[entry.Value] = Raylib.LoadTexture("resources/tilesets/" + entry.Value.Image.source);
+			}
         }
 
         public void Update() {
@@ -63,7 +72,8 @@ namespace Topdown {
 				Raylib.BeginMode2D(_camera);
 
 					if (_map != null)
-						_map.RenderMap(Globals.WORLD_SCALE);
+						Map.RenderMap(_map, _tilesets, _tilesetTextures, Globals.WORLD_SCALE);
+						// _map.RenderMap(Globals.WORLD_SCALE);
 					_player.RenderEntity(Globals.TILE_SIZE, Globals.WORLD_SCALE);
 
 				Raylib.EndMode2D();

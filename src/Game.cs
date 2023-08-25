@@ -3,8 +3,7 @@
 TODO:
 //	simple tilemap editor? Or something
 //	multiple tilemaps per map
-/// TODO: layers
-/// TODO: TILED MAP EDITOR
+/// TODO: TILED MAP EDITOR USING TILEDCS
 // TODO: UI Elements (mainly buttons)
 // TODO: Scene Loader
 	-- Why? Need to be initialize UI elements in a scene before its main render loop
@@ -23,8 +22,8 @@ WELCOME TO C#! lol
 using System.Collections;
 using System.Numerics;
 using Raylib_cs;
-using Topdown.GUI;
 using Topdown.Engine;
+using TiledCS;
 
 namespace Topdown {
     enum DebugState {
@@ -62,7 +61,8 @@ namespace Topdown {
             // WORLD INITIALIZATION
             //--------------------------------------------------
             Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
-            Map map = Map.CreateMapFromPath("resources/maps/testmap.json");
+			TiledMap map = new TiledMap("resources/maps/testmap.tmx");
+			Dictionary<int, TiledTileset> tilesets = map.GetTiledTilesets("resources/maps/");
             
             // PLAYER INITIALIZATION
             //--------------------------------------------------
@@ -75,10 +75,7 @@ namespace Topdown {
             //--------------------------------------------------
 			
 			SceneLoader sceneLoader = new SceneLoader();
-
-			OverworldScene overworldScene = new OverworldScene(player, map);
-			MapEditorScene mapEditorScene = new MapEditorScene();
-			mapEditorScene.LoadMap(map);
+			OverworldScene overworldScene = new OverworldScene(player, map, tilesets);
 
 			sceneLoader.LoadScene(overworldScene);
 
@@ -93,7 +90,7 @@ namespace Topdown {
 								sceneLoader.LoadScene(overworldScene);
 								break;
 							case DebugState.DEBUG_MAPEDIT:
-								sceneLoader.LoadScene(mapEditorScene);
+								// sceneLoader.LoadScene(mapEditorScene);
 								break;
 							default:
 								break;
