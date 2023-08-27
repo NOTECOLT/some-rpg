@@ -1,20 +1,19 @@
 ﻿//------------------------------------------------------------------------------------------
 /*
-TODO:
-//	simple tilemap editor? Or something
-//	multiple tilemaps per map
-/// TODO: TILED MAP EDITOR USING TILEDCS
-// TODO: UI Elements (mainly buttons)
-// TODO: Scene Loader
-	-- Why? Need to be initialize UI elements in a scene before its main render loop
-	-- Otherwise we would be constantly re-initializing UI elements with every frame
-/	Need something to handle collisions and stuff
-	
-- Spritesheet animations
+TODO: (Engine Stuff)
+/	Render Queue (do i need one yet? Not really i guess; but soon i'll have to)
+/ 	Entity List
+/	NPCs / Interactable Objects
+/	Dialogue Box & Text Printing
+/	Debug Info Display
 
-- Entity List
-- Render Queue
-- Debug Info Display
+TODOL (Mechanic / Game Design Stuff)
+/	Game Loop
+/	Combat System
+/	Menu System
+
+TODO: (Low ish priority; aesthetic, skin, etc.)
+/ 	Spritesheet animations
 
 WELCOME TO C#! lol
 */
@@ -23,7 +22,6 @@ using System.Collections;
 using System.Numerics;
 using Raylib_cs;
 using Topdown.Engine;
-using TiledCS;
 
 namespace Topdown {
     enum DebugState {

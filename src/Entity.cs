@@ -25,12 +25,7 @@ namespace Topdown {
 
 		private Vector2 _position;	// Refers to the position of the player with respect to the screen / global coordinate system  
     	private Vector2 _tilePos;    // Refers to the position of player relative to the world grid
-		private int _layer;
-		private Vector2 _targetTP;	// Entity's target world vector. Each entity will constantly move to this location if it is not already.
-
-
-		private bool _isMoving = false;		// 1 if the entity is moving, 0 otherwise
-		private bool _isRunning = false;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
+		private Vector2 _targetTP;	// Entity's target world vector. Each entity will constantly move to this location if it is not already.	
 		
 		private float _speed = 0;			// Speed of the entity whilst walking
 		private float _runSpeed = 0;		// Speed of the entity wihile running
@@ -40,16 +35,16 @@ namespace Topdown {
 		public Vector2 Position { get { return _position; } }
 		public Vector2 TilePos { get { return _tilePos; } }
 		public Vector2 TargetTP { get { return _targetTP; } set { _targetTP = value; } }
-		public int Layer { get { return _layer; } set { _layer = value; } }
-		public bool IsMoving { get { return _isMoving; } }
-		public bool IsRunning { get { return _isRunning; } set { _isRunning = value; } }
+		public int RenderLayer { get; }
+		public bool IsMoving { get; private set; } = false;	// 1 if the entity is moving, 0 otherwise
+		public bool IsRunning { get; set; } = false;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
 
-		public Entity(Vector2 tilePos, int layer, EntityType type, int tileSize) {
+		public Entity(Vector2 tilePos, int renderLayer, EntityType type, int tileSize) {
 			_type = type;
 
 			_tilePos = tilePos;
 			_targetTP = tilePos;
-			_layer = layer;
+			RenderLayer = renderLayer;
 			_position = new Vector2(tilePos.X * tileSize, tilePos.Y * tileSize); 
 		}
 
@@ -94,21 +89,21 @@ namespace Topdown {
 			if ((distX < 0.005 && distY < 0.005 ) || (distX < 0 || distY < 0)) {
 				_tilePos = _targetTP;
 				_position = new Vector2(_tilePos.X * tileSize, _tilePos.Y * tileSize);
-				_isMoving = false;
+				IsMoving = false;
 				return;
 			}
 
-			_isMoving = true;
+			IsMoving = true;
 
 			// If current position of the entity does not match where it needs to be, then move to those coordinates respectively
 			// There is no diagonal movement
 			if (_tilePos.X * signX < _targetTP.X * signX) {
-				if (!_isRunning)
+				if (!IsRunning)
 					_position.X += signX * _speed * Raylib.GetFrameTime();
 				else
 					_position.X += signX * _runSpeed * Raylib.GetFrameTime();
 			} else if (_tilePos.Y * signY < _targetTP.Y * signY) {
-				if (!_isRunning)
+				if (!IsRunning)
 					_position.Y += signY * _speed * Raylib.GetFrameTime();	
 				else	
 					_position.Y += signY * _runSpeed * Raylib.GetFrameTime();	
@@ -148,7 +143,7 @@ namespace Topdown {
 			float distY = (_targetTP.Y * tileSize - _position.Y) * signY;
 
 			Raylib.DrawText($"distance: {distX}, {distY}", (int)pos.X, (int)pos.Y + 105, 30, Color.BLACK);
-			Raylib.DrawText($"isMoving: {_isMoving}", (int)pos.X, (int)pos.Y + 140, 30, Color.BLACK);
+			Raylib.DrawText($"isMoving: {IsMoving}", (int)pos.X, (int)pos.Y + 140, 30, Color.BLACK);
 		}
 	}
 }

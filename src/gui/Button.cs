@@ -7,47 +7,39 @@ using Raylib_cs;
 
 namespace Topdown.GUI {
     public class Button {
-		// FIELDS
-		//------------------------------------------------------------------------------------------
-        private bool _enabled = true;
-		private Rectangle _rect;
-		private String _text;
-		private FontProperties _font;
-		private Color _bgColor;
-
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-		public bool Enabled { get { return _enabled; } set { _enabled = value; } }
-		public Rectangle Rect { get { return _rect; } set { _rect = value; } }
-		public String Text { get { return _text; } set { _text = value; } }
-		public FontProperties Font { get { return _font; } set { _font = value; } }
-		public Color BGColor { get { return _bgColor; } set { _bgColor = value; } }	
+		public bool Enabled { get; private set; } = false;
+		public Rectangle Rect { get; private set; }
+		public String Text { get; private set; }
+		public FontProperties Font { get; private set; }
+		public Color BGColor { get; private set; }	
 
 		public Button(Vector2 pos, Vector2 size, String text, FontProperties font, Color bgColor) {
-			_rect = new Rectangle(pos.X, pos.Y, size.X, size.Y);
-			_text = text;
-			_font = font;
-			_bgColor = bgColor;
+			Rect = new Rectangle(pos.X, pos.Y, size.X, size.Y);
+			Text = text;
+			Font = font;
+			BGColor = bgColor;
 		}
 
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
 		public void Render() {
-			if (!_enabled)
+			if (!Enabled)
 				return;
-			Raylib.DrawRectangle((int)_rect.x, (int)_rect.y, (int)_rect.width, (int)_rect.height, _bgColor);
+			Raylib.DrawRectangle((int)Rect.x, (int)Rect.y, (int)Rect.width, (int)Rect.height, BGColor);
 			
-			int drawY = (int)_rect.y;
-			if (_font.Size <= _rect.height)
-				drawY = (int)( _rect.y + ((_rect.height - _font.Size) / 2)); // vertical align text
+			int drawY = (int)Rect.y;
+			if (Font.Size <= Rect.height)
+				drawY = (int)( Rect.y + ((Rect.height - Font.Size) / 2)); // vertical align text
 			
-			Raylib.DrawText(_text, (int)_rect.x, drawY, _font.Size, _font.Color);
+			Raylib.DrawText(Text, (int)Rect.x, drawY, Font.Size, Font.Color);
 		}
 		
 		public bool IsClicked(Vector2 mousePos) {
-			if (!_enabled)
+			if (!Enabled)
 				return false;
-			return Raylib.CheckCollisionPointRec(mousePos, _rect) && Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
+			return Raylib.CheckCollisionPointRec(mousePos, Rect) && Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
 		}
 	}
 }

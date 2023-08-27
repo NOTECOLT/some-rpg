@@ -6,14 +6,9 @@
 
 namespace Topdown.Engine {
     public class SceneLoader {
-		// FIELDS
-		//------------------------------------------------------------------------------------------
-        private IScene _currentScene = null;
-
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-        
-		public IScene CurrentScene { get { return _currentScene; } } 
+		public IScene CurrentScene { get; private set; } 
 
 		// STATIC FUNCTIONS
 		//------------------------------------------------------------------------------------------
@@ -22,15 +17,15 @@ namespace Topdown.Engine {
         /// </summary>
         /// <param name="nextScene"></param>
         public void LoadScene(IScene nextScene) {
-			if (_currentScene != null)
-				_currentScene.Unload();
-			_currentScene = nextScene;
-			_currentScene.Load();
+			if (CurrentScene != null)
+				CurrentScene.Unload();
+            CurrentScene = nextScene;
+			CurrentScene.Load();
         }
 
         public void UpdateCurrentScene() {
-            if (_currentScene != null)
-                _currentScene.Update();
+            if (CurrentScene != null)
+                CurrentScene.Update();
         }
     }
 

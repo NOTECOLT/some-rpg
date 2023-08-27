@@ -3,11 +3,25 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "maps/testmap.tmx",
     "expandedProjectPaths": [
+        "maps",
+        "."
     ],
     "fileStates": {
+        "maps/testmap.tmx": {
+            "scale": 1.698125,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 261.7592933382407,
+                "y": 159.88222304011776
+            }
+        },
+        "tilesets/fences.tsx": {
+            "scaleInDock": 1
+        },
         "tilesets/grass.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "tilesets/objects.tsx": {
@@ -15,6 +29,7 @@
             "scaleInEditor": 1
         },
         "tilesets/plains.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 6.5598
         }
     },
@@ -23,10 +38,12 @@
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "openFiles": [
+        "maps/testmap.tmx"
     ],
     "project": "some-rpg.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "maps/testmap.tmx",
         "tilesets/plains.tsx",
         "tilesets/grass.tsx",
         "tilesets/objects.tsx"

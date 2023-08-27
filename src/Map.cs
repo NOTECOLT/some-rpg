@@ -17,18 +17,16 @@ namespace Topdown {
     public class Map {
 		// FIELDS
 		//------------------------------------------------------------------------------------------
-		private TiledMap _loadedMap;
-		private Dictionary<int, TiledTileset> _loadedTilesets;
 		private Dictionary<TiledTileset, Texture2D> _tilesetTextures;
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-		public TiledMap LoadedMap { get { return _loadedMap; } }
-		public Dictionary<int, TiledTileset> LoadedTilesets { get { return _loadedTilesets; } }
+		public TiledMap LoadedMap { get; private set; }
+		public Dictionary<int, TiledTileset> LoadedTilesets { get; private set; }
 
 		public Map(string path) {
-			_loadedMap = new TiledMap(path);
-			_loadedTilesets = _loadedMap.GetTiledTilesets("resources/maps/");
+			LoadedMap = new TiledMap(path);
+			LoadedTilesets = LoadedMap.GetTiledTilesets("resources/maps/");
 			_tilesetTextures = null;
 		}
 
@@ -38,7 +36,7 @@ namespace Topdown {
 		public void LoadTextures() {
 			_tilesetTextures = new Dictionary<TiledTileset, Texture2D>();
 			
-			foreach (KeyValuePair<int, TiledTileset> entry in _loadedTilesets) {
+			foreach (KeyValuePair<int, TiledTileset> entry in LoadedTilesets) {
 				_tilesetTextures[entry.Value] = Raylib.LoadTexture("resources/tilesets/" + entry.Value.Image.source);
 			}
 		}
@@ -51,10 +49,10 @@ namespace Topdown {
         /// <param name="tilesetTextures">Maps the tsx representation to Raylib Textures</param>
         /// <param name="scale"></param>
         public void RenderMap(float scale) {
-			if (_loadedTilesets == null) LoadTextures();
+			if (LoadedTilesets == null) LoadTextures();
 
 			// Reference: https://github.com/TheBoneJarmer/TiledCS
-            foreach (TiledLayer layer in _loadedMap.Layers) {
+            foreach (TiledLayer layer in LoadedMap.Layers) {
                 for (int y = 0; y < layer.height; y++) {
                     for (int x = 0; x < layer.width; x++) {
                         int gid = layer.data[(y * layer.width) + x];
@@ -64,8 +62,8 @@ namespace Topdown {
                         // Retrieve information from Tiled Object
                         //      first line retrieves the tileset that the gid in the map is mapped to
                         //      second line gets the source recta
-                        TiledTileset ts = _loadedTilesets[_loadedMap.GetTiledMapTileset(gid).firstgid];
-                        TiledSourceRect rect = _loadedMap.GetSourceRect(_loadedMap.GetTiledMapTileset(gid), ts, gid);
+                        TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
+                        TiledSourceRect rect = LoadedMap.GetSourceRect(LoadedMap.GetTiledMapTileset(gid), ts, gid);
 
                         // Represents the retrieved texture & rect as sprite then renders
                         Sprite spr = new Sprite(_tilesetTextures[ts], new Vector2(rect.x, rect.y), new Vector2(rect.width, rect.height), 0);
@@ -83,24 +81,24 @@ namespace Topdown {
 		/// <param name="layer"></param>
 		/// <returns>Returns true if there is a collision (i.e. tile not walkable). False otherwise.</returns>
 		public bool IsMapCollision(Vector2 pos) {
-			if (pos.X < 0 || pos.Y < 0 || pos.X >= _loadedMap.Width || pos.Y >= _loadedMap.Height)
+			if (pos.X < 0 || pos.Y < 0 || pos.X >= LoadedMap.Width || pos.Y >= LoadedMap.Height)
 				return true;
 
-            int idx = ((int)pos.Y * _loadedMap.Width) + (int)pos.X;
-            // int gid = _loadedMap.Layers[layer].data[idx];
+            int idx = ((int)pos.Y * LoadedMap.Width) + (int)pos.X;
+            // int gid = LoadedMap.Layers[layer].data[idx];
 			// if (gid == 0) return true;
 			bool walkable = true;
 
 			// Checks each layer for collision (rather than one layer)
 			// Might not be efficient if we increase the number of layers
 			//		(Will run multiple loops with each movement)
-			foreach (TiledLayer mapLayer in _loadedMap.Layers) {
+			foreach (TiledLayer mapLayer in LoadedMap.Layers) {
 				int gid = mapLayer.data[idx];
 				if (gid == 0) continue;
 
 				// Retrieves the Walkable Property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
-				TiledTileset ts = _loadedTilesets[_loadedMap.GetTiledMapTileset(gid).firstgid];
-				TiledProperty walkableProp = ts.Tiles[gid - _loadedMap.GetTiledMapTileset(gid).firstgid].properties.First(prop => prop.name == "Walkable" ); 	
+				TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
+				TiledProperty walkableProp = ts.Tiles[gid - LoadedMap.GetTiledMapTileset(gid).firstgid].properties.First(prop => prop.name == "Walkable" ); 	
 				walkable = Convert.ToBoolean(walkableProp.value);
 				if (!walkable) return true;				
 			}				

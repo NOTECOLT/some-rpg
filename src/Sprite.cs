@@ -13,24 +13,23 @@ namespace Topdown {
     public class Sprite {
 		// FIELDS
 		//------------------------------------------------------------------------------------------
-        private Texture2D _texture;
         private Vector2 _size;     // Height and Width of the texture
         private Vector2 _origin;
         private float _rotation; 
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-		public Texture2D Texture { get { return _texture; } }
+		public Texture2D Texture { get; }
 		public Vector2 Size { get { return _size; } set { _size = value; } }
         public Sprite(string path, Vector2 origin, Vector2 size, float rotation) {
-			_texture = Raylib.LoadTexture(path);
+			Texture = Raylib.LoadTexture(path);
 			_size = size;
 			_origin = origin;
 			_rotation = rotation;
         }
 
         public Sprite(Texture2D texture, Vector2 origin, Vector2 size, float rotation) {
-			_texture = texture;
+			Texture = texture;
 			_size = size;
 			_origin = origin;
 			_rotation = rotation;
@@ -47,7 +46,7 @@ namespace Topdown {
 			Rectangle spriteSrc = new Rectangle(_origin.X, _origin.Y, _size.X, _size.Y);
 			Rectangle spriteDst = new Rectangle(position.X, position.Y, _size.X * scale, _size.Y * scale);
 
-			Raylib.DrawTexturePro(_texture, spriteSrc, spriteDst, offset, _rotation, color);
+			Raylib.DrawTexturePro(Texture, spriteSrc, spriteDst, offset, _rotation, color);
 		}
     }
 }
