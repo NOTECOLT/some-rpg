@@ -24,8 +24,9 @@ namespace Topdown {
 		private Sprite _sprite;
 
 		private Vector2 _position;	// Refers to the position of the player with respect to the screen / global coordinate system  
-    	private Vector2 _worldPos;    // Refers to the position of player relative to the world grid
-		private Vector2 _targetWP;	// Entity's target world vector. Each entity will constantly move to this location if it is not already.
+    	private Vector2 _tilePos;    // Refers to the position of player relative to the world grid
+		private int _layer;
+		private Vector2 _targetTP;	// Entity's target world vector. Each entity will constantly move to this location if it is not already.
 
 
 		private bool _isMoving = false;		// 1 if the entity is moving, 0 otherwise
@@ -37,17 +38,19 @@ namespace Topdown {
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
 		public Vector2 Position { get { return _position; } }
-		public Vector2 WorldPos { get { return _worldPos; } }
-		public Vector2 TargetWP { get { return _targetWP; } set { _targetWP = value; } }
+		public Vector2 TilePos { get { return _tilePos; } }
+		public Vector2 TargetTP { get { return _targetTP; } set { _targetTP = value; } }
+		public int Layer { get { return _layer; } set { _layer = value; } }
 		public bool IsMoving { get { return _isMoving; } }
 		public bool IsRunning { get { return _isRunning; } set { _isRunning = value; } }
 
-		public Entity(Vector2 worldPos, EntityType type, int tileSize) {
+		public Entity(Vector2 tilePos, int layer, EntityType type, int tileSize) {
 			_type = type;
 
-			_worldPos = worldPos;
-			_targetWP = worldPos;
-			_position = new Vector2(worldPos.X * tileSize, worldPos.Y * tileSize); 
+			_tilePos = tilePos;
+			_targetTP = tilePos;
+			_layer = layer;
+			_position = new Vector2(tilePos.X * tileSize, tilePos.Y * tileSize); 
 		}
 
 		// FUNCTIONS
@@ -72,24 +75,25 @@ namespace Topdown {
 		}
 
 		/// <summary>
-		/// Updates Player Movement by adding speed to position vectors
+		/// Updates Player Movement by adding speed to position vectors.
+		/// This function is meant to update position vectors every frame.
 		/// </summary>
 		/// <param name="tileSize"></param>
-		public void UpdateEntityVectors(int tileSize) {
-			int x = (int)(_targetWP.X - _worldPos.X);
+		public void UpdateEntityVectors(int tileSize, Map map) {
+			int x = (int)(_targetTP.X - _tilePos.X);
 			int signX = Convert.ToInt32(x > 0) - Convert.ToInt32(x < 0);		// remember false = 0, true = 1
-			int y = (int)(_targetWP.Y - _worldPos.Y);
+			int y = (int)(_targetTP.Y - _tilePos.Y);
 			int signY = Convert.ToInt32(y > 0) - Convert.ToInt32(y < 0);
 
 			// Distance takes the signed distance from target position to position
 			//		Positive values indicate that the entity is moving towards target
-			float distX = (_targetWP.X * tileSize - _position.X) * signX;
-			float distY = (_targetWP.Y * tileSize - _position.Y) * signY;
+			float distX = (_targetTP.X * tileSize - _position.X) * signX;
+			float distY = (_targetTP.Y * tileSize - _position.Y) * signY;
 
 			// Conditions: If player moves close enough to target position or past the boundaries, snap player to grid
 			if ((distX < 0.005 && distY < 0.005 ) || (distX < 0 || distY < 0)) {
-				_worldPos = _targetWP;
-				_position = new Vector2(_worldPos.X * tileSize, _worldPos.Y * tileSize);
+				_tilePos = _targetTP;
+				_position = new Vector2(_tilePos.X * tileSize, _tilePos.Y * tileSize);
 				_isMoving = false;
 				return;
 			}
@@ -98,12 +102,12 @@ namespace Topdown {
 
 			// If current position of the entity does not match where it needs to be, then move to those coordinates respectively
 			// There is no diagonal movement
-			if (_worldPos.X * signX < _targetWP.X * signX) {
+			if (_tilePos.X * signX < _targetTP.X * signX) {
 				if (!_isRunning)
 					_position.X += signX * _speed * Raylib.GetFrameTime();
 				else
 					_position.X += signX * _runSpeed * Raylib.GetFrameTime();
-			} else if (_worldPos.Y * signY < _targetWP.Y * signY) {
+			} else if (_tilePos.Y * signY < _targetTP.Y * signY) {
 				if (!_isRunning)
 					_position.Y += signY * _speed * Raylib.GetFrameTime();	
 				else	
@@ -132,16 +136,16 @@ namespace Topdown {
 		/// <param name="tileSize"></param>
 		public void DrawEntityDebugText(int tileSize, Vector2 pos) {
 			Raylib.DrawText($"position: ({_position.X}, {_position.Y})", (int)pos.X, (int)pos.Y, 30, Color.BLACK);
-			Raylib.DrawText($"worldPos: ({_worldPos.X}, {_worldPos.Y})", (int)pos.X, (int)pos.Y + 35, 30, Color.BLACK);
-			Raylib.DrawText($"targetWP: ({_targetWP.X}, {_targetWP.Y})", (int)pos.X, (int)pos.Y + 70, 30, Color.BLACK);
+			Raylib.DrawText($"worldPos: ({_tilePos.X}, {_tilePos.Y})", (int)pos.X, (int)pos.Y + 35, 30, Color.BLACK);
+			Raylib.DrawText($"targetWP: ({_targetTP.X}, {_targetTP.Y})", (int)pos.X, (int)pos.Y + 70, 30, Color.BLACK);
 
-			int x = (int)(_targetWP.X - _worldPos.Y);
+			int x = (int)(_targetTP.X - _tilePos.Y);
 			int signX = Convert.ToInt32(x > 0) - Convert.ToInt32(x < 0);		// remember false = 0, true = 1
-			int y = (int)(_targetWP.Y - _worldPos.Y);
+			int y = (int)(_targetTP.Y - _tilePos.Y);
 			int signY = Convert.ToInt32(y > 0) - Convert.ToInt32(y < 0);
 			
-			float distX = (_targetWP.X * tileSize - _position.X) * signX;
-			float distY = (_targetWP.Y * tileSize - _position.Y) * signY;
+			float distX = (_targetTP.X * tileSize - _position.X) * signX;
+			float distY = (_targetTP.Y * tileSize - _position.Y) * signY;
 
 			Raylib.DrawText($"distance: {distX}, {distY}", (int)pos.X, (int)pos.Y + 105, 30, Color.BLACK);
 			Raylib.DrawText($"isMoving: {_isMoving}", (int)pos.X, (int)pos.Y + 140, 30, Color.BLACK);

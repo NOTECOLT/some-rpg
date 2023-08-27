@@ -7,6 +7,16 @@
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "tilesets/grass.tsx": {
+            "scaleInEditor": 1
+        },
+        "tilesets/objects.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/plains.tsx": {
+            "scaleInEditor": 6.5598
+        }
     },
     "last.imagePath": "C:/Users/d27th/Documents/Game Dev/some-rpg/topdown/resources/tilesets",
     "map.lastUsedFormat": "tmx",
@@ -15,7 +25,11 @@
     "openFiles": [
     ],
     "project": "some-rpg.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
+        "tilesets/plains.tsx",
+        "tilesets/grass.tsx",
+        "tilesets/objects.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

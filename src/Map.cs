@@ -1,5 +1,9 @@
 //------------------------------------------------------------------------------------------
 /* MAP
+
+	TODO: TiledCS is not updated (last updated Dec 2022); so some day,,, i will prolly have to make a custom tmx reader
+	Mental note: TiledCS /prolly/ works with Tiled 1.9 the latest (most prolly 1.8)
+		take note of any recent changes since then
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
@@ -10,9 +14,35 @@ namespace Topdown {
 	/// <summary>
 	/// Class for map related functions. Class utilizes TiledCS library
 	/// </summary>
-    public static class Map {
+    public class Map {
+		// FIELDS
+		//------------------------------------------------------------------------------------------
+		private TiledMap _loadedMap;
+		private Dictionary<int, TiledTileset> _loadedTilesets;
+		private Dictionary<TiledTileset, Texture2D> _tilesetTextures;
+
+		// PROPERTIES
+		//------------------------------------------------------------------------------------------
+		public TiledMap LoadedMap { get { return _loadedMap; } }
+		public Dictionary<int, TiledTileset> LoadedTilesets { get { return _loadedTilesets; } }
+
+		public Map(string path) {
+			_loadedMap = new TiledMap(path);
+			_loadedTilesets = _loadedMap.GetTiledTilesets("resources/maps/");
+			_tilesetTextures = null;
+		}
+
+		// FUNCTIONS
+		//------------------------------------------------------------------------------------------
         
-        /// <summary>
+		public void LoadTextures() {
+			_tilesetTextures = new Dictionary<TiledTileset, Texture2D>();
+			
+			foreach (KeyValuePair<int, TiledTileset> entry in _loadedTilesets) {
+				_tilesetTextures[entry.Value] = Raylib.LoadTexture("resources/tilesets/" + entry.Value.Image.source);
+			}
+		}
+		/// <summary>
         /// <para>Renders Map using TiledCS Library</para>
         /// Reference: https://github.com/TheBoneJarmer/TiledCS
         /// </summary>
@@ -20,9 +50,11 @@ namespace Topdown {
         /// <param name="tilesets">Object representation of tsx file</param>
         /// <param name="tilesetTextures">Maps the tsx representation to Raylib Textures</param>
         /// <param name="scale"></param>
-        public static void RenderMap(TiledMap map, Dictionary<int, TiledTileset> tilesets, Dictionary<TiledTileset, Texture2D> tilesetTextures, float scale) {
-            // Reference: https://github.com/TheBoneJarmer/TiledCS
-            foreach (TiledLayer layer in map.Layers) {
+        public void RenderMap(float scale) {
+			if (_loadedTilesets == null) LoadTextures();
+
+			// Reference: https://github.com/TheBoneJarmer/TiledCS
+            foreach (TiledLayer layer in _loadedMap.Layers) {
                 for (int y = 0; y < layer.height; y++) {
                     for (int x = 0; x < layer.width; x++) {
                         int gid = layer.data[(y * layer.width) + x];
@@ -32,16 +64,48 @@ namespace Topdown {
                         // Retrieve information from Tiled Object
                         //      first line retrieves the tileset that the gid in the map is mapped to
                         //      second line gets the source recta
-                        TiledTileset ts = tilesets[map.GetTiledMapTileset(gid).firstgid];
-                        TiledSourceRect rect = map.GetSourceRect(map.GetTiledMapTileset(gid), ts, gid);
+                        TiledTileset ts = _loadedTilesets[_loadedMap.GetTiledMapTileset(gid).firstgid];
+                        TiledSourceRect rect = _loadedMap.GetSourceRect(_loadedMap.GetTiledMapTileset(gid), ts, gid);
 
                         // Represents the retrieved texture & rect as sprite then renders
-                        Sprite spr = new Sprite(tilesetTextures[ts], new Vector2(rect.x, rect.y), new Vector2(rect.width, rect.height), 0);
+                        Sprite spr = new Sprite(_tilesetTextures[ts], new Vector2(rect.x, rect.y), new Vector2(rect.width, rect.height), 0);
                         spr.RenderSprite(new Vector2(x * 32, y * 32), new Vector2(0, 0), scale, Color.WHITE);;
                     }
                 }
             }
         }
+
+
+		/// <summary>
+		/// Checks if a tile is walkable or not. Checks for walkability across ALL layers.
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <param name="layer"></param>
+		/// <returns>Returns true if there is a collision (i.e. tile not walkable). False otherwise.</returns>
+		public bool IsMapCollision(Vector2 pos) {
+			if (pos.X < 0 || pos.Y < 0 || pos.X >= _loadedMap.Width || pos.Y >= _loadedMap.Height)
+				return true;
+
+            int idx = ((int)pos.Y * _loadedMap.Width) + (int)pos.X;
+            // int gid = _loadedMap.Layers[layer].data[idx];
+			// if (gid == 0) return true;
+			bool walkable = true;
+
+			// Checks each layer for collision (rather than one layer)
+			// Might not be efficient if we increase the number of layers
+			//		(Will run multiple loops with each movement)
+			foreach (TiledLayer mapLayer in _loadedMap.Layers) {
+				int gid = mapLayer.data[idx];
+				if (gid == 0) continue;
+
+				// Retrieves the Walkable Property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
+				TiledTileset ts = _loadedTilesets[_loadedMap.GetTiledMapTileset(gid).firstgid];
+				TiledProperty walkableProp = ts.Tiles[gid - _loadedMap.GetTiledMapTileset(gid).firstgid].properties.First(prop => prop.name == "Walkable" ); 	
+				walkable = Convert.ToBoolean(walkableProp.value);
+				if (!walkable) return true;				
+			}				
+			return false;
+		}
 	}
 }
 

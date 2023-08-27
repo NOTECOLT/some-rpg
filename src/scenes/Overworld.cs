@@ -10,33 +10,27 @@ namespace Topdown {
     public class OverworldScene : IScene {
         private Entity _player;
         private Camera2D _camera;
-        private TiledMap _map;
-		private Dictionary<int, TiledTileset> _tilesets;
-		private Dictionary<TiledTileset, Texture2D> _tilesetTextures;
+        private Map _map;
+		
 
 		/// <summary>
 		/// Overworld Scene must be initialized with a map and player data
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="map"></param>
-        public OverworldScene(Entity player, TiledMap map, Dictionary<int, TiledTileset> tilesets) {
+        public OverworldScene(Entity player, string mapPath) {
             _player = player;
             _camera = new Camera2D() {
 				rotation = 0,
 				zoom = 1
 			};
-            _map = map;
-			_tilesets = tilesets;
+			_map = new Map(mapPath);
         }
 
 		// SCENE FUNCTIONS
         //------------------------------------------------------------------------------------------
         public void Load() {
-			_tilesetTextures = new Dictionary<TiledTileset, Texture2D>();
-			
-			foreach (KeyValuePair<int, TiledTileset> entry in _tilesets) {
-				_tilesetTextures[entry.Value] = Raylib.LoadTexture("resources/tilesets/" + entry.Value.Image.source);
-			}
+			_map.LoadTextures();
         }
 
         public void Update() {
@@ -45,22 +39,29 @@ namespace Topdown {
 			if (!_player.IsMoving) {
 				_player.IsRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
 
-				if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
-					_player.TargetWP = new Vector2(_player.WorldPos.X + 1, _player.WorldPos.Y);
-				else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
-					_player.TargetWP = new Vector2(_player.WorldPos.X - 1, _player.WorldPos.Y);
-				else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN))
-					_player.TargetWP = new Vector2(_player.WorldPos.X, _player.WorldPos.Y + 1);
-				else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP))
-					_player.TargetWP = new Vector2(_player.WorldPos.X, _player.WorldPos.Y - 1);
-				else
-					_player.TargetWP = new Vector2(_player.WorldPos.X, _player.WorldPos.Y);
+				if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) {
+					_player.TargetTP = new Vector2(_player.TilePos.X + 1, _player.TilePos.Y);
+				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) {
+					_player.TargetTP = new Vector2(_player.TilePos.X - 1, _player.TilePos.Y);
+				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN)) {
+					_player.TargetTP = new Vector2(_player.TilePos.X, _player.TilePos.Y + 1);
+				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP)) {
+					_player.TargetTP = new Vector2(_player.TilePos.X, _player.TilePos.Y - 1);
+				} else {
+					_player.TargetTP = new Vector2(_player.TilePos.X, _player.TilePos.Y);
+				}
+
+				if (_player.TargetTP != _player.TilePos) {
+					if (_map.IsMapCollision(_player.TargetTP))
+						_player.TargetTP = _player.TilePos;
+				}
+					
 			}
 		
 			// 2 - PHYSICS
 			//--------------------------------------------------
 
-			_player.UpdateEntityVectors(Globals.TILE_SIZE);
+			_player.UpdateEntityVectors(Globals.TILE_SIZE, _map);
 
 			// 3 - RENDERING
 			//--------------------------------------------------
@@ -72,8 +73,7 @@ namespace Topdown {
 				Raylib.BeginMode2D(_camera);
 
 					if (_map != null)
-						Map.RenderMap(_map, _tilesets, _tilesetTextures, Globals.WORLD_SCALE);
-						// _map.RenderMap(Globals.WORLD_SCALE);
+						_map.RenderMap(Globals.WORLD_SCALE);
 					_player.RenderEntity(Globals.TILE_SIZE, Globals.WORLD_SCALE);
 
 				Raylib.EndMode2D();

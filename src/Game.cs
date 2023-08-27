@@ -61,13 +61,11 @@ namespace Topdown {
             // WORLD INITIALIZATION
             //--------------------------------------------------
             Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
-			TiledMap map = new TiledMap("resources/maps/testmap.tmx");
-			Dictionary<int, TiledTileset> tilesets = map.GetTiledTilesets("resources/maps/");
             
             // PLAYER INITIALIZATION
             //--------------------------------------------------
             
-            Entity player = new Entity(new Vector2(0, 0), EntityType.PLAYER, Globals.TILE_SIZE);
+            Entity player = new Entity(new Vector2(0, 0), 0, EntityType.PLAYER, Globals.TILE_SIZE);
             player.SetMovementSpeeds(Globals.PLAYER_WALKSPEED, Globals.PLAYER_RUNSPEED);
             player.SetSprite("resources/sprites/characters/player.png");
 
@@ -75,7 +73,7 @@ namespace Topdown {
             //--------------------------------------------------
 			
 			SceneLoader sceneLoader = new SceneLoader();
-			OverworldScene overworldScene = new OverworldScene(player, map, tilesets);
+			OverworldScene overworldScene = new OverworldScene(player, "resources/maps/testmap.tmx");
 
 			sceneLoader.LoadScene(overworldScene);
 
