@@ -21,11 +21,13 @@ namespace Topdown {
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-		public Sprite Sprite { get; set; }
 		public Vector2 Position { get { return _position; } }
 		public Vector2 TilePos { get { return _tilePos; } }
 		public Vector2 TargetTP { get { return _targetTP; } set { _targetTP = value; } }
+
+		public Sprite Sprite { get; set; }
 		public int RenderLayer { get; }
+
 		public bool IsMoving { get; private set; } = false;	// 1 if the entity is moving, 0 otherwise
 		public bool IsRunning { get; set; } = false;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
 

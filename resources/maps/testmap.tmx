@@ -79,6 +79,7 @@
  <objectgroup id="5" name="Objects">
   <object id="2" gid="90" x="160" y="240" width="16" height="16">
    <properties>
+    <property name="Dialogue" type="file" value="../dialogue/test/testsign.xml"/>
     <property name="Walkable" type="bool" value="false"/>
    </properties>
   </object>

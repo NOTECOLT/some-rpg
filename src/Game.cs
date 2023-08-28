@@ -22,7 +22,6 @@ WELCOME TO C#! lol
 using System.Collections;
 using System.Numerics;
 using Raylib_cs;
-using Topdown.Engine;
 
 namespace Topdown {
     enum DebugState {
@@ -51,6 +50,8 @@ namespace Topdown {
 
         public static void Main() {
 			DebugState debugState = DebugState.GAME;
+
+			XMLDialogueParser.LoadDialogueFromFile("resources\\dialogue\\test\\testsign.xml");
 
             // WINDOW INITIALIZATION
             //--------------------------------------------------

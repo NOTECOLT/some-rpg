@@ -1,3 +1,10 @@
 <dialogue>
-    <message name="Sign" text="Hello World!"/>
+    <message>
+        <name>Test Sign</name>
+        <text>Hello World!</text>
+    </message>
+    <message>
+        <name>Test Sign</name>
+        <text>Hola Soy Dora</text>
+    </message>
 </dialogue>
