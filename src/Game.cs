@@ -2,8 +2,9 @@
 /*
 TODO: (Engine Stuff)
 /	Render Queue (do i need one yet? Not really i guess; but soon i'll have to)
-/ 	Entity List
+// 	Entity List
 /	NPCs / Interactable Objects
+/	Flag System
 /	Dialogue Box & Text Printing
 /	Debug Info Display
 
@@ -63,7 +64,7 @@ namespace Topdown {
             // PLAYER INITIALIZATION
             //--------------------------------------------------
             
-            Entity player = new Entity(new Vector2(0, 0), 0, EntityType.PLAYER, Globals.TILE_SIZE);
+            Entity player = new Entity(new Vector2(0, 0), 0, Globals.TILE_SIZE);
             player.SetMovementSpeeds(Globals.PLAYER_WALKSPEED, Globals.PLAYER_RUNSPEED);
             player.SetSprite("resources/sprites/characters/player.png");
 

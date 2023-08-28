@@ -32,7 +32,10 @@ namespace Topdown {
 
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
-        
+        /// <summary>
+		/// <para>Loads all the textures needed of a map's tileset into a dictionary of texture files.</para>
+		/// Is called once during the load sequence
+		/// </summary>
 		public void LoadTextures() {
 			_tilesetTextures = new Dictionary<TiledTileset, Texture2D>();
 			
@@ -40,6 +43,19 @@ namespace Topdown {
 				_tilesetTextures[entry.Value] = Raylib.LoadTexture("resources/tilesets/" + entry.Value.Image.source);
 			}
 		}
+
+		public List<Entity> LoadObjectsAsEntities() {
+			List<Entity> EntityList = new List<Entity>();
+
+			foreach (TiledObject obj in LoadedMap.Layers.First(layer => layer.type == TiledLayerType.ObjectLayer).objects) {
+				Entity entity = new Entity(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1), 0, Globals.TILE_SIZE);
+				entity.Sprite = ReturnSpriteFromGID(obj.gid);
+				EntityList.Add(entity);
+			}
+
+			return EntityList;
+		}
+
 		/// <summary>
         /// <para>Renders Map using TiledCS Library</para>
         /// Reference: https://github.com/TheBoneJarmer/TiledCS
@@ -59,15 +75,8 @@ namespace Topdown {
 
                         if (gid == 0) continue;
 
-                        // Retrieve information from Tiled Object
-                        //      first line retrieves the tileset that the gid in the map is mapped to
-                        //      second line gets the source recta
-                        TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
-                        TiledSourceRect rect = LoadedMap.GetSourceRect(LoadedMap.GetTiledMapTileset(gid), ts, gid);
-
                         // Represents the retrieved texture & rect as sprite then renders
-                        Sprite spr = new Sprite(_tilesetTextures[ts], new Vector2(rect.x, rect.y), new Vector2(rect.width, rect.height), 0);
-                        spr.RenderSprite(new Vector2(x * 32, y * 32), new Vector2(0, 0), scale, Color.WHITE);;
+                        ReturnSpriteFromGID(gid).RenderSprite(new Vector2(x * 32, y * 32), new Vector2(0, 0), scale, Color.WHITE);;
                     }
                 }
             }
@@ -93,16 +102,32 @@ namespace Topdown {
 			// Might not be efficient if we increase the number of layers
 			//		(Will run multiple loops with each movement)
 			foreach (TiledLayer mapLayer in LoadedMap.Layers) {
+				if (mapLayer.type == TiledLayerType.ObjectLayer) continue;
+
 				int gid = mapLayer.data[idx];
 				if (gid == 0) continue;
 
 				// Retrieves the Walkable Property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
-				TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
-				TiledProperty walkableProp = ts.Tiles[gid - LoadedMap.GetTiledMapTileset(gid).firstgid].properties.First(prop => prop.name == "Walkable" ); 	
+				// TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
+				TiledProperty walkableProp = ReturnTileFromGID(gid).properties.First(prop => prop.name == "Walkable" ); 	
 				walkable = Convert.ToBoolean(walkableProp.value);
 				if (!walkable) return true;				
 			}				
 			return false;
+		}
+
+		private TiledTile ReturnTileFromGID(int gid) {
+			TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
+			return ts.Tiles[gid - LoadedMap.GetTiledMapTileset(gid).firstgid];
+		}
+
+		private Sprite ReturnSpriteFromGID(int gid) {
+			// Retrieve information from Tiled Object
+			//      first line retrieves the tileset that the gid in the map is mapped to
+			//      second line gets the source recta
+			TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
+			TiledSourceRect rect = LoadedMap.GetSourceRect(LoadedMap.GetTiledMapTileset(gid), ts, gid);
+			return new Sprite(_tilesetTextures[ts], new Vector2(rect.x, rect.y), new Vector2(rect.width, rect.height), 0);
 		}
 	}
 }

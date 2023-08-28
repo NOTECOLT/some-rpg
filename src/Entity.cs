@@ -7,22 +7,11 @@ using Raylib_cs;
 
 namespace Topdown {
 	/// <summary>
-	/// Defines the type of entity
-	/// </summary>
-	public enum EntityType {
-		PLAYER,
-		ENEMY	
-	}
-
-	/// <summary>
 	/// An Entity is any moving/interactable object in the overworld
 	/// </summary>
 	public class Entity {
 		// FIELDS
 		//------------------------------------------------------------------------------------------
-		private EntityType _type;
-		private Sprite _sprite;
-
 		private Vector2 _position;	// Refers to the position of the player with respect to the screen / global coordinate system  
     	private Vector2 _tilePos;    // Refers to the position of player relative to the world grid
 		private Vector2 _targetTP;	// Entity's target world vector. Each entity will constantly move to this location if it is not already.	
@@ -32,6 +21,7 @@ namespace Topdown {
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
+		public Sprite Sprite { get; set; }
 		public Vector2 Position { get { return _position; } }
 		public Vector2 TilePos { get { return _tilePos; } }
 		public Vector2 TargetTP { get { return _targetTP; } set { _targetTP = value; } }
@@ -39,9 +29,7 @@ namespace Topdown {
 		public bool IsMoving { get; private set; } = false;	// 1 if the entity is moving, 0 otherwise
 		public bool IsRunning { get; set; } = false;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
 
-		public Entity(Vector2 tilePos, int renderLayer, EntityType type, int tileSize) {
-			_type = type;
-
+		public Entity(Vector2 tilePos, int renderLayer, int tileSize) {
 			_tilePos = tilePos;
 			_targetTP = tilePos;
 			RenderLayer = renderLayer;
@@ -66,7 +54,7 @@ namespace Topdown {
 		/// </summary>
 		/// <param name="path"></param>
 		public void SetSprite(string path) {
-			_sprite = new Sprite(path, new Vector2(18, 22), new Vector2(13, 21), 0);
+			Sprite = new Sprite(path, new Vector2(18, 22), new Vector2(13, 21), 0);
 		}
 
 		/// <summary>
@@ -115,11 +103,11 @@ namespace Topdown {
 		/// </summary>
 		/// <param name="tileSize"></param>
 		public void RenderEntity(int tileSize, float scale) {
-			if (_sprite != null) {
+			if (Sprite != null) {
 				Vector2 sprPos = new Vector2(_position.X + tileSize/2, _position.Y + tileSize);
-				Vector2 offset = new Vector2(_sprite.Size.X /** scale / 2*/, _sprite.Size.Y * scale);
+				Vector2 offset = new Vector2(Sprite.Size.X /** scale / 2*/, Sprite.Size.Y * scale);
 
-				_sprite.RenderSprite(sprPos, offset, scale, Color.WHITE);
+				Sprite.RenderSprite(sprPos, offset, scale, Color.WHITE);
 			} else {
 				Raylib.DrawRectangle((int)_position.X, (int)_position.Y, tileSize, tileSize, Color.MAGENTA);
 			}

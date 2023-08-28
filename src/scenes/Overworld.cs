@@ -9,6 +9,7 @@ namespace Topdown {
 	/// </summary>
     public class OverworldScene : IScene {
         private Entity _player;
+		private List<Entity> _entityList;	// Contains a list of entities excluding the player
         private Camera2D _camera;
         private Map _map;
 		
@@ -31,6 +32,7 @@ namespace Topdown {
         //------------------------------------------------------------------------------------------
         public void Load() {
 			_map.LoadTextures();
+			_entityList = _map.LoadObjectsAsEntities();
         }
 
         public void Update() {
@@ -51,8 +53,9 @@ namespace Topdown {
 					_player.TargetTP = new Vector2(_player.TilePos.X, _player.TilePos.Y);
 				}
 
+				// Collision, movement cancellation
 				if (_player.TargetTP != _player.TilePos) {
-					if (_map.IsMapCollision(_player.TargetTP))
+					if (_map.IsMapCollision(_player.TargetTP) || _entityList.Where(e => e.TilePos == _player.TargetTP).Count() > 0)
 						_player.TargetTP = _player.TilePos;
 				}
 					
@@ -75,6 +78,9 @@ namespace Topdown {
 					if (_map != null)
 						_map.RenderMap(Globals.WORLD_SCALE);
 					_player.RenderEntity(Globals.TILE_SIZE, Globals.WORLD_SCALE);
+
+					foreach (Entity e in _entityList)
+						e.RenderEntity(Globals.TILE_SIZE, Globals.WORLD_SCALE);
 
 				Raylib.EndMode2D();
 
