@@ -62,7 +62,7 @@ namespace Topdown {
 		/// This function is meant to update position vectors every frame.
 		/// </summary>
 		/// <param name="tileSize"></param>
-		public void UpdateEntityVectors(int tileSize, Map map) {
+		public void UpdateEntityVectors(int tileSize) {
 			int x = (int)(_targetTP.X - _tilePos.X);
 			int signX = Convert.ToInt32(x > 0) - Convert.ToInt32(x < 0);		// remember false = 0, true = 1
 			int y = (int)(_targetTP.Y - _tilePos.Y);

@@ -1,7 +1,10 @@
+//------------------------------------------------------------------------------------------
+/* OVERWORLD SCENE
+*/
+//------------------------------------------------------------------------------------------
 using System.Numerics;
 using Raylib_cs;
-using Topdown.Engine;
-using TiledCS;
+
 
 namespace Topdown {
 	/// <summary>
@@ -64,7 +67,7 @@ namespace Topdown {
 			// 2 - PHYSICS
 			//--------------------------------------------------
 
-			_player.UpdateEntityVectors(Globals.TILE_SIZE, _map);
+			_player.UpdateEntityVectors(Globals.TILE_SIZE);
 
 			// 3 - RENDERING
 			//--------------------------------------------------
@@ -83,6 +86,9 @@ namespace Topdown {
 						e.RenderEntity(Globals.TILE_SIZE, Globals.WORLD_SCALE);
 
 				Raylib.EndMode2D();
+
+				// UI
+				//--------------------------------------------------
 
 				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.BLACK);
 				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.BLACK);
