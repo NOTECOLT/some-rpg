@@ -62,19 +62,12 @@ namespace Topdown {
             // WORLD INITIALIZATION
             //--------------------------------------------------
             Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
-            
-            // PLAYER INITIALIZATION
-            //--------------------------------------------------
-            
-            Entity player = new Entity(new Vector2(0, 0), 0, Globals.TILE_SIZE);
-            player.SetMovementSpeeds(Globals.PLAYER_WALKSPEED, Globals.PLAYER_RUNSPEED);
-            player.SetSprite("resources/sprites/characters/player.png");
 
             // SCENE INITIALIZATION
             //--------------------------------------------------
 			
 			SceneLoader sceneLoader = new SceneLoader();
-			OverworldScene overworldScene = new OverworldScene(player, "resources/maps/testmap.tmx");
+			OverworldScene overworldScene = new OverworldScene("resources/maps/testmap.tmx");
 
 			sceneLoader.LoadScene(overworldScene);
 
