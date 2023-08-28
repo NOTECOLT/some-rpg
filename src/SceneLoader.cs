@@ -2,8 +2,6 @@
 /*  SCENELOADER
 */
 //------------------------------------------------------------------------------------------
-
-
 namespace Topdown {
     public class SceneLoader {
 		// PROPERTIES

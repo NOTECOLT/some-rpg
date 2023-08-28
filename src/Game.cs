@@ -2,8 +2,8 @@
 /*
 TODO: (Engine Stuff)
 /	Render Queue (do i need one yet? Not really i guess; but soon i'll have to)
-// 	Entity List
-/	NPCs / Interactable Objects
+/	ECS								<-----
+/	NPCs / Interactable Objects		<-----
 /	Flag System
 /	Dialogue Box & Text Printing
 /	Debug Info Display
@@ -22,6 +22,7 @@ WELCOME TO C#! lol
 using System.Collections;
 using System.Numerics;
 using Raylib_cs;
+using Topdown.ECS;
 
 namespace Topdown {
     enum DebugState {

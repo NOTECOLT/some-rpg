@@ -1,13 +1,16 @@
 //------------------------------------------------------------------------------------------
 /* ENTITY
+
+	ECS SYSTEM - https://matthall.codes/blog/ecs/
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
 using Raylib_cs;
 
-namespace Topdown {
+namespace Topdown.ECS {
 	/// <summary>
-	/// An Entity is any moving/interactable object in the overworld
+	/// <para>An Entity is any interactable/playable object in the game. </para>
+	/// Components may be added to the list as needed.
 	/// </summary>
 	public class Entity {
 		// FIELDS

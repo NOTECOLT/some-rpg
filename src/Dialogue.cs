@@ -2,9 +2,6 @@
 /* DIALOGUE
 */
 //------------------------------------------------------------------------------------------
-using System.Numerics;
-using Raylib_cs;
-
 namespace Topdown {
     public class Dialogue {
         public List<Message> Messages { get; set; }
