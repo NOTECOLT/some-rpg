@@ -5,7 +5,7 @@
 using System.Numerics;
 using Raylib_cs;
 using Topdown.ECS;
-
+using Topdown.Scene;
 
 namespace Topdown {
 	/// <summary>
@@ -89,7 +89,6 @@ namespace Topdown {
 
 					if (_map != null)
 						_map.RenderMap(Globals.WORLD_SCALE);
-					// _player.GetComponent<ESprite>().Update();
 
 					ESpriteSystem.Update();
 

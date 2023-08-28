@@ -19,10 +19,8 @@ TODO: (Low ish priority; aesthetic, skin, etc.)
 WELCOME TO C#! lol
 */
 //------------------------------------------------------------------------------------------
-using System.Collections;
-using System.Numerics;
 using Raylib_cs;
-using Topdown.ECS;
+using Topdown.Scene;
 
 namespace Topdown {
     enum DebugState {
