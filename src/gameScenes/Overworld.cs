@@ -3,6 +3,7 @@
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 using Topdown.ECS;
 using Topdown.Scene;
@@ -41,25 +42,27 @@ namespace Topdown {
 
             // 2- PLAYER LOADING
             //--------------------------------------------------
-            ECS.ETransform pTransform = new ECS.ETransform(new Vector2(0, 0), Globals.PLAYER_WALKSPEED, Globals.PLAYER_RUNSPEED, Globals.TILE_SIZE);
-            ESprite pSprite = new ESprite("resources/sprites/characters/player.png", 0);
-			_player = new Player(pTransform, pSprite);
+			_player = new Player(new Vector2(0, 0));
         }
 
         public void Update() {
             // 1 - INPUT
             //--------------------------------------------------
-            ETransform playerT = _player.GetComponent<ECS.ETransform>();
+            ETransform playerT = _player.GetComponent<ETransform>();
 			if (!playerT.IsMoving) {
 				playerT.IsRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
 
 				if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) {
+					playerT.ChangeDirection(Direction.Right);
 					playerT.TargetTP = new Vector2(playerT.TilePos.X + 1, playerT.TilePos.Y);
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) {
+					playerT.ChangeDirection(Direction.Left);
 					playerT.TargetTP = new Vector2(playerT.TilePos.X - 1, playerT.TilePos.Y);
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN)) {
+					playerT.ChangeDirection(Direction.Down);
 					playerT.TargetTP = new Vector2(playerT.TilePos.X, playerT.TilePos.Y + 1);
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP)) {
+					playerT.ChangeDirection(Direction.Up);
 					playerT.TargetTP = new Vector2(playerT.TilePos.X, playerT.TilePos.Y - 1);
 				} else {
 					playerT.TargetTP = new Vector2(playerT.TilePos.X, playerT.TilePos.Y);
@@ -67,9 +70,38 @@ namespace Topdown {
 
 				// Collision, movement cancellation
 				if (playerT.TargetTP != playerT.TilePos) {
-					if (_map.IsMapCollision(playerT.TargetTP) || _entityList.Where(e => e.GetComponent<ETransform>().TilePos == playerT.TargetTP).Count() > 0)
+					if (_map.IsMapCollision(playerT.TargetTP) || GetEntityListAtTilePos(playerT.TargetTP).Count() > 0)
 						playerT.TargetTP = playerT.TilePos;
 				}
+					
+			}
+
+			// Player Interaction
+			if (Raylib.IsKeyReleased(KeyboardKey.KEY_SPACE)) {
+				Vector2 target = playerT.TilePos;
+				switch (playerT.Facing) {
+					case Direction.Up:
+						target -= Vector2.UnitY;
+						break;
+					case Direction.Down:
+						target += Vector2.UnitY;
+						break;
+					case Direction.Left:
+						target -= Vector2.UnitX;
+						break;
+					case Direction.Right:
+						target += Vector2.UnitX;
+						break;
+					default:
+						break;
+				}
+
+
+				if (GetEntityAtTilePos(target) is not null && GetEntityAtTilePos(target) is IInteractable) {
+					IInteractable i = GetEntityAtTilePos(target) as IInteractable;
+					i.OnInteract();
+				}
+
 					
 			}
 		
@@ -106,5 +138,16 @@ namespace Topdown {
 
         public void Unload() {
         }
+
+		// FUNCTIONS
+        //------------------------------------------------------------------------------------------
+		public Entity GetEntityAtTilePos(Vector2 tilePos) {
+			if (_entityList.Count() == 0) return null;
+			return _entityList.FirstOrDefault(e => e.GetComponent<ETransform>().TilePos == tilePos, null) ?? null;
+		}
+
+		public IEnumerable<Entity> GetEntityListAtTilePos(Vector2 tilePos) {
+			return _entityList.Where(e => e.GetComponent<ETransform>().TilePos == tilePos);
+		}
     }
 }

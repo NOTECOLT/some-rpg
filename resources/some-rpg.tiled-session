@@ -41,7 +41,7 @@
         "maps/testmap.tmx"
     ],
     "project": "some-rpg.tiled-project",
-    "property.type": "file",
+    "property.type": "string",
     "recentFiles": [
         "maps/testmap.tmx",
         "tilesets/plains.tsx",

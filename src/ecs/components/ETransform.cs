@@ -6,6 +6,12 @@ using System.Numerics;
 using Raylib_cs;
 
 namespace Topdown.ECS {
+	public enum Direction {
+		Up,
+		Down,
+		Left,
+		Right
+	}
 	/// <summary>
 	/// Allows the entity to exist within the game world
 	/// </summary>
@@ -26,6 +32,7 @@ namespace Topdown.ECS {
 		public Vector2 TargetTP { get { return _targetTP; } set { _targetTP = value; } }
 		public bool IsMoving { get; private set; } = false;	// 1 if the entity is moving, 0 otherwise
 		public bool IsRunning { get; set; } = false;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
+		public Direction Facing { get; private set; } = Direction.Down;
 
         public ETransform(Vector2 tilePos, float walkSpeed, float runSpeed, int tileSize) {
 			_tilePos = tilePos;
@@ -85,6 +92,11 @@ namespace Topdown.ECS {
 
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
+		public void ChangeDirection(Direction dir) {
+			Facing = dir;
+		}
+		
+		
 		/// <summary>
 		/// Renders all debug info relating an entity
 		/// </summary>

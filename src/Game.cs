@@ -35,8 +35,6 @@ namespace Topdown {
 	static class Globals {
         // RANDOM CONSTANTS, will eventually move these values
         public const int TILE_SIZE = 32;
-        public const int PLAYER_WALKSPEED = 200;
-        public const int PLAYER_RUNSPEED = 300;
 
 		public const int SCREEN_WIDTH = 960;
 		public const int SCREEN_HEIGHT = 720;
@@ -49,8 +47,6 @@ namespace Topdown {
 
         public static void Main() {
 			DebugState debugState = DebugState.GAME;
-
-			XMLDialogueParser.LoadDialogueFromFile("resources\\dialogue\\test\\testsign.xml");
 
             // WINDOW INITIALIZATION
             //--------------------------------------------------

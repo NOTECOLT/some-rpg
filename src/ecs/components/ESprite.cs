@@ -32,21 +32,25 @@ namespace Topdown.ECS {
 
         // WARNING THIS FUNCTION USES GLOBALS 
         // TODO I'll need to find a way to take this out methinks?
+        /// <summary>
+        /// Sprite Component must contain ETransform in order to render
+        /// </summary>
         public override void Update() {
             base.Update();
-
+            
             if (entity.GetComponent<ETransform>() is null) return;
 
             ETransform transform = entity.GetComponent<ETransform>();
 
-			if (Sprite != null) {
-				Vector2 sprPos = new Vector2(transform.Position.X + Globals.TILE_SIZE/2, transform.Position.Y + Globals.TILE_SIZE);
-				Vector2 offset = new Vector2(Sprite.Size.X /** scale / 2*/, Sprite.Size.Y * Globals.WORLD_SCALE);
+            if (Sprite is null) {
+                Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.TILE_SIZE, Globals.TILE_SIZE, Color.MAGENTA);
+                return;
+            }
 
-				Sprite.RenderSprite(sprPos, offset, Globals.WORLD_SCALE, Color.WHITE);
-			} else {
-				Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.TILE_SIZE, Globals.TILE_SIZE, Color.MAGENTA);
-			}
+            Vector2 sprPos = new Vector2(transform.Position.X + Globals.TILE_SIZE/2, transform.Position.Y + Globals.TILE_SIZE);
+            Vector2 offset = new Vector2(Sprite.Size.X /** scale / 2*/, Sprite.Size.Y * Globals.WORLD_SCALE);
+
+            Sprite.RenderSprite(sprPos, offset, Globals.WORLD_SCALE, Color.WHITE);
         }
     }
 }

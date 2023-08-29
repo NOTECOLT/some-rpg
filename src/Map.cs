@@ -49,10 +49,17 @@ namespace Topdown {
 			List<Entity> EntityList = new List<Entity>();
 
 			foreach (TiledObject obj in LoadedMap.Layers.First(layer => layer.type == TiledLayerType.ObjectLayer).objects) {
-				Entity entity = new Entity();
-				entity.AddComponent(new ECS.ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1), 0, 0, Globals.TILE_SIZE));
-				entity.AddComponent(new ESprite(ReturnSpriteFromGID(obj.gid), 0));
-				EntityList.Add(entity);
+				if (obj.name == "Signpost") {
+					Dialogue dialogue = XMLDialogueParser.LoadDialogueFromFile(obj.properties.First(prop => prop.name == "Dialogue").value);
+					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1), dialogue, ReturnSpriteFromGID(obj.gid));
+					EntityList.Add(signpost);
+				} else {
+					Entity entity = new Entity();
+					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1), 0, 0, Globals.TILE_SIZE));
+					entity.AddComponent(new ESprite(ReturnSpriteFromGID(obj.gid), 0));
+					EntityList.Add(entity);
+				}
+
 			}
 
 			return EntityList;
