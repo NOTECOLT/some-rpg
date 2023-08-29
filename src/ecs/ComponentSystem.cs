@@ -1,5 +1,7 @@
 //------------------------------------------------------------------------------------------
 /* COMPONENT SYSTEM
+
+	ECS SYSTEM - https://matthall.codes/blog/ecs/
 */
 //------------------------------------------------------------------------------------------
 
@@ -25,4 +27,5 @@ namespace Topdown.ECS {
     //------------------------------------------------------------------------------------------
     public class ETransformSystem : ComponentSystem<ETransform> { }
     public class ESpriteSystem : ComponentSystem<ESprite> { }
+    public class EDialogueSystem : ComponentSystem<EDialogue> { }
 }
