@@ -26,5 +26,4 @@ namespace Topdown.Scene {
                 CurrentScene.Update();
         }
     }
-
 }
