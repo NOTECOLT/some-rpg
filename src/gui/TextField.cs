@@ -17,25 +17,42 @@ namespace Topdown.GUI {
 		public string Text { get; set; }
 		public int CharLimit { get; set; } = 100;
 		public FontProperties Font { get; set; }
-		public Color BGColor { get; set; }
 
-		public TextField(Vector2 pos, Vector2 size, int charLimit, FontProperties font, Color bgColor) {
-			Rect = new Rectangle(pos.X, pos.Y, size.X, size.Y);
+		/// <summary>
+		/// Regular Constructor
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <param name="size"></param>
+		/// <param name="charLimit"></param>
+		/// <param name="font"></param>
+		/// <param name="bgColor"></param>
+		public TextField(Vector2 pos, Vector2 size, int charLimit, FontProperties font, Color? bgColor) : base(pos, size, bgColor) {
 			CharLimit = charLimit;
 			Font = font;
-			BGColor = bgColor;
-
-			UIEntitySystem.Register(this);
 		}
 
-		public override void Render() {
-			Raylib.DrawRectangle((int)Rect.x, (int)Rect.y, (int)Rect.width, (int)Rect.height, BGColor);
+		// /// <summary>
+		// /// With Parent Constructor
+		// /// </summary>
+		// /// <param name="parent"></param>
+		// /// <param name="pos"></param>
+		// /// <param name="size"></param>
+		// /// <param name="charLimit"></param>
+		// /// <param name="font"></param>
+		// /// <param name="bgColor"></param>
+		// public TextField(UIEntity parent, Vector2 pos, Vector2 size, int charLimit, FontProperties font, Color? bgColor) : base(parent, pos, size, bgColor) {
+		// 	CharLimit = charLimit;
+		// 	Font = font;
+		// }
+
+		public override void Render() {		
+			base.Render();
+				
+			int drawY = (int)_absoluteRect.y;
+			if (Font.Size <= _absoluteRect.height)
+				drawY = (int)(_absoluteRect.y + ((_absoluteRect.height - Font.Size) / 2)); // vertical align text
 			
-			int drawY = (int)Rect.y;
-			if (Font.Size <= Rect.height)
-				drawY = (int)( Rect.y + ((Rect.height - Font.Size) / 2)); // vertical align text
-			
-			Raylib.DrawText(Text, (int)Rect.x, drawY, Font.Size, Font.Color);
+			Raylib.DrawText(Text, (int)_absoluteRect.x, drawY, Font.Size, Font.Color);
 		}
 
 		public void UpdateTextField() {

@@ -11,7 +11,8 @@ namespace Topdown {
     public class DialogueManager {
 		// FIELDS
 		//------------------------------------------------------------------------------------------	
-		private Panel _dialoguePanel;
+		private UIEntity _dialoguePanel;
+		private TextObject _dialogueText;
 		private static Message _currentMessage;
 
 		// STATIC PROPERTIES
@@ -20,7 +21,9 @@ namespace Topdown {
         public static Queue<Message> MessageQueue { get; private set; } = new Queue<Message>();
 
 		public DialogueManager() {
-			_dialoguePanel = new Panel(new Vector2(Globals.SCREEN_WIDTH * 0.025f, Globals.SCREEN_HEIGHT * 0.775f), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Test Text", new FontProperties(30, Color.BLACK), Color.LIGHTGRAY);
+			_dialoguePanel = new UIEntity(new Vector2(Globals.SCREEN_WIDTH * 0.025f, Globals.SCREEN_HEIGHT * 0.775f), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), Color.LIGHTGRAY);
+			_dialogueText = new TextObject(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Test Text", new FontProperties(30, Color.BLACK), null);
+			_dialogueText.SetParent(_dialoguePanel);
 		}
 
 		public void Render() {
@@ -30,7 +33,7 @@ namespace Topdown {
 			}
 
 			_dialoguePanel.Enabled = true;
-			_dialoguePanel.Text = $"{_currentMessage.Name}: {_currentMessage.Text}";
+			_dialogueText.Text = $"{_currentMessage.Name}: {_currentMessage.Text}";
 
 		}
 

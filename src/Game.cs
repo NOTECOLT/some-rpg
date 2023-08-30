@@ -2,10 +2,14 @@
 /*
 TODO: (Engine Stuff)
 /	Render Queue (do i need one yet? Not really i guess; but soon i'll have to)
-/	ECS								<-----
-/	NPCs / Interactable Objects		<-----
+//	ECS								<-----
+//	NPCs / Interactable Objects		<-----
+//	Dialogue Box & Text Printing
+	/	Add more FontProperties
+	//	Create TextObject UIEntity
+	/	Adjust Dialogue Box Display
 /	Flag System
-/	Dialogue Box & Text Printing
+/	Multiple Scenes & Scene Switching
 /	Debug Info Display
 
 TODOL (Mechanic / Game Design Stuff)
