@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 using Topdown.ECS;
+using Topdown.GUI;
 using Topdown.Scene;
 
 namespace Topdown {
@@ -14,9 +15,10 @@ namespace Topdown {
 	/// </summary>
     public class OverworldScene : IScene {
         private Player _player;
-		private List<Entity> _entityList;	// Contains a list of entities excluding the player
+		// private List<Entity> _entityList;	// Contains a list of entities excluding the player
         private Camera2D _camera;
         private Map _map;
+		private DialogueManager _dialogueManager;
 		
 
 		/// <summary>
@@ -35,15 +37,23 @@ namespace Topdown {
 		// SCENE FUNCTIONS
         //------------------------------------------------------------------------------------------
         public void Load() {
-			// 1- MAP LOADING
+			// 1 - SYSTEM LOADING
+			//--------------------------------------------------
+			// most DialogueManager functions uses static objects, but an object is needed for the UI elements
+			_dialogueManager = new DialogueManager();
+
+
+			// 2 - MAP LOADING
 			//--------------------------------------------------
 			_map.LoadTextures();
-			_entityList = _map.LoadObjectsAsEntities();
+			_map.LoadObjectsAsEntities();
 
-            // 2- PLAYER LOADING
+            // 3 - PLAYER LOADING
             //--------------------------------------------------
-			_player = new Player(new Vector2(0, 0));
-        }
+			_player = new Player(new Vector2(8, 14));
+
+			
+		}
 
         public void Update() {
             // 1 - INPUT
@@ -96,13 +106,14 @@ namespace Topdown {
 						break;
 				}
 
-
-				if (GetEntityAtTilePos(target) is not null && GetEntityAtTilePos(target) is IInteractable) {
-					IInteractable i = GetEntityAtTilePos(target) as IInteractable;
-					i.OnInteract();
+				if (DialogueManager.DialogueActive) {
+					DialogueManager.NextMessage();
+				} else {
+					if (GetEntityAtTilePos(target) is not null && GetEntityAtTilePos(target) is IInteractable) {
+						IInteractable i = GetEntityAtTilePos(target) as IInteractable;
+						i.OnInteract();
+					}	
 				}
-
-					
 			}
 		
 			// 2 - PHYSICS
@@ -131,23 +142,43 @@ namespace Topdown {
 
 				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.BLACK);
 				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.BLACK);
-				playerT.DrawEntityDebugText(Globals.TILE_SIZE, new Vector2(5, 75));
+				// playerT.DrawEntityDebugText(Globals.TILE_SIZE, new Vector2(5, 75));
+
+				UIEntitySystem.RenderAll();
+				_dialogueManager.Render();
 
 			Raylib.EndDrawing();
         }
 
         public void Unload() {
+			// Unloading Component Systems once the scene ends because the list is static
+			ESpriteSystem.Unload();
+			ETransformSystem.Unload();
+
+			UIEntitySystem.Unload();
         }
 
 		// FUNCTIONS
         //------------------------------------------------------------------------------------------
 		public Entity GetEntityAtTilePos(Vector2 tilePos) {
-			if (_entityList.Count() == 0) return null;
-			return _entityList.FirstOrDefault(e => e.GetComponent<ETransform>().TilePos == tilePos, null) ?? null;
+			if (ETransformSystem.Components.Count() == 0) return null;	
+			ETransform transform = ETransformSystem.Components.FirstOrDefault(c => c.TilePos == tilePos, null) ?? null;
+			
+			if (transform is null) return null;
+			else return transform.entity;
+			// return _entityList.FirstOrDefault(
 		}
 
-		public IEnumerable<Entity> GetEntityListAtTilePos(Vector2 tilePos) {
-			return _entityList.Where(e => e.GetComponent<ETransform>().TilePos == tilePos);
+		public List<Entity> GetEntityListAtTilePos(Vector2 tilePos) {
+			if (ETransformSystem.Components.Count() == 0) return null;	
+			List<ETransform> transforms = ETransformSystem.Components.Where(c => c.TilePos == tilePos).ToList();
+			List<Entity> entityList = new List<Entity>();
+			foreach (ETransform t in transforms) {
+				entityList.Add(t.entity);
+			}
+
+			return entityList;
+			// return _entityList.Where(e => e.GetComponent<ETransform>().TilePos == tilePos);
 		}
     }
 }

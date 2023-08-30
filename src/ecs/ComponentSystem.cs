@@ -5,11 +5,15 @@
 */
 //------------------------------------------------------------------------------------------
 
+using System.Diagnostics.Contracts;
+
 namespace Topdown.ECS {
     public class ComponentSystem<T> where T : Component {
 		// STATIC FIELDS
 		//------------------------------------------------------------------------------------------
         protected static List<T> _components = new List<T>();
+
+        public static List<T> Components { get { return _components; } }
         
         public static void Register(T component) {
             _components.Add(component);
@@ -17,8 +21,15 @@ namespace Topdown.ECS {
 
         public static void Update() {
             foreach (T c in _components) {
-                c.Update();
+                if (c.Enabled) c.Update();
             }
+        }
+
+        /// <summary>
+        /// Because these systems use static lsits, they must be unloaded at the end of each scene.
+        /// </summary>
+        public static void Unload() {
+            _components = new List<T>();
         }
     }   
 
@@ -27,5 +38,5 @@ namespace Topdown.ECS {
     //------------------------------------------------------------------------------------------
     public class ETransformSystem : ComponentSystem<ETransform> { }
     public class ESpriteSystem : ComponentSystem<ESprite> { }
-    public class EDialogueSystem : ComponentSystem<EDialogue> { }
+    // public class EDialogueSystem : ComponentSystem<EDialogue> { }
 }

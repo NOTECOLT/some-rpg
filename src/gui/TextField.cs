@@ -7,12 +7,13 @@ using Raylib_cs;
 
 
 namespace Topdown.GUI {
-    public class TextField {
+	/// <summary>
+	/// Allows a user to input a text prompt and submit it
+	/// </summary>
+    public class TextField : UIEntity {
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-		public bool Enabled { get; set; } = false;
-		public bool IsAcceptingText { get; set; } = false;
-		public Rectangle Rect { get; set; }
+		public bool IsAcceptingText { get; set; } = false;	
 		public string Text { get; set; }
 		public int CharLimit { get; set; } = 100;
 		public FontProperties Font { get; set; }
@@ -23,11 +24,11 @@ namespace Topdown.GUI {
 			CharLimit = charLimit;
 			Font = font;
 			BGColor = bgColor;
+
+			UIEntitySystem.Register(this);
 		}
 
-		public void Render() {
-			if (!Enabled)
-				return;
+		public override void Render() {
 			Raylib.DrawRectangle((int)Rect.x, (int)Rect.y, (int)Rect.width, (int)Rect.height, BGColor);
 			
 			int drawY = (int)Rect.y;

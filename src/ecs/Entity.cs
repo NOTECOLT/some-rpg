@@ -16,8 +16,8 @@ namespace Topdown.ECS {
 		public List<Component> Components { get; private set; } = new List<Component>();
 
 		public void AddComponent(Component component) {
-			component.entity = this;
 			Components.Add(component);
+			component.entity = this;
 		}
 
 		public T GetComponent<T>() where T : Component {

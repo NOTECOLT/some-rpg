@@ -18,9 +18,7 @@ namespace Topdown.ECS {
 
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
-		public virtual void Update() {
-			if (!Enabled) return;
-		}
+		public virtual void Update() { }
 	}
 
 

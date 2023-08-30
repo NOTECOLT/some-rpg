@@ -19,11 +19,10 @@ namespace Topdown.ECS {
         public EDialogue(Dialogue dialogue) {
             EntityDialogue = dialogue;
 
-            EDialogueSystem.Register(this);
+            // EDialogueSystem.Register(this);
         }
 
         public override void Update() {
-            base.Update();
             if (!_dialogueActive) return;
 
             // TODO: ADD IINTERACTABLE INTERFACE?
@@ -34,11 +33,8 @@ namespace Topdown.ECS {
         public void StartDialogue() {
 			if (_dialogueActive) return;
 
-            // DialogueActive = true;
-			foreach (Message msg in EntityDialogue.Messages) {
-				Console.WriteLine($"{msg.Name}: {msg.Text}");
-            }
-            
+			DialogueManager.QueueDialogue(EntityDialogue);
+			DialogueManager.NextMessage();		// Plays first message
         }
     }
 }

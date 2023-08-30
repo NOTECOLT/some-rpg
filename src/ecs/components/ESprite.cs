@@ -36,8 +36,6 @@ namespace Topdown.ECS {
         /// Sprite Component must contain ETransform in order to render
         /// </summary>
         public override void Update() {
-            base.Update();
-            
             if (entity.GetComponent<ETransform>() is null) return;
 
             ETransform transform = entity.GetComponent<ETransform>();
