@@ -46,12 +46,29 @@ namespace Topdown.GUI {
 		//------------------------------------------------------------------------------------------
 		public override void Render() {
 			base.Render();
-
-			int drawY = (int)_absoluteRect.y;
-			if (Font.Size <= _absoluteRect.height)
-				drawY = (int)(_absoluteRect.y + ((_absoluteRect.height - Font.Size) / 2)); // vertical align text
 			
-			Raylib.DrawText(Text, (int)_absoluteRect.x, drawY, Font.Size, Font.Color);
+			int drawY = (int)_absoluteRect.y;
+
+			// TODO: Fix vertical alignment, to work with multiple lines of string
+			switch (Font.VerticalAlign) {	
+				case VerticalAlignment.Top:
+					drawY += (int)Font.Margin.Y;
+					break;
+				case VerticalAlignment.Center:
+					if (Font.Size <= _absoluteRect.height)
+						drawY = (int)(_absoluteRect.y + ((_absoluteRect.height - Font.Size) / 2));
+						// drawY += (int)Font.Margin.Y;
+					break;
+				case VerticalAlignment.Bottom:
+					// TODO: This
+					throw new Exception("No Vertical Align Bottom Setting");
+				default:
+					break;
+			}
+			
+
+			
+			Raylib.DrawText(Text, (int)(_absoluteRect.x + Font.Margin.X), drawY, Font.Size, Font.Color);
 		}
 	}
 }

@@ -21,8 +21,14 @@ namespace Topdown {
         public static Queue<Message> MessageQueue { get; private set; } = new Queue<Message>();
 
 		public DialogueManager() {
+			FontProperties fp = new FontProperties(30, Color.BLACK) {
+				VerticalAlign = VerticalAlignment.Top,
+				Margin = new Vector4(10, 10, 0, 0)
+			};
+
+
 			_dialoguePanel = new UIEntity(new Vector2(Globals.SCREEN_WIDTH * 0.025f, Globals.SCREEN_HEIGHT * 0.775f), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), Color.LIGHTGRAY);
-			_dialogueText = new TextObject(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Test Text", new FontProperties(30, Color.BLACK), null);
+			_dialogueText = new TextObject(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Test Text", fp, null);
 			_dialogueText.SetParent(_dialoguePanel);
 		}
 

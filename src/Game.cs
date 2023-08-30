@@ -5,9 +5,8 @@ TODO: (Engine Stuff)
 //	ECS								<-----
 //	NPCs / Interactable Objects		<-----
 //	Dialogue Box & Text Printing
-	/	Add more FontProperties
 	//	Create TextObject UIEntity
-	/	Adjust Dialogue Box Display
+	//	Adjust Dialogue Box Display
 /	Flag System
 /	Multiple Scenes & Scene Switching
 /	Debug Info Display
@@ -19,6 +18,7 @@ TODOL (Mechanic / Game Design Stuff)
 
 TODO: (Low ish priority; aesthetic, skin, etc.)
 / 	Spritesheet animations
+/	Add more FontProperties 
 
 WELCOME TO C#! lol
 */
