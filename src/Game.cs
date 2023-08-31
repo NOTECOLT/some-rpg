@@ -2,16 +2,11 @@
 /*
 TODO: (Engine Stuff)
 /	Render Queue (do i need one yet? Not really i guess; but soon i'll have to)
-//	ECS								<-----
-//	NPCs / Interactable Objects		<-----
-//	Dialogue Box & Text Printing
-	//	Create TextObject UIEntity
-	//	Adjust Dialogue Box Display
 /	Flag System
 /	Multiple Scenes & Scene Switching
 /	Debug Info Display
 
-TODOL (Mechanic / Game Design Stuff)
+TODO: (Mechanic / Game Design Stuff)
 /	Game Loop
 /	Combat System
 /	Menu System
@@ -19,6 +14,13 @@ TODOL (Mechanic / Game Design Stuff)
 TODO: (Low ish priority; aesthetic, skin, etc.)
 / 	Spritesheet animations
 /	Add more FontProperties 
+
+DONE (BUT COULD BE IMPROVED?)
+/	ECS								<-----
+/	NPCs / Interactable Objects		<-----
+/	Dialogue Box & Text Printing
+	/	Create TextObject UIEntity
+	/	Adjust Dialogue Box Display
 
 WELCOME TO C#! lol
 */

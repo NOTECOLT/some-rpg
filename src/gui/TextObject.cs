@@ -13,7 +13,7 @@ namespace Topdown.GUI {
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
 		public String Text { get; set; }
-		public FontProperties Font { get; private set; }
+		public TextStyles TextStyle { get; private set; }
 
 		/// <summary>
 		/// Regular Constructor
@@ -21,11 +21,11 @@ namespace Topdown.GUI {
 		/// <param name="pos"></param>
 		/// <param name="size"></param>
 		/// <param name="text"></param>
-		/// <param name="font"></param>
+		/// <param name="textStyle"></param>
 		/// <param name="bgColor"></param>
-		public TextObject(Vector2 pos, Vector2 size, String text, FontProperties font, Color? bgColor) : base(pos, size, bgColor) {
+		public TextObject(Vector2 pos, Vector2 size, String text, TextStyles textStyle, Color? bgColor) : base(pos, size, bgColor) {
 			Text = text;
-			Font = font;
+			TextStyle = textStyle;
 		}
 
 		// /// <summary>
@@ -50,13 +50,13 @@ namespace Topdown.GUI {
 			int drawY = (int)_absoluteRect.y;
 
 			// TODO: Fix vertical alignment, to work with multiple lines of string
-			switch (Font.VerticalAlign) {	
+			switch (TextStyle.VerticalAlign) {	
 				case VerticalAlignment.Top:
-					drawY += (int)Font.Margin.Y;
+					drawY += (int)TextStyle.Margin.Y;
 					break;
 				case VerticalAlignment.Center:
-					if (Font.Size <= _absoluteRect.height)
-						drawY = (int)(_absoluteRect.y + ((_absoluteRect.height - Font.Size) / 2));
+					if (TextStyle.Size <= _absoluteRect.height)
+						drawY = (int)(_absoluteRect.y + ((_absoluteRect.height - TextStyle.Size) / 2));
 						// drawY += (int)Font.Margin.Y;
 					break;
 				case VerticalAlignment.Bottom:
@@ -65,10 +65,12 @@ namespace Topdown.GUI {
 				default:
 					break;
 			}
-			
 
-			
-			Raylib.DrawText(Text, (int)(_absoluteRect.x + Font.Margin.X), drawY, Font.Size, Font.Color);
+			DrawTextWrap(Text, (int)(_absoluteRect.x + TextStyle.Margin.X), drawY, TextStyle.Size, TextStyle.Color);	
+		}
+
+		private static void DrawTextWrap(string text, int posX, int posY, int size, Color color) {
+			Raylib.DrawText(text, posX, posY, size, color);
 		}
 	}
 }

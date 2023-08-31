@@ -13,7 +13,7 @@ namespace Topdown.GUI {
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
 		public String Text { get; private set; }
-		public FontProperties Font { get; private set; }
+		public TextStyles Font { get; private set; }
 
 		/// <summary>
 		/// Regular Constructor
@@ -23,7 +23,7 @@ namespace Topdown.GUI {
 		/// <param name="text"></param>
 		/// <param name="font"></param>
 		/// <param name="bgColor"></param>
-		public Button(Vector2 pos, Vector2 size, String text, FontProperties font, Color? bgColor) : base(pos, size, bgColor) {
+		public Button(Vector2 pos, Vector2 size, String text, TextStyles font, Color? bgColor) : base(pos, size, bgColor) {
 			Text = text;
 			Font = font;
 		}

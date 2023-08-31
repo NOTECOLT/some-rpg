@@ -14,7 +14,7 @@ namespace Topdown.GUI {
     /// <summary>
     /// A single struct to contain information about how text is stored. Includes font size, style, color, etc.
     /// </summary>
-    public struct FontProperties {
+    public struct TextStyles {
         // PROPERTIES
         //------------------------------------------------------------------------------------------
         public int Size { get; set; }
@@ -24,7 +24,7 @@ namespace Topdown.GUI {
         // TODO: Right & Bottom Margin not implemented
         public Vector4 Margin { get; set; } = new Vector4(0, 0, 0, 0);
 
-        public FontProperties(int size, Color color) {
+        public TextStyles(int size, Color color) {
             Size = size;
             Color = color;
         }

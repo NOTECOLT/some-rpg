@@ -48,17 +48,29 @@ namespace Topdown {
 		public List<Entity> LoadObjectsAsEntities() {
 			List<Entity> EntityList = new List<Entity>();
 
-			foreach (TiledObject obj in LoadedMap.Layers.First(layer => layer.type == TiledLayerType.ObjectLayer).objects) {
-				if (obj.name == "Signpost") {
+			TiledObject[] tiledObjects = LoadedMap.Layers.First(layer => layer.type == TiledLayerType.ObjectLayer).objects;
+
+			foreach (TiledObject obj in tiledObjects) {
+				TiledProperty prop = obj.properties.FirstOrDefault(prop => prop.name == "Object Type", null);
+
+				// ew goto statement. Please never let this balloon
+				if (prop is null) goto defaultEntity;
+				string type = prop.value;
+					
+				if (type == "signpost") {
 					Dialogue dialogue = XMLDialogueParser.LoadDialogueFromFile(obj.properties.First(prop => prop.name == "Dialogue").value);
 					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1), dialogue, ReturnSpriteFromGID(obj.gid));
 					EntityList.Add(signpost);
-				} else {
+
+					continue;
+				}
+
+				defaultEntity:
 					Entity entity = new Entity();
 					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1), 0, 0, Globals.TILE_SIZE));
 					entity.AddComponent(new ESprite(ReturnSpriteFromGID(obj.gid), 0));
 					EntityList.Add(entity);
-				}
+
 
 			}
 
@@ -118,7 +130,7 @@ namespace Topdown {
 
 				// Retrieves the Walkable Property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
 				// TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
-				TiledProperty walkableProp = ReturnTileFromGID(gid).properties.First(prop => prop.name == "Walkable" ); 	
+				TiledProperty walkableProp = ReturnTileFromGID(gid).properties.First(prop => prop.name == "Walkable"); 	
 				walkable = Convert.ToBoolean(walkableProp.value);
 				if (!walkable) return true;				
 			}				

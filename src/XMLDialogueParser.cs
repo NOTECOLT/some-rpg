@@ -12,8 +12,7 @@ namespace Topdown {
 		/// <param name="path"></param>
         public static Dialogue LoadDialogueFromFile(string path) {
 			if (!File.Exists(path)) {
-				Console.WriteLine($"[DIALOGUE MANAGER] File {path} not found!");
-				return null;
+				throw new FileLoadException($"{path} does not exist");
 			}
 
 			// 1 - FILE READ

@@ -21,7 +21,7 @@ namespace Topdown {
         public static Queue<Message> MessageQueue { get; private set; } = new Queue<Message>();
 
 		public DialogueManager() {
-			FontProperties fp = new FontProperties(30, Color.BLACK) {
+			TextStyles fp = new TextStyles(30, Color.BLACK) {
 				VerticalAlign = VerticalAlignment.Top,
 				Margin = new Vector4(10, 10, 0, 0)
 			};

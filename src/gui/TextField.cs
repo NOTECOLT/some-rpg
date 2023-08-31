@@ -16,7 +16,7 @@ namespace Topdown.GUI {
 		public bool IsAcceptingText { get; set; } = false;	
 		public string Text { get; set; }
 		public int CharLimit { get; set; } = 100;
-		public FontProperties Font { get; set; }
+		public TextStyles Font { get; set; }
 
 		/// <summary>
 		/// Regular Constructor
@@ -26,7 +26,7 @@ namespace Topdown.GUI {
 		/// <param name="charLimit"></param>
 		/// <param name="font"></param>
 		/// <param name="bgColor"></param>
-		public TextField(Vector2 pos, Vector2 size, int charLimit, FontProperties font, Color? bgColor) : base(pos, size, bgColor) {
+		public TextField(Vector2 pos, Vector2 size, int charLimit, TextStyles font, Color? bgColor) : base(pos, size, bgColor) {
 			CharLimit = charLimit;
 			Font = font;
 		}
