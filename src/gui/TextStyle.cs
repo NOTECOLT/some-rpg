@@ -21,8 +21,11 @@ namespace Topdown.GUI {
         public Color Color { get; set; }
         public VerticalAlignment VerticalAlign { get; set; } = VerticalAlignment.Top;
         
-        // TODO: Right & Bottom Margin not implemented
+        /// <summary>
+        /// Ordered: (X: Left, Y: Up, Z: Right, W: Down)
+        /// </summary>
         public Vector4 Margin { get; set; } = new Vector4(0, 0, 0, 0);
+        public Font Font { get; set; } = Raylib.GetFontDefault();
 
         public TextStyles(int size, Color color) {
             Size = size;
