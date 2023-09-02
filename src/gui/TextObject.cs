@@ -29,20 +29,6 @@ namespace Topdown.GUI {
 			TextStyle = textStyle;
 		}
 
-		// /// <summary>
-		// /// With Parent Constructor
-		// /// </summary>
-		// /// <param name="parent"></param>
-		// /// <param name="pos"></param>
-		// /// <param name="size"></param>
-		// /// <param name="text"></param>
-		// /// <param name="font"></param>
-		// /// <param name="bgColor"></param>
-		// public TextObject(UIEntity parent, Vector2 pos, Vector2 size, String text, FontProperties font, Color? bgColor) : base(parent, pos, size, bgColor) {
-		// 	Text = text;
-		// 	Font = font;
-		// }
-
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
 		public override void Render() {

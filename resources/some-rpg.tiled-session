@@ -13,10 +13,18 @@
     "fileStates": {
         "maps/testmap.tmx": {
             "scale": 1.698125,
-            "selectedLayer": 3,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 391.31394920868604,
-                "y": 151.63783584836216
+                "x": 180.4931910195068,
+                "y": 238.79278616120718
+            }
+        },
+        "maps/testmap2.tmx": {
+            "scale": 1.4009,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 240.20272681847382,
+                "y": 51.75244485687773
             }
         },
         "tilesets/fences.tsx": {
@@ -37,9 +45,11 @@
     },
     "last.imagePath": "C:/Users/d27th/Documents/Game Dev/some-rpg/topdown/resources/tilesets",
     "last.objectTemplatePath": "C:/Users/d27th/Documents/Game Dev/some-rpg/topdown/resources/maps/templates/test",
+    "map.height": 15,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
+    "map.width": 20,
     "openFiles": [
         "maps/testmap.tmx"
     ],

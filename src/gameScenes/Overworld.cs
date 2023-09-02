@@ -31,7 +31,7 @@ namespace Topdown {
 				rotation = 0,
 				zoom = 1
 			};
-			_map = new Map(mapPath);
+			_map = new Map(mapPath, Vector2.Zero);
         }
 
 		// SCENE FUNCTIONS
@@ -46,13 +46,11 @@ namespace Topdown {
 			// 2 - MAP LOADING
 			//--------------------------------------------------
 			_map.LoadTextures();
-			_map.LoadObjectsAsEntities();
+			_map.LoadObjectsAsEntities(Globals.TILE_SIZE);
 
             // 3 - PLAYER LOADING
             //--------------------------------------------------
-			_player = new Player(new Vector2(8, 14));
-
-			
+			_player = new Player(new Vector2(8, 14));			
 		}
 
         public void Update() {
@@ -64,31 +62,31 @@ namespace Topdown {
 
 				if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) {
 					playerT.ChangeDirection(Direction.Right);
-					playerT.TargetTP = new Vector2(playerT.TilePos.X + 1, playerT.TilePos.Y);
+					playerT.TargetTile = new Vector2(playerT.Tile.X + 1, playerT.Tile.Y);
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) {
 					playerT.ChangeDirection(Direction.Left);
-					playerT.TargetTP = new Vector2(playerT.TilePos.X - 1, playerT.TilePos.Y);
+					playerT.TargetTile = new Vector2(playerT.Tile.X - 1, playerT.Tile.Y);
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN)) {
 					playerT.ChangeDirection(Direction.Down);
-					playerT.TargetTP = new Vector2(playerT.TilePos.X, playerT.TilePos.Y + 1);
+					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y + 1);
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP)) {
 					playerT.ChangeDirection(Direction.Up);
-					playerT.TargetTP = new Vector2(playerT.TilePos.X, playerT.TilePos.Y - 1);
+					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y - 1);
 				} else {
-					playerT.TargetTP = new Vector2(playerT.TilePos.X, playerT.TilePos.Y);
+					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y);
 				}
 
 				// Collision, movement cancellation
-				if (playerT.TargetTP != playerT.TilePos) {
-					if (_map.IsMapCollision(playerT.TargetTP) || GetEntityListAtTilePos(playerT.TargetTP).Count() > 0)
-						playerT.TargetTP = playerT.TilePos;
+				if (playerT.TargetTile != playerT.Tile) {
+					if (_map.IsMapCollision(playerT.TargetTile, Globals.TILE_SIZE) || GetEntityListAtTile(playerT.TargetTile).Count() > 0)
+						playerT.TargetTile = playerT.Tile;
 				}
 					
 			}
 
 			// Player Interaction
 			if (Raylib.IsKeyReleased(KeyboardKey.KEY_SPACE)) {
-				Vector2 target = playerT.TilePos;
+				Vector2 target = playerT.Tile;
 				switch (playerT.Facing) {
 					case Direction.Up:
 						target -= Vector2.UnitY;
@@ -109,8 +107,8 @@ namespace Topdown {
 				if (DialogueManager.DialogueActive) {
 					DialogueManager.NextMessage();
 				} else {
-					if (GetEntityAtTilePos(target) is not null && GetEntityAtTilePos(target) is IInteractable) {
-						IInteractable i = GetEntityAtTilePos(target) as IInteractable;
+					if (GetEntityAtTile(target) is not null && GetEntityAtTile(target) is IInteractable) {
+						IInteractable i = GetEntityAtTile(target) as IInteractable;
 						i.OnInteract();
 					}	
 				}
@@ -131,7 +129,7 @@ namespace Topdown {
 				Raylib.BeginMode2D(_camera);
 
 					if (_map != null)
-						_map.RenderMap(Globals.WORLD_SCALE);
+						_map.RenderMap(_camera, Globals.WORLD_SCALE, Globals.TILE_SIZE, Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT);
 
 					ESpriteSystem.Update();
 
@@ -142,7 +140,7 @@ namespace Topdown {
 
 				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.BLACK);
 				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.BLACK);
-				// playerT.DrawEntityDebugText(Globals.TILE_SIZE, new Vector2(5, 75));
+				playerT.DrawEntityDebugText(Globals.TILE_SIZE, new Vector2(5, 75));
 
 				UIEntitySystem.RenderAll();
 				_dialogueManager.Render();
@@ -160,18 +158,18 @@ namespace Topdown {
 
 		// FUNCTIONS
         //------------------------------------------------------------------------------------------
-		public Entity GetEntityAtTilePos(Vector2 tilePos) {
+		public Entity GetEntityAtTile(Vector2 tile) {
 			if (ETransformSystem.Components.Count() == 0) return null;	
-			ETransform transform = ETransformSystem.Components.FirstOrDefault(c => c.TilePos == tilePos, null) ?? null;
+			ETransform transform = ETransformSystem.Components.FirstOrDefault(c => c.Tile == tile, null) ?? null;
 			
 			if (transform is null) return null;
 			else return transform.entity;
 			// return _entityList.FirstOrDefault(
 		}
 
-		public List<Entity> GetEntityListAtTilePos(Vector2 tilePos) {
+		public List<Entity> GetEntityListAtTile(Vector2 tile) {
 			if (ETransformSystem.Components.Count() == 0) return null;	
-			List<ETransform> transforms = ETransformSystem.Components.Where(c => c.TilePos == tilePos).ToList();
+			List<ETransform> transforms = ETransformSystem.Components.Where(c => c.Tile == tile).ToList();
 			List<Entity> entityList = new List<Entity>();
 			foreach (ETransform t in transforms) {
 				entityList.Add(t.entity);

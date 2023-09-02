@@ -2,8 +2,13 @@
 /*
 TODO: (Engine Stuff)
 /	Render Queue (do i need one yet? Not really i guess; but soon i'll have to)
+/		Render only whats on screen		<----
+/	Multiple Scenes & Scene Switching 	<----
+/		Instead of Multiple Scenes for the overworld, how about a map switching
+/		If the game is small enough, then I can probably just load all of the tilesets
+/		at the start of the game anyway....
+/		OR SEAMLESS MAP LOADING?? we need both i think
 /	Flag System
-/	Multiple Scenes & Scene Switching
 /	Debug Info Display
 
 TODO: (Mechanic / Game Design Stuff)

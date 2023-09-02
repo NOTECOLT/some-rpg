@@ -19,16 +19,25 @@ namespace Topdown {
 		// FIELDS
 		//------------------------------------------------------------------------------------------
 		private Dictionary<TiledTileset, Texture2D> _tilesetTextures;
+		private Vector2 _origin; // Marks the origin of the Map (top left corner). Position is in world coordinates
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
 		public TiledMap LoadedMap { get; private set; }
 		public Dictionary<int, TiledTileset> LoadedTilesets { get; private set; }
 
-		public Map(string path) {
+		public Dictionary<string, Map> AdjacentMaps { get; set; } = new Dictionary<string, Map>();
+
+		/// <summary>
+		/// Map Constructor essentially acts as a map loader
+		/// </summary>
+		/// <param name="path"></param>
+		public Map(string path, Vector2 origin) {
 			LoadedMap = new TiledMap(path);
 			LoadedTilesets = LoadedMap.GetTiledTilesets("resources/maps/");
 			_tilesetTextures = null;
+
+			_origin = origin;
 		}
 
 		// FUNCTIONS
@@ -45,7 +54,7 @@ namespace Topdown {
 			}
 		}
 
-		public List<Entity> LoadObjectsAsEntities() {
+		public List<Entity> LoadObjectsAsEntities(int tileSize) {
 			List<Entity> EntityList = new List<Entity>();
 
 			TiledObject[] tiledObjects = LoadedMap.Layers.First(layer => layer.type == TiledLayerType.ObjectLayer).objects;
@@ -59,7 +68,7 @@ namespace Topdown {
 					
 				if (type == "signpost") {
 					Dialogue dialogue = XMLDialogueParser.LoadDialogueFromFile(obj.properties.First(prop => prop.name == "Dialogue").value);
-					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1), dialogue, ReturnSpriteFromGID(obj.gid));
+					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (_origin / tileSize), dialogue, ReturnSpriteFromGID(obj.gid));
 					EntityList.Add(signpost);
 
 					continue;
@@ -67,7 +76,7 @@ namespace Topdown {
 
 				defaultEntity:
 					Entity entity = new Entity();
-					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1), 0, 0, Globals.TILE_SIZE));
+					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (_origin / tileSize), 0, 0, Globals.TILE_SIZE));
 					entity.AddComponent(new ESprite(ReturnSpriteFromGID(obj.gid), 0));
 					EntityList.Add(entity);
 
@@ -85,7 +94,7 @@ namespace Topdown {
         /// <param name="tilesets">Object representation of tsx file</param>
         /// <param name="tilesetTextures">Maps the tsx representation to Raylib Textures</param>
         /// <param name="scale"></param>
-        public void RenderMap(float scale) {
+        public void RenderMap(Camera2D camera, float scale, int tileSize, int screenWidth, int screenHeight) {
 			if (LoadedTilesets == null) LoadTextures();
 
 			// Reference: https://github.com/TheBoneJarmer/TiledCS
@@ -93,28 +102,40 @@ namespace Topdown {
                 for (int y = 0; y < layer.height; y++) {
                     for (int x = 0; x < layer.width; x++) {
                         int gid = layer.data[(y * layer.width) + x];
+						if (gid == 0) continue;
+						
 
-                        if (gid == 0) continue;
-
+						Vector2 drawPos = new Vector2(x * tileSize, y * tileSize) + _origin;
+						Vector2 screenPos = Raylib.GetWorldToScreen2D(drawPos, camera);
+						if (screenPos.X + tileSize < 0 || 
+							screenPos.Y + tileSize < 0 ||
+							screenPos.X > screenWidth ||
+							screenPos.Y > screenHeight) {
+							continue;
+						}
+                        
                         // Represents the retrieved texture & rect as sprite then renders
-                        ReturnSpriteFromGID(gid).RenderSprite(new Vector2(x * 32, y * 32), new Vector2(0, 0), scale, Color.WHITE);;
+                        ReturnSpriteFromGID(gid).RenderSprite(drawPos, new Vector2(0, 0), scale, Color.WHITE);;
                     }
                 }
             }
         }
 
-
 		/// <summary>
 		/// Checks if a tile is walkable or not. Checks for walkability across ALL layers.
 		/// </summary>
-		/// <param name="pos"></param>
+		/// <param name="tile"></param>
 		/// <param name="layer"></param>
 		/// <returns>Returns true if there is a collision (i.e. tile not walkable). False otherwise.</returns>
-		public bool IsMapCollision(Vector2 pos) {
-			if (pos.X < 0 || pos.Y < 0 || pos.X >= LoadedMap.Width || pos.Y >= LoadedMap.Height)
+		public bool IsMapCollision(Vector2 tile, int tileSize) {
+			tile -= _origin / tileSize;
+
+			// TODO: THIS PROPERLY
+
+			if (tile.X < 0 || tile.Y < 0 || tile.X >= LoadedMap.Width || tile.Y >= LoadedMap.Height)
 				return true;
 
-            int idx = ((int)pos.Y * LoadedMap.Width) + (int)pos.X;
+            int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
             // int gid = LoadedMap.Layers[layer].data[idx];
 			// if (gid == 0) return true;
 			bool walkable = true;

@@ -31,20 +31,6 @@ namespace Topdown.GUI {
 			Font = font;
 		}
 
-		// /// <summary>
-		// /// With Parent Constructor
-		// /// </summary>
-		// /// <param name="parent"></param>
-		// /// <param name="pos"></param>
-		// /// <param name="size"></param>
-		// /// <param name="charLimit"></param>
-		// /// <param name="font"></param>
-		// /// <param name="bgColor"></param>
-		// public TextField(UIEntity parent, Vector2 pos, Vector2 size, int charLimit, FontProperties font, Color? bgColor) : base(parent, pos, size, bgColor) {
-		// 	CharLimit = charLimit;
-		// 	Font = font;
-		// }
-
 		public override void Render() {		
 			base.Render();
 				
