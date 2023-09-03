@@ -38,19 +38,6 @@ namespace Topdown.GUI {
             UIEntitySystem.Register(this);
 		}
 
-		// /// <summary>
-		// /// With Parent Constructor
-		// /// </summary>
-		// /// <param name="parent"></param>
-		// /// <param name="pos"></param>
-		// /// <param name="size"></param>
-		// /// <param name="bgColor"></param>
-		// public UIEntity(UIEntity parent, Vector2 pos, Vector2 size, Color? bgColor) {
-		// 	_absoluteRect = Rect = new Rectangle(pos.X, pos.Y, size.X, size.Y);
-		// 	BGColor = bgColor;
-		// 	SetParent(parent);
-		// }
-
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
 		public virtual void Render() { 

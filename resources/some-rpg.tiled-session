@@ -13,22 +13,26 @@
     "fileStates": {
         "maps/testmap.tmx": {
             "scale": 1.698125,
-            "selectedLayer": 2,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 180.4931910195068,
-                "y": 238.79278616120718
+                "x": 388.95841001104156,
+                "y": 150.46006624953992
             }
         },
         "maps/testmap2.tmx": {
             "scale": 1.4009,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 240.20272681847382,
-                "y": 51.75244485687773
+                "x": 239.48889999286175,
+                "y": 50.3247912056535
             }
         },
+        "tilesets/Houses.tsx": {
+            "scaleInEditor": 1
+        },
         "tilesets/fences.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "tilesets/grass.tsx": {
             "scaleInDock": 1,
@@ -56,10 +60,12 @@
     "project": "some-rpg.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "maps/testmap.tmx",
-        "tilesets/plains.tsx",
+        "tilesets/fences.tsx",
         "tilesets/grass.tsx",
-        "tilesets/objects.tsx"
+        "tilesets/plains.tsx",
+        "tilesets/objects.tsx",
+        "tilesets/Houses.tsx",
+        "maps/testmap.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

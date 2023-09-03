@@ -15,9 +15,8 @@ namespace Topdown {
 	/// </summary>
     public class OverworldScene : IScene {
         private Player _player;
-		// private List<Entity> _entityList;	// Contains a list of entities excluding the player
         private Camera2D _camera;
-        private Map _map;
+		private List<Map> _loadedMaps = new List<Map>();
 		private DialogueManager _dialogueManager;
 		
 
@@ -31,7 +30,7 @@ namespace Topdown {
 				rotation = 0,
 				zoom = 1
 			};
-			_map = new Map(mapPath, Vector2.Zero);
+			_loadedMaps.Add(new Map(mapPath, Vector2.Zero));
         }
 
 		// SCENE FUNCTIONS
@@ -42,11 +41,9 @@ namespace Topdown {
 			// most DialogueManager functions uses static objects, but an object is needed for the UI elements
 			_dialogueManager = new DialogueManager();
 
-
 			// 2 - MAP LOADING
 			//--------------------------------------------------
-			_map.LoadTextures();
-			_map.LoadObjectsAsEntities(Globals.TILE_SIZE);
+			LoadMap(_loadedMaps[0]);
 
             // 3 - PLAYER LOADING
             //--------------------------------------------------
@@ -78,8 +75,33 @@ namespace Topdown {
 
 				// Collision, movement cancellation
 				if (playerT.TargetTile != playerT.Tile) {
-					if (_map.IsMapCollision(playerT.TargetTile, Globals.TILE_SIZE) || GetEntityListAtTile(playerT.TargetTile).Count() > 0)
+
+					if (_loadedMaps.Count() > 0) {
+						// At the moment of collision, map are also reloaded
+						// TODO: Improve this? not really the best way to handle it atm
+						Vector2 tile = playerT.TargetTile - _loadedMaps[0].Origin / Globals.TILE_SIZE;
+
+						if (tile.X < 0 && _loadedMaps[0].HasMapConnection("West"))
+							LoadMap(_loadedMaps[0].AdjacentMaps["West"]);
+						else if (tile.Y < 0 && _loadedMaps[0].HasMapConnection("North"))
+							LoadMap(_loadedMaps[0].AdjacentMaps["North"]);
+						else if (tile.X >= _loadedMaps[0].LoadedMap.Width && _loadedMaps[0].HasMapConnection("East"))
+							LoadMap(_loadedMaps[0].AdjacentMaps["East"]);
+						else if (tile.Y >= _loadedMaps[0].LoadedMap.Height && _loadedMaps[0].HasMapConnection("South"))
+							LoadMap(_loadedMaps[0].AdjacentMaps["South"]);
+
+
+						foreach (Map m in _loadedMaps) {
+							if (m.IsMapCollision(playerT.TargetTile, Globals.TILE_SIZE)) {
+								playerT.TargetTile = playerT.Tile;
+							}	
+						}
+					}
+
+					if (GetEntityListAtTile(playerT.TargetTile).Count() > 0) {
 						playerT.TargetTile = playerT.Tile;
+					}
+						
 				}
 					
 			}
@@ -128,8 +150,12 @@ namespace Topdown {
 				_camera.offset = new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2);
 				Raylib.BeginMode2D(_camera);
 
-					if (_map != null)
-						_map.RenderMap(_camera, Globals.WORLD_SCALE, Globals.TILE_SIZE, Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT);
+					if (_loadedMaps.Count() > 0) {
+						foreach (Map m in _loadedMaps) {
+							m.RenderMap(_camera, Globals.WORLD_SCALE, Globals.TILE_SIZE, Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT);
+						}
+					}
+						
 
 					ESpriteSystem.Update();
 
@@ -154,20 +180,59 @@ namespace Topdown {
 			ETransformSystem.Unload();
 
 			UIEntitySystem.Unload();
+
+			Map.UnloadAllTextures();
         }
 
 		// FUNCTIONS
         //------------------------------------------------------------------------------------------
-		public Entity GetEntityAtTile(Vector2 tile) {
+
+		/// <summary>
+		/// Loads a Map onto the _loadedMaps list, also loads the map's adjacent maps
+		/// </summary>
+		/// <param name="map"></param>
+		private void LoadMap(Map map) {
+			if (_loadedMaps[0] != map) {
+				_loadedMaps.Remove(map);
+				_loadedMaps.Insert(0, map);
+			}
+
+			_loadedMaps[0].LoadTextures();
+			_loadedMaps[0].LoadObjectsAsEntities(Globals.TILE_SIZE);
+
+			_loadedMaps[0].LoadAdjacentMaps(Globals.TILE_SIZE);
+			foreach (KeyValuePair<String, Map> entry in _loadedMaps[0].AdjacentMaps) {
+				if (IsMapLoaded(entry.Value)) continue;
+				// TODO: FIX THE MAP CHECKING FUCNTION
+				entry.Value.LoadTextures();
+				entry.Value.LoadObjectsAsEntities(Globals.TILE_SIZE);
+
+				_loadedMaps.Add(entry.Value);
+			}
+		}
+
+		/// <summary>
+		/// Checks if a map is loaded in the map list. Uses filepath for equality check
+		/// </summary>
+		/// <param name="map"></param>
+		/// <returns></returns>
+		private bool IsMapLoaded(Map map) {
+			foreach (Map m in _loadedMaps) {
+				if (m.FilePath == map.FilePath) return true;
+			}
+
+			return false;
+		}
+		
+		private Entity GetEntityAtTile(Vector2 tile) {
 			if (ETransformSystem.Components.Count() == 0) return null;	
 			ETransform transform = ETransformSystem.Components.FirstOrDefault(c => c.Tile == tile, null) ?? null;
 			
 			if (transform is null) return null;
 			else return transform.entity;
-			// return _entityList.FirstOrDefault(
 		}
 
-		public List<Entity> GetEntityListAtTile(Vector2 tile) {
+		private List<Entity> GetEntityListAtTile(Vector2 tile) {
 			if (ETransformSystem.Components.Count() == 0) return null;	
 			List<ETransform> transforms = ETransformSystem.Components.Where(c => c.Tile == tile).ToList();
 			List<Entity> entityList = new List<Entity>();
@@ -176,7 +241,7 @@ namespace Topdown {
 			}
 
 			return entityList;
-			// return _entityList.Where(e => e.GetComponent<ETransform>().TilePos == tilePos);
 		}
+		
     }
 }
