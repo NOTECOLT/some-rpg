@@ -64,15 +64,15 @@ namespace Topdown {
             Raylib.InitWindow(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT, "test");
             Raylib.SetTargetFPS(60);
 
-            // WORLD INITIALIZATION
+            // MAP DICTIONARY INITIALIZATION
             //--------------------------------------------------
-            Console.WriteLine($"Current Working Directory: {Directory.GetCurrentDirectory()}");
+			Map.CreateMapDictionary();
 
             // SCENE INITIALIZATION
             //--------------------------------------------------
 			
 			SceneLoader sceneLoader = new SceneLoader();
-			OverworldScene overworldScene = new OverworldScene("resources/maps/testmap.tmx");
+			OverworldScene overworldScene = new OverworldScene("Test Map 1");
 
 			sceneLoader.LoadScene(overworldScene);
 

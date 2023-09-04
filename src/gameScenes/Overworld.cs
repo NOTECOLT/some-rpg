@@ -25,12 +25,12 @@ namespace Topdown {
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="map"></param>
-        public OverworldScene(string mapPath) {
+        public OverworldScene(string name) {
             _camera = new Camera2D() {
 				rotation = 0,
 				zoom = 1
 			};
-			_loadedMaps.Add(new Map(mapPath, Vector2.Zero));
+			_loadedMaps.Add(new Map(name, Vector2.Zero));
         }
 
 		// SCENE FUNCTIONS
@@ -71,39 +71,7 @@ namespace Topdown {
 					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y - 1);
 				} else {
 					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y);
-				}
-
-				// Collision, movement cancellation
-				if (playerT.TargetTile != playerT.Tile) {
-
-					if (_loadedMaps.Count() > 0) {
-						// At the moment of collision, map are also reloaded
-						// TODO: Improve this? not really the best way to handle it atm
-						Vector2 tile = playerT.TargetTile - _loadedMaps[0].Origin / Globals.TILE_SIZE;
-
-						if (tile.X < 0 && _loadedMaps[0].HasMapConnection(Direction.West))
-							LoadMap(_loadedMaps[0].AdjacentMaps[Direction.West]);
-						else if (tile.Y < 0 && _loadedMaps[0].HasMapConnection(Direction.North))
-							LoadMap(_loadedMaps[0].AdjacentMaps[Direction.North]);
-						else if (tile.X >= _loadedMaps[0].LoadedMap.Width && _loadedMaps[0].HasMapConnection(Direction.East))
-							LoadMap(_loadedMaps[0].AdjacentMaps[Direction.East]);
-						else if (tile.Y >= _loadedMaps[0].LoadedMap.Height && _loadedMaps[0].HasMapConnection(Direction.South))
-							LoadMap(_loadedMaps[0].AdjacentMaps[Direction.South]);
-
-
-						foreach (Map m in _loadedMaps) {
-							if (m.IsMapCollision(playerT.TargetTile, Globals.TILE_SIZE)) {
-								playerT.TargetTile = playerT.Tile;
-							}	
-						}
-					}
-
-					if (GetEntityListAtTile(playerT.TargetTile).Count() > 0) {
-						playerT.TargetTile = playerT.Tile;
-					}
-						
-				}
-					
+				}	
 			}
 
 			// Player Interaction
@@ -139,6 +107,37 @@ namespace Topdown {
 			// 2 - PHYSICS
 			//--------------------------------------------------
 
+			// Tile Events
+			if (playerT.TargetTile != playerT.Tile) {
+				// Map Reloading
+				// TODO: Improve this? not really the best way to handle it atm
+				if (_loadedMaps.Count > 0) {
+					Vector2 tile = playerT.TargetTile - _loadedMaps[0].Origin / Globals.TILE_SIZE;
+
+					if (tile.X < 0 && _loadedMaps[0].HasMapConnection(Direction.West))
+						LoadMap(_loadedMaps[0].AdjacentMaps[Direction.West]);
+					else if (tile.Y < 0 && _loadedMaps[0].HasMapConnection(Direction.North))
+						LoadMap(_loadedMaps[0].AdjacentMaps[Direction.North]);
+					else if (tile.X >= _loadedMaps[0].LoadedMap.Width && _loadedMaps[0].HasMapConnection(Direction.East))
+						LoadMap(_loadedMaps[0].AdjacentMaps[Direction.East]);
+					else if (tile.Y >= _loadedMaps[0].LoadedMap.Height && _loadedMaps[0].HasMapConnection(Direction.South))
+						LoadMap(_loadedMaps[0].AdjacentMaps[Direction.South]);
+				}
+
+				// Tile Collision
+				if (_loadedMaps[0].IsMapCollision(playerT.TargetTile, Globals.TILE_SIZE)) {
+					// Note: When colliding with a tile on the border of a map, the current map loaded changes (even when it shouldn't in theory)
+					//		Atm, this isn't causing any problems, but it may in the future
+					playerT.TargetTile = playerT.Tile;
+				}
+
+				// Entity Collision
+				if (GetEntityListAtTile(playerT.TargetTile).Count > 0) {
+					playerT.TargetTile = playerT.Tile;
+				}
+					
+			}
+
 			ETransformSystem.Update();
 
 			// 3 - RENDERING
@@ -150,7 +149,7 @@ namespace Topdown {
 				_camera.offset = new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2);
 				Raylib.BeginMode2D(_camera);
 
-					if (_loadedMaps.Count() > 0) {
+					if (_loadedMaps.Count > 0) {
 						foreach (Map m in _loadedMaps) {
 							m.RenderMap(_camera, Globals.WORLD_SCALE, Globals.TILE_SIZE, Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT);
 						}
@@ -192,8 +191,13 @@ namespace Topdown {
 		/// </summary>
 		/// <param name="map"></param>
 		private void LoadMap(Map map) {
-			if (_loadedMaps[0] != map) {
-				_loadedMaps.Remove(map);
+			if (_loadedMaps[0].Name != map.Name) {
+				foreach (Map m in _loadedMaps) {
+					if (m.Name == map.Name) {
+						_loadedMaps.Remove(m);
+						break;
+					}
+				}
 				_loadedMaps.Insert(0, map);
 			}
 
@@ -218,22 +222,22 @@ namespace Topdown {
 		/// <returns></returns>
 		private bool IsMapLoaded(Map map) {
 			foreach (Map m in _loadedMaps) {
-				if (m.FilePath == map.FilePath) return true;
+				if (m.Name == map.Name) return true;
 			}
 
 			return false;
 		}
 		
-		private Entity GetEntityAtTile(Vector2 tile) {
-			if (ETransformSystem.Components.Count() == 0) return null;	
+		private static Entity GetEntityAtTile(Vector2 tile) {
+			if (ETransformSystem.Components.Count == 0) return null;	
 			ETransform transform = ETransformSystem.Components.FirstOrDefault(c => c.Tile == tile, null) ?? null;
 			
 			if (transform is null) return null;
 			else return transform.entity;
 		}
 
-		private List<Entity> GetEntityListAtTile(Vector2 tile) {
-			if (ETransformSystem.Components.Count() == 0) return null;	
+		private static List<Entity> GetEntityListAtTile(Vector2 tile) {
+			if (ETransformSystem.Components.Count == 0) return null;	
 			List<ETransform> transforms = ETransformSystem.Components.Where(c => c.Tile == tile).ToList();
 			List<Entity> entityList = new List<Entity>();
 			foreach (ETransform t in transforms) {

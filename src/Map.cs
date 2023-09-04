@@ -12,6 +12,7 @@
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
+using System.Xml;
 using TiledCS;
 using Raylib_cs;
 using Topdown.ECS;
@@ -36,10 +37,16 @@ namespace Topdown {
 		/// </summary>
 		public static Dictionary<String, Texture2D> TilesetTextures { get; private set; } = new Dictionary<String, Texture2D>();
 
+		/// <summary>
+		/// References file for all map names and their file paths
+		/// </summary>
+		public static Dictionary<string, string> MapDictionary = new Dictionary<string, string>();
+
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
 		
-		public String FilePath { get; }
+		public String Name { get; }
+		// public String FilePath { get; }
 		/// <summary>
 		/// Marks the origin of the map (top left corner.) Defined in world coordinates
 		/// </summary>	
@@ -49,24 +56,26 @@ namespace Topdown {
 		public Dictionary<Direction, Map> AdjacentMaps { get; set; } = new Dictionary<Direction, Map>();
 
 		/// <summary>
-		/// Map Constructor essentially acts as a map loader
+		/// Map Constructor loads the map from the file, but does not load any textures nor entities into the game
 		/// </summary>
 		/// <param name="path"></param>
-		public Map(string path, Vector2 origin) {
-			FilePath = path;
-			LoadedMap = new TiledMap(path);
+		public Map(String name, Vector2 origin) {
+			LoadedMap = new TiledMap(MapDictionary[name]);
 			LoadedTilesets = LoadedMap.GetTiledTilesets("resources/maps/");
-			// _tilesetTextures = null;
 
+			Name = name;
 			Origin = origin;
 		}
 
-		public Map(string path) {
-			FilePath = path;
-			LoadedMap = new TiledMap(path);
+		/// <summary>
+		/// Map Constructor loads the map from the file, but does not load any textures nor entities into the game
+		/// </summary>
+		/// <param name="path"></param>
+		public Map(String name) {
+			LoadedMap = new TiledMap(MapDictionary[name]);
 			LoadedTilesets = LoadedMap.GetTiledTilesets("resources/maps/");
-			// _tilesetTextures = null;
 
+			Name = name;
 			Origin = Vector2.Zero;
 		}
 
@@ -75,6 +84,36 @@ namespace Topdown {
 		//------------------------------------------------------------------------------------------
 		public static void UnloadAllTextures() {
 			TilesetTextures = new Dictionary<String, Texture2D>();
+		}
+
+        public static void CreateMapDictionary() {
+			string dictPath = "resources/maps/mapdictionary.xml";
+			if (!File.Exists(dictPath)) {
+				throw new FileLoadException($"Map Dictionary at {dictPath} does not exist");
+			}
+
+			// 1 - FILE READ
+			//--------------------------------------------------
+			string fileText = File.ReadAllText(dictPath);
+
+			XmlDocument xml = new XmlDocument();
+			xml.LoadXml(fileText);
+
+			// 2 - XML PARSE
+			//--------------------------------------------------
+			XmlElement root = xml.DocumentElement;
+			
+			foreach (XmlNode node in root) {
+				if (node.Name != "map") continue;;
+
+				string name = "", path = "";
+				foreach (XmlNode child in node.ChildNodes) {
+					if (child.Name == "name") name = child.InnerText;
+					if (child.Name == "path") path = child.InnerText;
+				}
+
+				MapDictionary[name] = path;
+			}
 		}
 
 		// FUNCTIONS
@@ -219,26 +258,26 @@ namespace Topdown {
 				(tile.Y >= LoadedMap.Height && HasMapConnection(Direction.South)))
 				return false;
 
-            int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
-			bool walkable = true;
+            // int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
+			// bool walkable = true;
 
 			// Checks each layer for collision (rather than one layer)
 			// Might not be efficient if we increase the number of layers
 			//		(Will run multiple loops with each movement)
-			foreach (TiledLayer mapLayer in LoadedMap.Layers) {
-				if (mapLayer.type == TiledLayerType.ObjectLayer) continue;
 
-				int gid = mapLayer.data[idx];
-				if (gid == 0) continue;
+			return TileContainsPropertyValue(tile, "Walkable", false);
+			// foreach (TiledLayer mapLayer in LoadedMap.Layers) {
+			// 	if (mapLayer.type == TiledLayerType.ObjectLayer) continue;
 
-				// Retrieves the Walkable Property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
-				// TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
-				TiledProperty walkableProp = ReturnTileFromGID(gid).properties.First(prop => prop.name == "Walkable"); 	
-				walkable = Convert.ToBoolean(walkableProp.value);
-				// Console.WriteLine($"{gid} Walkable: {walkable}");
-				if (!walkable) return true;				
-			}				
-			return false;
+			// 	int gid = mapLayer.data[idx];
+			// 	if (gid == 0) continue;
+
+			// 	// Retrieves the Walkable Property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
+			// 	TiledProperty walkableProp = ReturnTileFromGID(gid).properties.First(prop => prop.name == "Walkable"); 	
+			// 	walkable = Convert.ToBoolean(walkableProp.value);
+			// 	if (!walkable) return true;				
+			// }				
+			// return false;
 		}
 
 		/// <summary>
@@ -271,6 +310,57 @@ namespace Topdown {
 
 		// PRIVATE FUNCTIONS
 		//------------------------------------------------------------------------------------------
+		public T ReturnFirstPropertyFromTile<T>(Vector2 tile, String propertyName, T def = default) {
+			int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
+
+			foreach (TiledLayer mapLayer in LoadedMap.Layers) {
+				if (mapLayer.type == TiledLayerType.ObjectLayer) continue;
+
+				int gid = mapLayer.data[idx];
+				if (gid == 0) continue;
+
+                // Retrieves property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
+                TiledProperty property = ReturnTileFromGID(gid).properties.FirstOrDefault((Func<TiledProperty, bool>)(prop => prop.name == propertyName), null);
+
+				if (property is null) continue;
+				else return (T)Convert.ChangeType(property.value, typeof(T));			
+			}	
+
+			return def;
+		}
+
+		/// <summary>
+		/// Checks if a tile contains a property with a certain value.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="tile"></param>
+		/// <param name="propertyName"></param>
+		/// <param name="value"></param>
+		/// <returns>True if tile contains values. False otherwise. No property returns false</returns>
+		public bool TileContainsPropertyValue<T>(Vector2 tile, String propertyName, T value) {
+			int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
+
+			foreach (TiledLayer mapLayer in LoadedMap.Layers) {
+				if (mapLayer.type == TiledLayerType.ObjectLayer) continue;
+
+				int gid = mapLayer.data[idx];
+				if (gid == 0) continue;
+
+                // Retrieves property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
+                TiledProperty property = ReturnTileFromGID(gid).properties.FirstOrDefault((Func<TiledProperty, bool>)(prop => prop.name == propertyName), null);
+
+				if (property is null) continue;
+				else {
+					T a = (T)Convert.ChangeType(property.value, typeof(T));
+					if (EqualityComparer<T>.Default.Equals(a, value)) {
+						return true;
+					}
+				}			
+			}	
+
+			return false;
+		}
+
 		private TiledTile ReturnTileFromGID(int gid) {
 			TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
 			return ts.Tiles[gid - LoadedMap.GetTiledMapTileset(gid).firstgid];
@@ -284,7 +374,5 @@ namespace Topdown {
 			TiledSourceRect rect = LoadedMap.GetSourceRect(LoadedMap.GetTiledMapTileset(gid), ts, gid);
 			return new Sprite(TilesetTextures[ts.Name], new Vector2(rect.x, rect.y), new Vector2(rect.width, rect.height), 0);
 		}
-	
-
 	}
 }

@@ -1,5 +1,6 @@
 {
     "[csharp]": {
         "editor.suggest.insertMode": "insert"
-    }
+    },
+    "dotnet.defaultSolution": "topdown.sln"
 }
