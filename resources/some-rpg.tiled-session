@@ -15,16 +15,16 @@
             "scale": 1.698125,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 388.95841001104156,
-                "y": 150.46006624953992
+                "x": 227.603974972396,
+                "y": 149.8711814501288
             }
         },
         "maps/testmap2.tmx": {
-            "scale": 1.4009,
-            "selectedLayer": 0,
+            "scale": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 239.48889999286175,
-                "y": 50.3247912056535
+                "x": 240.25,
+                "y": 48.75
             }
         },
         "tilesets/Houses.tsx": {

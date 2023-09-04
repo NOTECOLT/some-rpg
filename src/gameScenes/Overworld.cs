@@ -58,16 +58,16 @@ namespace Topdown {
 				playerT.IsRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
 
 				if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) {
-					playerT.ChangeDirection(Direction.Right);
+					playerT.ChangeDirection(Direction.East);
 					playerT.TargetTile = new Vector2(playerT.Tile.X + 1, playerT.Tile.Y);
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) {
-					playerT.ChangeDirection(Direction.Left);
+					playerT.ChangeDirection(Direction.West);
 					playerT.TargetTile = new Vector2(playerT.Tile.X - 1, playerT.Tile.Y);
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN)) {
-					playerT.ChangeDirection(Direction.Down);
+					playerT.ChangeDirection(Direction.South);
 					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y + 1);
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP)) {
-					playerT.ChangeDirection(Direction.Up);
+					playerT.ChangeDirection(Direction.North);
 					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y - 1);
 				} else {
 					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y);
@@ -81,14 +81,14 @@ namespace Topdown {
 						// TODO: Improve this? not really the best way to handle it atm
 						Vector2 tile = playerT.TargetTile - _loadedMaps[0].Origin / Globals.TILE_SIZE;
 
-						if (tile.X < 0 && _loadedMaps[0].HasMapConnection("West"))
-							LoadMap(_loadedMaps[0].AdjacentMaps["West"]);
-						else if (tile.Y < 0 && _loadedMaps[0].HasMapConnection("North"))
-							LoadMap(_loadedMaps[0].AdjacentMaps["North"]);
-						else if (tile.X >= _loadedMaps[0].LoadedMap.Width && _loadedMaps[0].HasMapConnection("East"))
-							LoadMap(_loadedMaps[0].AdjacentMaps["East"]);
-						else if (tile.Y >= _loadedMaps[0].LoadedMap.Height && _loadedMaps[0].HasMapConnection("South"))
-							LoadMap(_loadedMaps[0].AdjacentMaps["South"]);
+						if (tile.X < 0 && _loadedMaps[0].HasMapConnection(Direction.West))
+							LoadMap(_loadedMaps[0].AdjacentMaps[Direction.West]);
+						else if (tile.Y < 0 && _loadedMaps[0].HasMapConnection(Direction.North))
+							LoadMap(_loadedMaps[0].AdjacentMaps[Direction.North]);
+						else if (tile.X >= _loadedMaps[0].LoadedMap.Width && _loadedMaps[0].HasMapConnection(Direction.East))
+							LoadMap(_loadedMaps[0].AdjacentMaps[Direction.East]);
+						else if (tile.Y >= _loadedMaps[0].LoadedMap.Height && _loadedMaps[0].HasMapConnection(Direction.South))
+							LoadMap(_loadedMaps[0].AdjacentMaps[Direction.South]);
 
 
 						foreach (Map m in _loadedMaps) {
@@ -110,16 +110,16 @@ namespace Topdown {
 			if (Raylib.IsKeyReleased(KeyboardKey.KEY_SPACE)) {
 				Vector2 target = playerT.Tile;
 				switch (playerT.Facing) {
-					case Direction.Up:
+					case Direction.North:
 						target -= Vector2.UnitY;
 						break;
-					case Direction.Down:
+					case Direction.South:
 						target += Vector2.UnitY;
 						break;
-					case Direction.Left:
+					case Direction.West:
 						target -= Vector2.UnitX;
 						break;
-					case Direction.Right:
+					case Direction.East:
 						target += Vector2.UnitX;
 						break;
 					default:
@@ -201,7 +201,7 @@ namespace Topdown {
 			_loadedMaps[0].LoadObjectsAsEntities(Globals.TILE_SIZE);
 
 			_loadedMaps[0].LoadAdjacentMaps(Globals.TILE_SIZE);
-			foreach (KeyValuePair<String, Map> entry in _loadedMaps[0].AdjacentMaps) {
+			foreach (KeyValuePair<Direction, Map> entry in _loadedMaps[0].AdjacentMaps) {
 				if (IsMapLoaded(entry.Value)) continue;
 				// TODO: FIX THE MAP CHECKING FUCNTION
 				entry.Value.LoadTextures();

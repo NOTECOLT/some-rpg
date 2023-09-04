@@ -17,6 +17,13 @@ using Raylib_cs;
 using Topdown.ECS;
 
 namespace Topdown {
+	public enum Direction {
+		North,
+		South,
+		West,
+		East
+	}
+	
 	/// <summary>
 	/// Class for map related functions. Class utilizes TiledCS library
 	/// </summary>
@@ -39,7 +46,7 @@ namespace Topdown {
 		public Vector2 Origin { get; private set; }
 		public TiledMap LoadedMap { get; private set; }
 		public Dictionary<int, TiledTileset> LoadedTilesets { get; private set; }
-		public Dictionary<string, Map> AdjacentMaps { get; set; } = new Dictionary<string, Map>();
+		public Dictionary<Direction, Map> AdjacentMaps { get; set; } = new Dictionary<Direction, Map>();
 
 		/// <summary>
 		/// Map Constructor essentially acts as a map loader
@@ -119,9 +126,9 @@ namespace Topdown {
 		}
 
 		public void LoadAdjacentMaps(int tileSize) {
-			List<String> directions = new List<String>() {"North", "East", "South", "West"}; 
-			foreach (String dir in directions) {
-				TiledProperty prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir, null);
+			List<Direction> directions = new List<Direction>() {Direction.North, Direction.East, Direction.South, Direction.West};
+			foreach (Direction dir in directions) {
+				TiledProperty prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir.ToString(), null);
 
 				if (prop is null) continue;
 
@@ -131,16 +138,16 @@ namespace Topdown {
 				
 				// sloppy but whatever:
 				switch (dir) {
-					case "North":
+					case Direction.North:
 						newOrigin -= new Vector2(0, AdjacentMaps[dir].LoadedMap.Height) * tileSize;
 						break;
-					case "East":
+					case Direction.East:
 						newOrigin += new Vector2(LoadedMap.Width, 0) * tileSize;
 						break;
-					case "South":
+					case Direction.South:
 						newOrigin += new Vector2(0, LoadedMap.Height) * tileSize;
 						break;
-					case "West":
+					case Direction.West:
 						newOrigin -= new Vector2(AdjacentMaps[dir].LoadedMap.Width, 0) * tileSize;
 						break;
 					default:
@@ -199,23 +206,20 @@ namespace Topdown {
 			//		EDIT: I dont think there is a better way to simplify this boolean
 
 			// Map boundaries with no connection
-			if ((tile.X < 0 && !HasMapConnection("West")) || 
-				(tile.Y < 0 && !HasMapConnection("North"))|| 
-				(tile.X >= LoadedMap.Width && !HasMapConnection("East")) || 
-				(tile.Y >= LoadedMap.Height && !HasMapConnection("South")))
+			if ((tile.X < 0 && !HasMapConnection(Direction.West)) || 
+				(tile.Y < 0 && !HasMapConnection(Direction.North))|| 
+				(tile.X >= LoadedMap.Width && !HasMapConnection(Direction.East)) || 
+				(tile.Y >= LoadedMap.Height && !HasMapConnection(Direction.South)))
 				return true;
-			
-			// Mapp Boundaries with connection
-			// 		collision function should give way for other map collision functions
-			if ((tile.X < 0 && HasMapConnection("West")) || 
-				(tile.Y < 0 && HasMapConnection("North"))|| 
-				(tile.X >= LoadedMap.Width && HasMapConnection("East")) || 
-				(tile.Y >= LoadedMap.Height && HasMapConnection("South")))
+				// Map Boundaries with connection
+				// 		collision function should give way for other map collision functions
+			else if ((tile.X < 0 && HasMapConnection(Direction.West)) || 
+				(tile.Y < 0 && HasMapConnection(Direction.North))|| 
+				(tile.X >= LoadedMap.Width && HasMapConnection(Direction.East)) || 
+				(tile.Y >= LoadedMap.Height && HasMapConnection(Direction.South)))
 				return false;
 
             int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
-            // int gid = LoadedMap.Layers[layer].data[idx];
-			// if (gid == 0) return true;
 			bool walkable = true;
 
 			// Checks each layer for collision (rather than one layer)
@@ -231,6 +235,7 @@ namespace Topdown {
 				// TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
 				TiledProperty walkableProp = ReturnTileFromGID(gid).properties.First(prop => prop.name == "Walkable"); 	
 				walkable = Convert.ToBoolean(walkableProp.value);
+				// Console.WriteLine($"{gid} Walkable: {walkable}");
 				if (!walkable) return true;				
 			}				
 			return false;
@@ -239,23 +244,23 @@ namespace Topdown {
 		/// <summary>
 		/// Returns true if a map has a connection in a given direcion
 		/// </summary>
-		/// <param name="dir">Can be "North", "East", "South", "West"</param>
+		/// <param name="dir"></param>
 		/// <returns></returns>
-		public bool HasMapConnection(String dir) {
+		public bool HasMapConnection(Direction dir) {
 			// TODO: Improve this, can be better
 			TiledProperty prop = null;
 			switch (dir) {
-				case "North":
-					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir, null);
+				case Direction.North:
+					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "North", null);
 					break;
-				case "East":
-					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir, null);
+				case Direction.East:
+					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "East", null);
 					break;
-				case "West":
-					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir, null);
+				case Direction.West:
+					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "West", null);
 					break;
-				case "South":
-					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir, null);
+				case Direction.South:
+					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "South", null);
 					break;
 				default:
 					return false;
