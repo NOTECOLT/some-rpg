@@ -23,6 +23,9 @@
             }
         },
         "maps/testmap.tmx": {
+            "expandedObjectLayers": [
+                5
+            ],
             "scale": 1.698125,
             "selectedLayer": 3,
             "viewCenter": {

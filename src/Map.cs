@@ -273,7 +273,7 @@ namespace Topdown {
 				Y = ReturnFirstPropertyFromTile<int>(tile, "Warp Y", int.MaxValue)
 			};
 
-			if (mapName is null || warpCoords == new Vector2(int.MaxValue, int.MaxValue)) return null;
+			if (mapName is null || warpCoords.X == int.MaxValue || warpCoords.Y == int.MaxValue) return null;
 			else {
 				return (mapName, warpCoords);
 			}

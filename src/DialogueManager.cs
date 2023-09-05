@@ -30,6 +30,8 @@ namespace Topdown {
 			_dialoguePanel = new UIEntity(new Vector2(Globals.ScreenWidth * 0.025f, Globals.ScreenHeight * 0.775f), new Vector2(Globals.ScreenWidth * 0.95f, Globals.ScreenHeight * 0.2f), Color.LIGHTGRAY);
 			_dialogueText = new TextObject(new Vector2(0, 0), new Vector2(Globals.ScreenWidth * 0.95f, Globals.ScreenHeight * 0.2f), "Test Text", fp, null);
 			_dialogueText.SetParent(_dialoguePanel);
+
+			_dialoguePanel.Enabled = false;
 		}
 
 		public void Render() {

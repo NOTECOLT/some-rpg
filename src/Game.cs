@@ -2,14 +2,16 @@
 /*
 TODO: (Engine Stuff)
 /	Render Queue (do i need one yet? Not really i guess; but soon i'll have to)
-//		Render only whats on screen		<----
-/	Multiple Scenes & Scene Switching 	<----
-/		Instead of Multiple Scenes for the overworld, how about a map switching
-/		If the game is small enough, then I can probably just load all of the tilesets
-/		at the start of the game anyway....
-//		OR SEAMLESS MAP LOADING?? we need both i think
 /	Flag System
+/ 	Spritesheet animations
 /	Debug Info Display
+//		Render only whats on screen		<----
+//	Multiple Scenes & Scene Switching 	<----
+//		Instead of Multiple Scenes for the overworld, how about a map switching
+//		If the game is small enough, then I can probably just load all of the tilesets
+//		at the start of the game anyway....
+//		OR SEAMLESS MAP LOADING?? we need both i think
+
 
 TODO: (Mechanic / Game Design Stuff)
 /	Game Loop
@@ -17,7 +19,6 @@ TODO: (Mechanic / Game Design Stuff)
 /	Menu System
 
 TODO: (Low ish priority; aesthetic, skin, etc.)
-/ 	Spritesheet animations
 /	Add more FontProperties 
 
 DONE (BUT COULD BE IMPROVED?)
