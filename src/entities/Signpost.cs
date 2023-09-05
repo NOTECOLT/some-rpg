@@ -9,7 +9,7 @@ namespace Topdown {
     public class Signpost : Entity, IInteractable {
         
         public Signpost(Vector2 tile, Dialogue dialogue, Sprite sprite) {
-            ETransform transform = new ETransform(tile, 0, 0, Globals.TILE_SIZE);
+            ETransform transform = new ETransform(tile, 0, 0, Globals.ScaledTileSize);
 
             AddComponent(transform);
             AddComponent(new ESprite(sprite, 0));

@@ -55,13 +55,13 @@ namespace Topdown.ECS {
 
 			// Distance takes the signed distance from target position to position
 			//		Positive values indicate that the entity is moving towards target
-			float distX = (_targetTile.X * Globals.TILE_SIZE - _position.X) * signX;
-			float distY = (_targetTile.Y * Globals.TILE_SIZE - _position.Y) * signY;
+			float distX = (_targetTile.X * Globals.ScaledTileSize - _position.X) * signX;
+			float distY = (_targetTile.Y * Globals.ScaledTileSize - _position.Y) * signY;
 
 			// Conditions: If player moves close enough to target position or past the boundaries, snap player to grid
 			if ((distX < 0.005 && distY < 0.005 ) || (distX < 0 || distY < 0)) {
 				_tile = _targetTile;
-				_position = new Vector2(_tile.X * Globals.TILE_SIZE, _tile.Y * Globals.TILE_SIZE);
+				_position = new Vector2(_tile.X * Globals.ScaledTileSize, _tile.Y * Globals.ScaledTileSize);
 				IsMoving = false;
 				return;
 			}

@@ -16,6 +16,7 @@ using System.Xml;
 using TiledCS;
 using Raylib_cs;
 using Topdown.ECS;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Topdown {
 	public enum Direction {
@@ -29,6 +30,7 @@ namespace Topdown {
 	/// Class for map related functions. Class utilizes TiledCS library
 	/// </summary>
     public class Map {
+		private static int _tileSize = Globals.ScaledTileSize;
 
 		// STATIC PROPERTIES
 		//------------------------------------------------------------------------------------------
@@ -44,7 +46,6 @@ namespace Topdown {
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-		
 		public String Name { get; }
 		// public String FilePath { get; }
 		/// <summary>
@@ -129,7 +130,7 @@ namespace Topdown {
 			}
 		}
 
-		public List<Entity> LoadObjectsAsEntities(int tileSize) {
+		public List<Entity> LoadObjectsAsEntities() {
 			List<Entity> EntityList = new List<Entity>();
 
 			TiledLayer layer = LoadedMap.Layers.FirstOrDefault(layer => layer.type == TiledLayerType.ObjectLayer, null);
@@ -146,7 +147,7 @@ namespace Topdown {
 					
 				if (type == "signpost") {
 					Dialogue dialogue = XMLDialogueParser.LoadDialogueFromFile(obj.properties.First(prop => prop.name == "Dialogue").value);
-					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / tileSize), dialogue, ReturnSpriteFromGID(obj.gid));
+					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize), dialogue, ReturnSpriteFromGID(obj.gid));
 					signpost.SetTiledProperties(obj.properties);
 					EntityList.Add(signpost);
 
@@ -155,7 +156,7 @@ namespace Topdown {
 
 				defaultEntity:
 					Entity entity = new Entity();
-					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / tileSize), 0, 0, tileSize));
+					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize), 0, 0, _tileSize));
 					entity.AddComponent(new ESprite(ReturnSpriteFromGID(obj.gid), 0));
 					entity.SetTiledProperties(obj.properties);
 					EntityList.Add(entity);
@@ -166,7 +167,7 @@ namespace Topdown {
 			return EntityList;
 		}
 
-		public void LoadAdjacentMaps(int tileSize) {
+		public void LoadAdjacentMaps() {
 			List<Direction> directions = new List<Direction>() {Direction.North, Direction.East, Direction.South, Direction.West};
 			foreach (Direction dir in directions) {
 				TiledProperty prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir.ToString(), null);
@@ -180,16 +181,16 @@ namespace Topdown {
 				// sloppy but whatever:
 				switch (dir) {
 					case Direction.North:
-						newOrigin -= new Vector2(0, AdjacentMaps[dir].LoadedMap.Height) * tileSize;
+						newOrigin -= new Vector2(0, AdjacentMaps[dir].LoadedMap.Height) * _tileSize;
 						break;
 					case Direction.East:
-						newOrigin += new Vector2(LoadedMap.Width, 0) * tileSize;
+						newOrigin += new Vector2(LoadedMap.Width, 0) * _tileSize;
 						break;
 					case Direction.South:
-						newOrigin += new Vector2(0, LoadedMap.Height) * tileSize;
+						newOrigin += new Vector2(0, LoadedMap.Height) * _tileSize;
 						break;
 					case Direction.West:
-						newOrigin -= new Vector2(AdjacentMaps[dir].LoadedMap.Width, 0) * tileSize;
+						newOrigin -= new Vector2(AdjacentMaps[dir].LoadedMap.Width, 0) * _tileSize;
 						break;
 					default:
 						break;
@@ -207,7 +208,7 @@ namespace Topdown {
         /// <param name="tilesets">Object representation of tsx file</param>
         /// <param name="tilesetTextures">Maps the tsx representation to Raylib Textures</param>
         /// <param name="scale"></param>
-        public void RenderMap(Camera2D camera, float scale, int tileSize, int screenWidth, int screenHeight) {
+        public void RenderMap(Camera2D camera, float scale, int screenWidth, int screenHeight) {
 			if (LoadedTilesets == null) LoadTextures();
 
 			// Reference: https://github.com/TheBoneJarmer/TiledCS
@@ -218,10 +219,10 @@ namespace Topdown {
 						if (gid == 0) continue;
 						
 
-						Vector2 drawPos = new Vector2(x * tileSize, y * tileSize) + Origin;
+						Vector2 drawPos = new Vector2(x * _tileSize, y * _tileSize) + Origin;
 						Vector2 screenPos = Raylib.GetWorldToScreen2D(drawPos, camera);
-						if (screenPos.X + tileSize < 0 || 
-							screenPos.Y + tileSize < 0 ||
+						if (screenPos.X + _tileSize < 0 || 
+							screenPos.Y + _tileSize < 0 ||
 							screenPos.X > screenWidth ||
 							screenPos.Y > screenHeight) {
 							continue;
@@ -240,8 +241,8 @@ namespace Topdown {
 		/// <param name="tile"></param>
 		/// <param name="layer"></param>
 		/// <returns>Returns true if there is a collision (i.e. tile not walkable). False otherwise.</returns>
-		public bool IsTileWalkable(Vector2 tile, int tileSize) {
-			tile -= Origin / tileSize;
+		public bool IsTileWalkable(Vector2 tile) {
+			tile -= Origin / _tileSize;
 
 			// TODO: FIND A BETTER WAY TO DO THIS PART?
 			//		EDIT: I dont think there is a better way to simplify this boolean
@@ -260,16 +261,16 @@ namespace Topdown {
 				(tile.Y >= LoadedMap.Height && HasMapConnection(Direction.South)))
 				return true;
 
-			return !TileContainsPropertyValue(tile, "Walkable", false, tileSize);
+			return !TileContainsPropertyValue(tile, "Walkable", false);
 		}
 
-		public (String, Vector2)? IsTileWarpable(Vector2 tile, int tileSize) {
-			tile -= Origin / tileSize;
+		public (String, Vector2)? IsTileWarpable(Vector2 tile) {
+			tile -= Origin / _tileSize;
 
-			String mapName = ReturnFirstPropertyFromTile<String>(tile, "Warp Map", tileSize, null);
+			String mapName = ReturnFirstPropertyFromTile<String>(tile, "Warp Map", null);
 			Vector2 warpCoords = new Vector2() {
-				X = ReturnFirstPropertyFromTile<int>(tile, "Warp X", tileSize, int.MaxValue),
-				Y = ReturnFirstPropertyFromTile<int>(tile, "Warp Y", tileSize, int.MaxValue)
+				X = ReturnFirstPropertyFromTile<int>(tile, "Warp X", int.MaxValue),
+				Y = ReturnFirstPropertyFromTile<int>(tile, "Warp Y", int.MaxValue)
 			};
 
 			if (mapName is null || warpCoords == new Vector2(int.MaxValue, int.MaxValue)) return null;
@@ -317,7 +318,7 @@ namespace Topdown {
 		/// <param name="propertyName"></param>
 		/// <param name="def">Default value if property does not exist in tile</param>
 		/// <returns></returns>
-		public T ReturnFirstPropertyFromTile<T>(Vector2 tile, String propertyName, int tileSize, T d = default) {
+		public T ReturnFirstPropertyFromTile<T>(Vector2 tile, String propertyName, T d = default) {
 			// TILE CHECKS
 			//--------------------------------------------------
 			int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
@@ -341,7 +342,7 @@ namespace Topdown {
 			// ENTITY CHECKS
 			//--------------------------------------------------
 			// Stupid but, entities are stored at the converted tile position (with Origin)
-			List<Entity> entities = GetEntityListAtTile(tile + (Origin / tileSize));
+			List<Entity> entities = GetEntityListAtTile(tile + (Origin / _tileSize));
 
 			foreach (Entity e in entities) {
 				if (e.TiledProperties is null) continue;
@@ -363,7 +364,7 @@ namespace Topdown {
 		/// <param name="propertyName"></param>
 		/// <param name="value"></param>
 		/// <returns>True if tile contains values. False otherwise. No property returns false</returns>
-		public bool TileContainsPropertyValue<T>(Vector2 tile, String propertyName, T value, int tileSize) {
+		public bool TileContainsPropertyValue<T>(Vector2 tile, String propertyName, T value) {
 			// TILE CHECKS
 			//--------------------------------------------------
 			int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
@@ -393,7 +394,7 @@ namespace Topdown {
 			// ENTITY CHECKS
 			//--------------------------------------------------
 			// Stupid but, entities are stored at the converted tile position (with Origin)
-			List<Entity> entities = GetEntityListAtTile(tile + (Origin / tileSize));
+			List<Entity> entities = GetEntityListAtTile(tile + (Origin / _tileSize));
 
 			foreach (Entity e in entities) {
 				if (e.TiledProperties is null) continue;

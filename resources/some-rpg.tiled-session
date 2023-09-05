@@ -12,6 +12,9 @@
     ],
     "fileStates": {
         "maps/testhouse.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
             "scale": 4,
             "selectedLayer": 2,
             "viewCenter": {

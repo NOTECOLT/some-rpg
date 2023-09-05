@@ -11,7 +11,7 @@ namespace Topdown {
         private const int PLAYER_RUNSPEED = 300;
         
         public Player(Vector2 tile) {
-            ETransform transform = new ETransform(tile, PLAYER_WALKSPEED, PLAYER_RUNSPEED, Globals.TILE_SIZE);
+            ETransform transform = new ETransform(tile, PLAYER_WALKSPEED, PLAYER_RUNSPEED, Globals.ScaledTileSize);
             ESprite sprite = new ESprite("resources/sprites/characters/player.png", 0);
 
             AddComponent(transform);

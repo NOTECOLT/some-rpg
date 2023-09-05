@@ -41,14 +41,14 @@ namespace Topdown.ECS {
             ETransform transform = entity.GetComponent<ETransform>();
 
             if (Sprite is null) {
-                Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.TILE_SIZE, Globals.TILE_SIZE, Color.MAGENTA);
+                Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.ScaledTileSize, Globals.ScaledTileSize, Color.MAGENTA);
                 return;
             }
 
-            Vector2 sprPos = new Vector2(transform.Position.X + Globals.TILE_SIZE/2, transform.Position.Y + Globals.TILE_SIZE);
-            Vector2 offset = new Vector2(Sprite.Size.X /** scale / 2*/, Sprite.Size.Y * Globals.WORLD_SCALE);
+            Vector2 sprPos = new Vector2(transform.Position.X + Globals.ScaledTileSize/2, transform.Position.Y + Globals.ScaledTileSize);
+            Vector2 offset = new Vector2(Sprite.Size.X /** scale / 2*/, Sprite.Size.Y * Globals.WorldScale);
 
-            Sprite.RenderSprite(sprPos, offset, Globals.WORLD_SCALE, Color.WHITE);
+            Sprite.RenderSprite(sprPos, offset, Globals.WorldScale, Color.WHITE);
         }
     }
 }

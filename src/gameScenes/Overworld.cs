@@ -119,7 +119,7 @@ namespace Topdown {
 				// Map Reloading
 				// TODO: Improve this? not really the best way to handle it atm
 				if (_loadedMaps.Count > 0) {
-					Vector2 tile = playerT.TargetTile - _loadedMaps[0].Origin / Globals.TILE_SIZE;
+					Vector2 tile = playerT.TargetTile - _loadedMaps[0].Origin / Globals.ScaledTileSize;
 
 					if (tile.X < 0 && _loadedMaps[0].HasMapConnection(Direction.West))
 						LoadMap(_loadedMaps[0].AdjacentMaps[Direction.West]);
@@ -132,12 +132,12 @@ namespace Topdown {
 				}
 
 				// Tile Collision
-				if (!_loadedMaps[0].IsTileWalkable(playerT.TargetTile, Globals.TILE_SIZE)) {
+				if (!_loadedMaps[0].IsTileWalkable(playerT.TargetTile)) {
 					// Note: When colliding with a tile on the border of a map, the current map loaded changes (even when it shouldn't in theory)
 					//		Atm, this isn't causing any problems, but it may in the future
 					playerT.TargetTile = playerT.Tile;
 				} else {
-					(String map, Vector2 tile)? warpTuple = _loadedMaps[0].IsTileWarpable(playerT.TargetTile, Globals.TILE_SIZE);
+					(String map, Vector2 tile)? warpTuple = _loadedMaps[0].IsTileWarpable(playerT.TargetTile);
 
 					if (warpTuple is not null) {
 						SceneLoader.QueueScene(new OverworldScene(warpTuple.Value.map, warpTuple.Value.tile));
@@ -152,13 +152,13 @@ namespace Topdown {
 
 			Raylib.BeginDrawing();
 				Raylib.ClearBackground(Color.BLACK);
-				_camera.target = new Vector2(playerT.Position.X + (Globals.TILE_SIZE / 2), playerT.Position.Y + (Globals.TILE_SIZE / 2));
-				_camera.offset = new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2);
+				_camera.target = new Vector2(playerT.Position.X + (Globals.ScaledTileSize), playerT.Position.Y + (Globals.ScaledTileSize));
+				_camera.offset = new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2);
 				Raylib.BeginMode2D(_camera);
 
 					if (_loadedMaps.Count > 0) {
 						foreach (Map m in _loadedMaps) {
-							m.RenderMap(_camera, Globals.WORLD_SCALE, Globals.TILE_SIZE, Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT);
+							m.RenderMap(_camera, Globals.WorldScale, Globals.ScreenWidth, Globals.ScreenHeight);
 						}
 					}
 						
@@ -209,13 +209,13 @@ namespace Topdown {
 			}
 
 			_loadedMaps[0].LoadTextures();
-			_loadedMaps[0].LoadObjectsAsEntities(Globals.TILE_SIZE);
+			_loadedMaps[0].LoadObjectsAsEntities();
 
-			_loadedMaps[0].LoadAdjacentMaps(Globals.TILE_SIZE);
+			_loadedMaps[0].LoadAdjacentMaps();
 			foreach (KeyValuePair<Direction, Map> entry in _loadedMaps[0].AdjacentMaps) {
 				if (IsMapLoaded(entry.Value)) continue;
 				entry.Value.LoadTextures();
-				entry.Value.LoadObjectsAsEntities(Globals.TILE_SIZE);
+				entry.Value.LoadObjectsAsEntities();
 
 				_loadedMaps.Add(entry.Value);
 			}

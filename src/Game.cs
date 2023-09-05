@@ -42,27 +42,28 @@ namespace Topdown {
 
 	/// <summary>
 	/// Temporary static class to hold some global constants.
-	/// <para> Will /prolly/ delete this when I can put this somehwere else</para>
+	/// <para> Will /prolly/ dele1te this when I can put this somehwere else</para>
 	/// </summary>
 	static class Globals {
         // RANDOM CONSTANTS, will eventually move these values
-        public const int TILE_SIZE = 32;
+        public const int TileSize = 16;
+		public const float WorldScale = 2.0f;
 
-		public const int SCREEN_WIDTH = 960;
-		public const int SCREEN_HEIGHT = 720;
+		public static int ScaledTileSize { get { return (int)(TileSize * WorldScale); } }
 
-		public const float WORLD_SCALE = 2.0f;	// This value scales sprites to fit with the tilesize
+		public const int ScreenWidth = 960;
+		public const int ScreenHeight = 720;
 	}
 
     static class Game {
 		const bool devMode = true;
 
-        public static void Main() {
+        private static void Main() {
 			DebugState debugState = DebugState.GAME;
 
             // WINDOW INITIALIZATION
             //--------------------------------------------------
-            Raylib.InitWindow(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT, "Some RPG");
+            Raylib.InitWindow(Globals.ScreenWidth, Globals.ScreenHeight, "Some RPG");
             Raylib.SetTargetFPS(60);
 
             // MAP DICTIONARY INITIALIZATION
