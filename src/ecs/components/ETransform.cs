@@ -94,11 +94,11 @@ namespace Topdown.ECS {
 		/// Renders all debug info relating an entity
 		/// </summary>
 		/// <param name="tileSize"></param>
-		public void DrawEntityDebugText(int tileSize, Vector2 pos) {
+		public void DrawEntityDebugText(Vector2 pos) {
 			if (!Enabled) return;
 
-			Raylib.DrawText($"position: ({_position.X}, {_position.Y})", (int)pos.X, (int)pos.Y, 30, Color.BLACK);
-			Raylib.DrawText($"Tile: ({_tile.X}, {_tile.Y})", (int)pos.X, (int)pos.Y + 35, 30, Color.BLACK);
+			Raylib.DrawText($"position: ({_position.X}, {_position.Y})", (int)pos.X, (int)pos.Y, 30, Color.RAYWHITE);
+			Raylib.DrawText($"Tile: ({_tile.X}, {_tile.Y})", (int)pos.X, (int)pos.Y + 35, 30, Color.RAYWHITE);
 			// Raylib.DrawText($"targetTile: ({_targetTile.X}, {_targetTile.Y})", (int)pos.X, (int)pos.Y + 70, 30, Color.BLACK);
 
 			// int x = (int)(_targetTile.X - _tile.Y);
