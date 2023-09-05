@@ -15,6 +15,7 @@ namespace Topdown {
 	/// </summary>
     public class OverworldScene : IScene {
         private Player _player;
+		private Vector2 _startingTile;
         private Camera2D _camera;
 		private List<Map> _loadedMaps = new List<Map>();
 		private DialogueManager _dialogueManager;
@@ -25,12 +26,18 @@ namespace Topdown {
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="map"></param>
-        public OverworldScene(string name) {
+        public OverworldScene(string name, Vector2 startingTile) {
+			if (!Map.MapDictionary.ContainsKey(name)) {
+				throw new Exception($"Map {name} not found in Map Dictionary!");
+			}
+
+
             _camera = new Camera2D() {
 				rotation = 0,
 				zoom = 1
 			};
 			_loadedMaps.Add(new Map(name, Vector2.Zero));
+			_startingTile = startingTile;
         }
 
 		// SCENE FUNCTIONS
@@ -47,7 +54,7 @@ namespace Topdown {
 
             // 3 - PLAYER LOADING
             //--------------------------------------------------
-			_player = new Player(new Vector2(8, 14));			
+			_player = new Player(_startingTile);			
 		}
 
         public void Update() {
@@ -108,7 +115,7 @@ namespace Topdown {
 			//--------------------------------------------------
 
 			// Tile Events
-			if (playerT.TargetTile != playerT.Tile) {
+			if (!playerT.IsMoving && playerT.TargetTile != playerT.Tile) {
 				// Map Reloading
 				// TODO: Improve this? not really the best way to handle it atm
 				if (_loadedMaps.Count > 0) {
@@ -125,17 +132,17 @@ namespace Topdown {
 				}
 
 				// Tile Collision
-				if (_loadedMaps[0].IsMapCollision(playerT.TargetTile, Globals.TILE_SIZE)) {
+				if (!_loadedMaps[0].IsTileWalkable(playerT.TargetTile, Globals.TILE_SIZE)) {
 					// Note: When colliding with a tile on the border of a map, the current map loaded changes (even when it shouldn't in theory)
 					//		Atm, this isn't causing any problems, but it may in the future
 					playerT.TargetTile = playerT.Tile;
-				}
+				} else {
+					(String map, Vector2 tile)? warpTuple = _loadedMaps[0].IsTileWarpable(playerT.TargetTile, Globals.TILE_SIZE);
 
-				// Entity Collision
-				if (GetEntityListAtTile(playerT.TargetTile).Count > 0) {
-					playerT.TargetTile = playerT.Tile;
-				}
-					
+					if (warpTuple is not null) {
+						SceneLoader.QueueScene(new OverworldScene(warpTuple.Value.map, warpTuple.Value.tile));
+					}	
+				}	
 			}
 
 			ETransformSystem.Update();
@@ -144,7 +151,7 @@ namespace Topdown {
 			//--------------------------------------------------
 
 			Raylib.BeginDrawing();
-				Raylib.ClearBackground(Color.RAYWHITE);
+				Raylib.ClearBackground(Color.BLACK);
 				_camera.target = new Vector2(playerT.Position.X + (Globals.TILE_SIZE / 2), playerT.Position.Y + (Globals.TILE_SIZE / 2));
 				_camera.offset = new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2);
 				Raylib.BeginMode2D(_camera);
@@ -163,9 +170,9 @@ namespace Topdown {
 				// UI
 				//--------------------------------------------------
 
-				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.BLACK);
-				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.BLACK);
-				playerT.DrawEntityDebugText(Globals.TILE_SIZE, new Vector2(5, 75));
+				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.RAYWHITE);
+				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.RAYWHITE);
+				playerT.DrawEntityDebugText(new Vector2(5, 75));
 
 				UIEntitySystem.RenderAll();
 				_dialogueManager.Render();
@@ -207,12 +214,13 @@ namespace Topdown {
 			_loadedMaps[0].LoadAdjacentMaps(Globals.TILE_SIZE);
 			foreach (KeyValuePair<Direction, Map> entry in _loadedMaps[0].AdjacentMaps) {
 				if (IsMapLoaded(entry.Value)) continue;
-				// TODO: FIX THE MAP CHECKING FUCNTION
 				entry.Value.LoadTextures();
 				entry.Value.LoadObjectsAsEntities(Globals.TILE_SIZE);
 
 				_loadedMaps.Add(entry.Value);
 			}
+
+			Console.WriteLine($"[MAPLOADER] Main Map: {_loadedMaps[0].Name}");
 		}
 
 		/// <summary>
@@ -235,17 +243,5 @@ namespace Topdown {
 			if (transform is null) return null;
 			else return transform.entity;
 		}
-
-		private static List<Entity> GetEntityListAtTile(Vector2 tile) {
-			if (ETransformSystem.Components.Count == 0) return null;	
-			List<ETransform> transforms = ETransformSystem.Components.Where(c => c.Tile == tile).ToList();
-			List<Entity> entityList = new List<Entity>();
-			foreach (ETransform t in transforms) {
-				entityList.Add(t.entity);
-			}
-
-			return entityList;
-		}
-		
     }
 }

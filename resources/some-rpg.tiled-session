@@ -11,20 +11,31 @@
         "maps/templates/test"
     ],
     "fileStates": {
+        "maps/testhouse.tmx": {
+            "scale": 4,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 61.625,
+                "y": 80.875
+            }
+        },
         "maps/testmap.tmx": {
             "scale": 1.698125,
             "selectedLayer": 3,
             "viewCenter": {
                 "x": 227.0150901729849,
-                "y": 149.28229665071768
+                "y": 148.6934118513066
             }
         },
         "maps/testmap2.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
             "scale": 2,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 284.75,
-                "y": 48.25
+                "x": 191.75,
+                "y": 160.25
             }
         },
         "tilesets/Houses.tsx": {
@@ -49,16 +60,16 @@
     },
     "last.imagePath": "C:/Users/d27th/Documents/Game Dev/some-rpg/topdown/resources/tilesets",
     "last.objectTemplatePath": "C:/Users/d27th/Documents/Game Dev/some-rpg/topdown/resources/maps/templates/test",
-    "map.height": 15,
+    "map.height": 5,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 20,
+    "map.width": 6,
     "openFiles": [
         "maps/testmap.tmx"
     ],
     "project": "some-rpg.tiled-project",
-    "property.type": "string",
+    "property.type": "int",
     "recentFiles": [
         "tilesets/fences.tsx",
         "tilesets/grass.tsx",

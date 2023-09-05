@@ -6,6 +6,7 @@
 //------------------------------------------------------------------------------------------
 using System.Numerics;
 using Raylib_cs;
+using TiledCS;
 
 namespace Topdown.ECS {
 	/// <summary>
@@ -14,6 +15,7 @@ namespace Topdown.ECS {
 	/// </summary>
 	public class Entity {
 		public List<Component> Components { get; private set; } = new List<Component>();
+		public TiledProperty[] TiledProperties { get; private set; } = null;
 
 		public void AddComponent(Component component) {
 			Components.Add(component);
@@ -27,6 +29,10 @@ namespace Topdown.ECS {
 				}
 			}
 			return null;
+		}
+
+		public void SetTiledProperties(TiledProperty[] properties) {
+			TiledProperties = properties;
 		}
 	}
 }

@@ -9,4 +9,8 @@
         <!-- <display>Poop 2</display> -->
         <path>resources/maps/testmap2.tmx</path>
     </map>
+    <map>
+        <name>Test House 1</name>
+        <path>resources/maps/testhouse.tmx</path>
+    </map>
 </maps>

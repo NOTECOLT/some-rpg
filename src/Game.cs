@@ -30,6 +30,7 @@ DONE (BUT COULD BE IMPROVED?)
 WELCOME TO C#! lol
 */
 //------------------------------------------------------------------------------------------
+using System.Numerics;
 using Raylib_cs;
 using Topdown.Scene;
 
@@ -61,7 +62,7 @@ namespace Topdown {
 
             // WINDOW INITIALIZATION
             //--------------------------------------------------
-            Raylib.InitWindow(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT, "test");
+            Raylib.InitWindow(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT, "Some RPG");
             Raylib.SetTargetFPS(60);
 
             // MAP DICTIONARY INITIALIZATION
@@ -70,11 +71,9 @@ namespace Topdown {
 
             // SCENE INITIALIZATION
             //--------------------------------------------------
-			
-			SceneLoader sceneLoader = new SceneLoader();
-			OverworldScene overworldScene = new OverworldScene("Test Map 1");
+			OverworldScene overworldScene = new OverworldScene("Test Map 1", new Vector2(25, 15));
 
-			sceneLoader.LoadScene(overworldScene);
+			SceneLoader.LoadScene(overworldScene);
 
             while (!Raylib.WindowShouldClose()) {
 				if (devMode) {
@@ -84,7 +83,7 @@ namespace Topdown {
 
 						switch (debugState) {
 							case DebugState.GAME:
-								sceneLoader.LoadScene(overworldScene);
+								SceneLoader.LoadScene(overworldScene);
 								break;
 							case DebugState.DEBUG_MAPEDIT:
 								// sceneLoader.LoadScene(mapEditorScene);
@@ -95,7 +94,11 @@ namespace Topdown {
 					}
 				}
 
-				sceneLoader.UpdateCurrentScene();
+				SceneLoader.UpdateCurrentScene();
+
+				if (SceneLoader.QueuedScene is not null)
+					SceneLoader.LoadSceneFromQueue();
+
             }
 
             Raylib.CloseWindow();

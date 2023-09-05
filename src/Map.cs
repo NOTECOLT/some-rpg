@@ -147,6 +147,7 @@ namespace Topdown {
 				if (type == "signpost") {
 					Dialogue dialogue = XMLDialogueParser.LoadDialogueFromFile(obj.properties.First(prop => prop.name == "Dialogue").value);
 					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / tileSize), dialogue, ReturnSpriteFromGID(obj.gid));
+					signpost.SetTiledProperties(obj.properties);
 					EntityList.Add(signpost);
 
 					continue;
@@ -154,8 +155,9 @@ namespace Topdown {
 
 				defaultEntity:
 					Entity entity = new Entity();
-					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / tileSize), 0, 0, Globals.TILE_SIZE));
+					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / tileSize), 0, 0, tileSize));
 					entity.AddComponent(new ESprite(ReturnSpriteFromGID(obj.gid), 0));
+					entity.SetTiledProperties(obj.properties);
 					EntityList.Add(entity);
 
 
@@ -238,7 +240,7 @@ namespace Topdown {
 		/// <param name="tile"></param>
 		/// <param name="layer"></param>
 		/// <returns>Returns true if there is a collision (i.e. tile not walkable). False otherwise.</returns>
-		public bool IsMapCollision(Vector2 tile, int tileSize) {
+		public bool IsTileWalkable(Vector2 tile, int tileSize) {
 			tile -= Origin / tileSize;
 
 			// TODO: FIND A BETTER WAY TO DO THIS PART?
@@ -249,35 +251,31 @@ namespace Topdown {
 				(tile.Y < 0 && !HasMapConnection(Direction.North))|| 
 				(tile.X >= LoadedMap.Width && !HasMapConnection(Direction.East)) || 
 				(tile.Y >= LoadedMap.Height && !HasMapConnection(Direction.South)))
-				return true;
+				return false;
 				// Map Boundaries with connection
 				// 		collision function should give way for other map collision functions
 			else if ((tile.X < 0 && HasMapConnection(Direction.West)) || 
 				(tile.Y < 0 && HasMapConnection(Direction.North))|| 
 				(tile.X >= LoadedMap.Width && HasMapConnection(Direction.East)) || 
 				(tile.Y >= LoadedMap.Height && HasMapConnection(Direction.South)))
-				return false;
+				return true;
 
-            // int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
-			// bool walkable = true;
+			return !TileContainsPropertyValue(tile, "Walkable", false, tileSize);
+		}
 
-			// Checks each layer for collision (rather than one layer)
-			// Might not be efficient if we increase the number of layers
-			//		(Will run multiple loops with each movement)
+		public (String, Vector2)? IsTileWarpable(Vector2 tile, int tileSize) {
+			tile -= Origin / tileSize;
 
-			return TileContainsPropertyValue(tile, "Walkable", false);
-			// foreach (TiledLayer mapLayer in LoadedMap.Layers) {
-			// 	if (mapLayer.type == TiledLayerType.ObjectLayer) continue;
+			String mapName = ReturnFirstPropertyFromTile<String>(tile, "Warp Map", tileSize, null);
+			Vector2 warpCoords = new Vector2() {
+				X = ReturnFirstPropertyFromTile<int>(tile, "Warp X", tileSize, int.MaxValue),
+				Y = ReturnFirstPropertyFromTile<int>(tile, "Warp Y", tileSize, int.MaxValue)
+			};
 
-			// 	int gid = mapLayer.data[idx];
-			// 	if (gid == 0) continue;
-
-			// 	// Retrieves the Walkable Property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
-			// 	TiledProperty walkableProp = ReturnTileFromGID(gid).properties.First(prop => prop.name == "Walkable"); 	
-			// 	walkable = Convert.ToBoolean(walkableProp.value);
-			// 	if (!walkable) return true;				
-			// }				
-			// return false;
+			if (mapName is null || warpCoords == new Vector2(int.MaxValue, int.MaxValue)) return null;
+			else {
+				return (mapName, warpCoords);
+			}
 		}
 
 		/// <summary>
@@ -310,9 +308,23 @@ namespace Topdown {
 
 		// PRIVATE FUNCTIONS
 		//------------------------------------------------------------------------------------------
-		public T ReturnFirstPropertyFromTile<T>(Vector2 tile, String propertyName, T def = default) {
+		/// <summary>
+		/// <para>Searches for the first property in a tile and returns the value. </para>
+		/// Works best for properties that you know will only appear once in a given tile
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="tile"></param>
+		/// <param name="propertyName"></param>
+		/// <param name="def">Default value if property does not exist in tile</param>
+		/// <returns></returns>
+		public T ReturnFirstPropertyFromTile<T>(Vector2 tile, String propertyName, int tileSize, T d = default) {
+			// TILE CHECKS
+			//--------------------------------------------------
 			int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
 
+			// Checks each layer for property (rather than one layer)
+			// Might not be efficient if we increase the number of layers
+			//		(Will run multiple loops with each movement)
 			foreach (TiledLayer mapLayer in LoadedMap.Layers) {
 				if (mapLayer.type == TiledLayerType.ObjectLayer) continue;
 
@@ -326,28 +338,48 @@ namespace Topdown {
 				else return (T)Convert.ChangeType(property.value, typeof(T));			
 			}	
 
-			return def;
+			// ENTITY CHECKS
+			//--------------------------------------------------
+			// Stupid but, entities are stored at the converted tile position (with Origin)
+			List<Entity> entities = GetEntityListAtTile(tile + (Origin / tileSize));
+
+			foreach (Entity e in entities) {
+				if (e.TiledProperties is null) continue;
+
+				TiledProperty property = e.TiledProperties.FirstOrDefault((Func<TiledProperty, bool>)(prop => prop.name == propertyName), null);
+
+				if (property is null) continue;
+				else return (T)Convert.ChangeType(property.value, typeof(T));
+			}	
+
+			return d;
 		}
 
 		/// <summary>
-		/// Checks if a tile contains a property with a certain value.
+		/// Checks if a tile contains a property with a certain value. Includes entities
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="tile"></param>
 		/// <param name="propertyName"></param>
 		/// <param name="value"></param>
 		/// <returns>True if tile contains values. False otherwise. No property returns false</returns>
-		public bool TileContainsPropertyValue<T>(Vector2 tile, String propertyName, T value) {
+		public bool TileContainsPropertyValue<T>(Vector2 tile, String propertyName, T value, int tileSize) {
+			// TILE CHECKS
+			//--------------------------------------------------
 			int idx = ((int)tile.Y * LoadedMap.Width) + (int)tile.X;
 
+			// Checks each layer for property (rather than one layer)
+			// Might not be efficient if we increase the number of layers
+			//		(Will run multiple loops with each movement)
 			foreach (TiledLayer mapLayer in LoadedMap.Layers) {
 				if (mapLayer.type == TiledLayerType.ObjectLayer) continue;
 
-				int gid = mapLayer.data[idx];
-				if (gid == 0) continue;
+				TiledProperty property = null;
+					int gid = mapLayer.data[idx];
+					if (gid == 0) continue;
 
-                // Retrieves property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
-                TiledProperty property = ReturnTileFromGID(gid).properties.FirstOrDefault((Func<TiledProperty, bool>)(prop => prop.name == propertyName), null);
+					// Retrieves property; search up LINQ - https://www.tutorialsteacher.com/linq/linq-element-operator-first-firstordefault
+					property = ReturnTileFromGID(gid).properties.FirstOrDefault((Func<TiledProperty, bool>)(prop => prop.name == propertyName), null);
 
 				if (property is null) continue;
 				else {
@@ -355,8 +387,27 @@ namespace Topdown {
 					if (EqualityComparer<T>.Default.Equals(a, value)) {
 						return true;
 					}
-				}			
-			}	
+				}		
+			}
+
+			// ENTITY CHECKS
+			//--------------------------------------------------
+			// Stupid but, entities are stored at the converted tile position (with Origin)
+			List<Entity> entities = GetEntityListAtTile(tile + (Origin / tileSize));
+
+			foreach (Entity e in entities) {
+				if (e.TiledProperties is null) continue;
+
+				TiledProperty property = e.TiledProperties.FirstOrDefault((Func<TiledProperty, bool>)(prop => prop.name == propertyName), null);
+
+				if (property is null) continue;
+				else {
+					T a = (T)Convert.ChangeType(property.value, typeof(T));
+					if (EqualityComparer<T>.Default.Equals(a, value)) {
+						return true;
+					}
+				}	
+			}
 
 			return false;
 		}
@@ -373,6 +424,17 @@ namespace Topdown {
 			TiledTileset ts = LoadedTilesets[LoadedMap.GetTiledMapTileset(gid).firstgid];
 			TiledSourceRect rect = LoadedMap.GetSourceRect(LoadedMap.GetTiledMapTileset(gid), ts, gid);
 			return new Sprite(TilesetTextures[ts.Name], new Vector2(rect.x, rect.y), new Vector2(rect.width, rect.height), 0);
+		}
+
+		private static List<Entity> GetEntityListAtTile(Vector2 tile) {
+			if (ETransformSystem.Components.Count == 0) return null;	
+			List<ETransform> transforms = ETransformSystem.Components.Where(c => c.Tile == tile).ToList();
+			List<Entity> entityList = new List<Entity>();
+			foreach (ETransform t in transforms) {
+				entityList.Add(t.entity);
+			}
+
+			return entityList;
 		}
 	}
 }
