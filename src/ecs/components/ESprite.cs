@@ -4,6 +4,7 @@
 //------------------------------------------------------------------------------------------
 using System.Numerics;
 using Raylib_cs;
+using Topdown.Renderer;
 
 namespace Topdown.ECS {
     /// <summary>

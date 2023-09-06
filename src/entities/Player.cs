@@ -12,7 +12,7 @@ namespace Topdown {
         
         public Player(Vector2 tile) {
             ETransform transform = new ETransform(tile, PLAYER_WALKSPEED, PLAYER_RUNSPEED, Globals.ScaledTileSize);
-            ESprite sprite = new ESprite("resources/sprites/characters/player.png", 0);
+            ESprite sprite = new ESprite("resources/sprites/characters/player.png", 1);
 
             AddComponent(transform);
             AddComponent(sprite);

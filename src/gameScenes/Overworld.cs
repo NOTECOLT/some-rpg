@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 using Topdown.ECS;
 using Topdown.GUI;
+using Topdown.Renderer;
 using Topdown.Scene;
 
 namespace Topdown {
@@ -16,7 +17,6 @@ namespace Topdown {
     public class OverworldScene : IScene {
         private Player _player;
 		private Vector2 _startingTile;
-        private Camera2D _camera;
 		private List<Map> _loadedMaps = new List<Map>();
 		private DialogueManager _dialogueManager;
 		
@@ -32,7 +32,7 @@ namespace Topdown {
 			}
 
 
-            _camera = new Camera2D() {
+            RenderQueue.Camera = new Camera2D() {
 				rotation = 0,
 				zoom = 1
 			};
@@ -152,18 +152,19 @@ namespace Topdown {
 
 			Raylib.BeginDrawing();
 				Raylib.ClearBackground(Color.BLACK);
-				_camera.target = new Vector2(playerT.Position.X + (Globals.ScaledTileSize), playerT.Position.Y + (Globals.ScaledTileSize));
-				_camera.offset = new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2);
-				Raylib.BeginMode2D(_camera);
-
-					if (_loadedMaps.Count > 0) {
-						foreach (Map m in _loadedMaps) {
-							m.RenderMap(_camera, Globals.WorldScale, Globals.ScreenWidth, Globals.ScreenHeight);
-						}
-					}
-						
-
-					ESpriteSystem.Update();
+            	RenderQueue.Camera.target = new Vector2(playerT.Position.X + (Globals.ScaledTileSize), playerT.Position.Y + (Globals.ScaledTileSize));
+				RenderQueue.Camera.offset = new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2);
+				Raylib.BeginMode2D(RenderQueue.Camera);
+					RenderQueue.RenderAllLayers(_loadedMaps, ESpriteSystem.Components);
+					// if (_loadedMaps.Count > 0) {
+					// 	for (int i = 0; i < _loadedMaps.Count; i++) {
+					// 		for (int j = 0; j < _loadedMaps[i].LoadedMap.Layers.Length; j++) {
+					// 			_loadedMaps[i].RenderMapLayer(_camera, Globals.WorldScale, j, Globals.ScreenWidth, Globals.ScreenHeight);
+					// 			if (i == 0)
+					// 				ESpriteSystem.RenderAllInLayer(j);
+					// 		}
+					// 	}
+					// }
 
 				Raylib.EndMode2D();
 

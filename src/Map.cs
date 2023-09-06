@@ -16,6 +16,7 @@ using System.Xml;
 using TiledCS;
 using Raylib_cs;
 using Topdown.ECS;
+using Topdown.Renderer;
 using System.Reflection.Metadata.Ecma335;
 
 namespace Topdown {
@@ -208,14 +209,15 @@ namespace Topdown {
         /// <param name="tilesets">Object representation of tsx file</param>
         /// <param name="tilesetTextures">Maps the tsx representation to Raylib Textures</param>
         /// <param name="scale"></param>
-        public void RenderMap(Camera2D camera, float scale, int screenWidth, int screenHeight) {
+        public void RenderMapLayer(Camera2D camera, float scale, int layer, int screenWidth, int screenHeight) {
 			if (LoadedTilesets == null) LoadTextures();
+			if (LoadedMap.Layers[layer].type == TiledLayerType.ObjectLayer) return;
 
 			// Reference: https://github.com/TheBoneJarmer/TiledCS
-            foreach (TiledLayer layer in LoadedMap.Layers) {
-                for (int y = 0; y < layer.height; y++) {
-                    for (int x = 0; x < layer.width; x++) {
-                        int gid = layer.data[(y * layer.width) + x];
+            // foreach (TiledLayer layer in LoadedMap.Layers) {
+                for (int y = 0; y < LoadedMap.Layers[layer].height; y++) {
+                    for (int x = 0; x < LoadedMap.Layers[layer].width; x++) {
+                        int gid = LoadedMap.Layers[layer].data[(y * LoadedMap.Layers[layer].width) + x];
 						if (gid == 0) continue;
 						
 
@@ -232,7 +234,7 @@ namespace Topdown {
                         ReturnSpriteFromGID(gid).RenderSprite(drawPos, new Vector2(0, 0), scale, Color.WHITE);;
                     }
                 }
-            }
+            // }
         }
 
 		/// <summary>

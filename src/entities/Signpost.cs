@@ -4,6 +4,7 @@
 //------------------------------------------------------------------------------------------
 using System.Numerics;
 using Topdown.ECS;
+using Topdown.Renderer;
 
 namespace Topdown {
     public class Signpost : Entity, IInteractable {
