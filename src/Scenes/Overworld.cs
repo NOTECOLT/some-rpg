@@ -31,7 +31,6 @@ namespace Topdown {
 				throw new Exception($"Map {name} not found in Map Dictionary!");
 			}
 
-
             RenderQueue.Camera = new Camera2D() {
 				rotation = 0,
 				zoom = 1
@@ -156,16 +155,6 @@ namespace Topdown {
 				RenderQueue.Camera.offset = new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2);
 				Raylib.BeginMode2D(RenderQueue.Camera);
 					RenderQueue.RenderAllLayers(_loadedMaps, ESpriteSystem.Components);
-					// if (_loadedMaps.Count > 0) {
-					// 	for (int i = 0; i < _loadedMaps.Count; i++) {
-					// 		for (int j = 0; j < _loadedMaps[i].LoadedMap.Layers.Length; j++) {
-					// 			_loadedMaps[i].RenderMapLayer(_camera, Globals.WorldScale, j, Globals.ScreenWidth, Globals.ScreenHeight);
-					// 			if (i == 0)
-					// 				ESpriteSystem.RenderAllInLayer(j);
-					// 		}
-					// 	}
-					// }
-
 				Raylib.EndMode2D();
 
 				// UI

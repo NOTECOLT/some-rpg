@@ -16,7 +16,7 @@
                 3
             ],
             "scale": 4,
-            "selectedLayer": 2,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 61.375,
                 "y": 80.625
@@ -26,22 +26,22 @@
             "expandedObjectLayers": [
                 5
             ],
-            "scale": 1.698125,
+            "scale": 0.9834,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 264.7037173352963,
-                "y": 148.6934118513066
+                "x": 241.50905023388245,
+                "y": 135.75350823672972
             }
         },
         "maps/testmap2.tmx": {
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 2,
-            "selectedLayer": 0,
+            "scale": 1.0077,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 191.25,
-                "y": 159.75
+                "x": 212.86097052694254,
+                "y": 139.42641659223972
             }
         },
         "tilesets/Houses.tsx": {
@@ -77,10 +77,10 @@
     "project": "some-rpg.tiled-project",
     "property.type": "int",
     "recentFiles": [
+        "tilesets/objects.tsx",
         "tilesets/fences.tsx",
         "tilesets/grass.tsx",
         "tilesets/plains.tsx",
-        "tilesets/objects.tsx",
         "tilesets/Houses.tsx",
         "maps/testmap.tmx"
     ],

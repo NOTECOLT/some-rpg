@@ -483,17 +483,17 @@
  </tile>
  <tile id="96">
   <properties>
-   <property name="Walkable" type="bool" value="false"/>
+   <property name="Walkable" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="97">
   <properties>
-   <property name="Walkable" type="bool" value="false"/>
+   <property name="Walkable" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="98">
   <properties>
-   <property name="Walkable" type="bool" value="false"/>
+   <property name="Walkable" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="99">
@@ -603,12 +603,12 @@
  </tile>
  <tile id="120">
   <properties>
-   <property name="Walkable" type="bool" value="false"/>
+   <property name="Walkable" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="121">
   <properties>
-   <property name="Walkable" type="bool" value="false"/>
+   <property name="Walkable" type="bool" value="true"/>
   </properties>
  </tile>
  <tile id="122">
