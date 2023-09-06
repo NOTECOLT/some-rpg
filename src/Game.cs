@@ -1,20 +1,14 @@
 ﻿//------------------------------------------------------------------------------------------
 /*
 TODO: (Engine Stuff)
-/	Render Queue (do i need one yet? Not really i guess; but soon i'll have to)
 /	Flag System
 / 	Spritesheet animations
 /	Debug Info Display
-//		Render only whats on screen		<----
-//	Multiple Scenes & Scene Switching 	<----
-//		Instead of Multiple Scenes for the overworld, how about a map switching
-//		If the game is small enough, then I can probably just load all of the tilesets
-//		at the start of the game anyway....
-//		OR SEAMLESS MAP LOADING?? we need both i think
-
 
 TODO: (Mechanic / Game Design Stuff)
 /	Game Loop
+/		Inventory System
+/		Experience System
 /	Combat System
 /	Menu System
 
@@ -22,11 +16,12 @@ TODO: (Low ish priority; aesthetic, skin, etc.)
 /	Add more FontProperties 
 
 DONE (BUT COULD BE IMPROVED?)
-/	ECS								<-----
-/	NPCs / Interactable Objects		<-----
+/	Render Queue (this is done sloppily. See RenderQueue class for more info)
+/	ECS								
+/	NPCs / Interactable Objects		
 /	Dialogue Box & Text Printing
-	/	Create TextObject UIEntity
-	/	Adjust Dialogue Box Display
+	/	Text Alignment and justify
+	/	Choices
 
 WELCOME TO C#! lol
 */

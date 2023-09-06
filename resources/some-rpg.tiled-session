@@ -5,10 +5,11 @@
     },
     "activeFile": "maps/testmap.tmx",
     "expandedProjectPaths": [
+        "maps/templates/test",
         "maps",
         "maps/templates",
         ".",
-        "maps/templates/test"
+        "tilesets"
     ],
     "fileStates": {
         "maps/testhouse.tmx": {
@@ -38,13 +39,14 @@
                 3
             ],
             "scale": 1.0077,
-            "selectedLayer": 2,
+            "selectedLayer": 0,
             "viewCenter": {
                 "x": 212.86097052694254,
                 "y": 139.42641659223972
             }
         },
         "tilesets/Houses.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "tilesets/fences.tsx": {
@@ -61,7 +63,7 @@
         },
         "tilesets/plains.tsx": {
             "scaleInDock": 1,
-            "scaleInEditor": 6.5598
+            "scaleInEditor": 6.55
         }
     },
     "last.imagePath": "C:/Users/d27th/Documents/Game Dev/some-rpg/topdown/resources/tilesets",
@@ -72,17 +74,22 @@
     "map.tileWidth": 16,
     "map.width": 6,
     "openFiles": [
-        "maps/testmap.tmx"
+        "maps/testmap.tmx",
+        "maps/testmap2.tmx",
+        "maps/testhouse.tmx",
+        "tilesets/plains.tsx"
     ],
     "project": "some-rpg.tiled-project",
     "property.type": "int",
     "recentFiles": [
+        "tilesets/plains.tsx",
+        "maps/testhouse.tmx",
+        "maps/testmap2.tmx",
+        "maps/testmap.tmx",
         "tilesets/objects.tsx",
         "tilesets/fences.tsx",
         "tilesets/grass.tsx",
-        "tilesets/plains.tsx",
-        "tilesets/Houses.tsx",
-        "maps/testmap.tmx"
+        "tilesets/Houses.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
