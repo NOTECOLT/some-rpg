@@ -65,18 +65,18 @@ namespace Topdown {
 
 				if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) {
 					playerT.ChangeDirection(Direction.East);
-					playerT.TargetTile = new Vector2(playerT.Tile.X + 1, playerT.Tile.Y);
+					playerT.TargetTile = playerT.Tile + Vector2.UnitX;
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) {
 					playerT.ChangeDirection(Direction.West);
-					playerT.TargetTile = new Vector2(playerT.Tile.X - 1, playerT.Tile.Y);
+					playerT.TargetTile = playerT.Tile - Vector2.UnitX;
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN)) {
 					playerT.ChangeDirection(Direction.South);
-					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y + 1);
+					playerT.TargetTile = playerT.Tile + Vector2.UnitY;
 				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP)) {
 					playerT.ChangeDirection(Direction.North);
-					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y - 1);
+					playerT.TargetTile = playerT.Tile - Vector2.UnitY;
 				} else {
-					playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y);
+					// playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y);
 				}	
 			}
 
@@ -113,7 +113,6 @@ namespace Topdown {
 			// 2 - PHYSICS
 			//--------------------------------------------------
 
-			// Tile Events
 			if (!playerT.IsMoving && playerT.TargetTile != playerT.Tile) {
 				// Map Reloading
 				// TODO: Improve this? not really the best way to handle it atm
@@ -135,6 +134,8 @@ namespace Topdown {
 					// Note: When colliding with a tile on the border of a map, the current map loaded changes (even when it shouldn't in theory)
 					//		Atm, this isn't causing any problems, but it may in the future
 					playerT.TargetTile = playerT.Tile;
+
+				// Tile Events
 				} else {
 					(String map, Vector2 tile)? warpTuple = _loadedMaps[0].IsTileWarpable(playerT.TargetTile);
 

@@ -48,6 +48,7 @@ namespace Topdown.ECS {
 		/// This function is meant to update position vectors every frame.
 		/// </summary>
 		public override void Update() {
+
 			int x = (int)(_targetTile.X - _tile.X);
 			int signX = Convert.ToInt32(x > 0) - Convert.ToInt32(x < 0);		// remember false = 0, true = 1
 			int y = (int)(_targetTile.Y - _tile.Y);
