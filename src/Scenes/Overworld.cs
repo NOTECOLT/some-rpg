@@ -8,7 +8,7 @@ using Raylib_cs;
 using Topdown.ECS;
 using Topdown.GUI;
 using Topdown.Renderer;
-using Topdown.Scene;
+using Topdown.SceneManager;
 
 namespace Topdown {
 	/// <summary>

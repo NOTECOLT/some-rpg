@@ -2,7 +2,7 @@
 /*  SCENELOADER
 */
 //------------------------------------------------------------------------------------------
-namespace Topdown.Scene {
+namespace Topdown.SceneManager {
     public class SceneLoader {
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------

@@ -33,7 +33,7 @@ WELCOME TO C#! lol
 //------------------------------------------------------------------------------------------
 using System.Numerics;
 using Raylib_cs;
-using Topdown.Scene;
+using Topdown.SceneManager;
 
 namespace Topdown {
     enum DebugState {

@@ -2,7 +2,7 @@
 /*  ISCENE
 */
 //------------------------------------------------------------------------------------------
-namespace Topdown.Scene {
+namespace Topdown.SceneManager {
     /// <summary>
     /// Generic Scene Interface. Is called upon by the Scene Loader
     /// </summary>
