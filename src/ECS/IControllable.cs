@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------
-/* IINTERACTABLE
+/* ICONTROLLABLE
 */
 //------------------------------------------------------------------------------------------
 
@@ -7,11 +7,11 @@ namespace Topdown.ECS {
 	/// <summary>
 	/// Allows entities to be interacted with by the player
 	/// </summary>
-	public interface IInteractable {
+	public interface IControllable {
 		/// <summary>
-		/// Triggers when player interacts with an entity
+		/// Triggers when player wants to move an entity
 		/// </summary>
-		void OnInteract() {
+		void OnKeyInput() {
 
 		}
 	}

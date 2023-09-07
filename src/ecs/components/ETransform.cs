@@ -11,6 +11,8 @@ namespace Topdown.ECS {
 	/// Allows the entity to exist within the game world
 	/// </summary>
 	public class ETransform : Component {
+		private const int DefaultWalkSpeed = 50;
+		private const int DefaultRunSpeed = 100;
 		// FIELDS
 		//------------------------------------------------------------------------------------------
 		private Vector2 _position;	    // Refers to the position of the player with respect to the screen / global coordinate system  
@@ -29,10 +31,10 @@ namespace Topdown.ECS {
 		public bool IsRunning { get; set; } = false;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
 		public Direction Facing { get; private set; } = Direction.South;
 
-        public ETransform(Vector2 tile, float walkSpeed, float runSpeed, int tileSize) {
+        public ETransform(Vector2 tile, float walkSpeed = DefaultWalkSpeed, float runSpeed = DefaultRunSpeed) {
 			_tile = tile;
 			_targetTile = tile;
-			_position = new Vector2(tile.X * tileSize, tile.Y * tileSize); 
+			_position = new Vector2(tile.X * Globals.ScaledTileSize, tile.Y * Globals.ScaledTileSize); 
 
             _speed = walkSpeed;
 			_runSpeed = runSpeed;

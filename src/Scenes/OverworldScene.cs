@@ -60,25 +60,9 @@ namespace Topdown {
             // 1 - INPUT
             //--------------------------------------------------
             ETransform playerT = _player.GetComponent<ETransform>();
-			if (!playerT.IsMoving) {
-				playerT.IsRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
 
-				if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) {
-					playerT.ChangeDirection(Direction.East);
-					playerT.TargetTile = playerT.Tile + Vector2.UnitX;
-				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) {
-					playerT.ChangeDirection(Direction.West);
-					playerT.TargetTile = playerT.Tile - Vector2.UnitX;
-				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_DOWN)) {
-					playerT.ChangeDirection(Direction.South);
-					playerT.TargetTile = playerT.Tile + Vector2.UnitY;
-				} else if (Raylib.IsKeyDown(KeyboardKey.KEY_UP)) {
-					playerT.ChangeDirection(Direction.North);
-					playerT.TargetTile = playerT.Tile - Vector2.UnitY;
-				} else {
-					// playerT.TargetTile = new Vector2(playerT.Tile.X, playerT.Tile.Y);
-				}	
-			}
+			IControllable p = _player as IControllable;
+			p.OnKeyInput();
 
 			// Player Interaction
 			if (Raylib.IsKeyReleased(KeyboardKey.KEY_SPACE)) {

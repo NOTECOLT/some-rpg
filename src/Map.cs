@@ -157,7 +157,7 @@ namespace Topdown {
 
 				defaultEntity:
 					Entity entity = new Entity();
-					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize), 0, 0, _tileSize));
+					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize)));
 					entity.AddComponent(new ESprite(ReturnSpriteFromGID(obj.gid), 0));
 					entity.SetTiledProperties(obj.properties);
 					EntityList.Add(entity);
