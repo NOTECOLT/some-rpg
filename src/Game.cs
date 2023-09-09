@@ -2,7 +2,8 @@
 /*
 TODO: (Engine Stuff)
 /	Flag System
-/ 	Spritesheet animations
+/		Save Data
+// 	Spritesheet animations
 /	Debug Info Display
 
 TODO: (Mechanic / Game Design Stuff)
@@ -49,6 +50,7 @@ namespace Topdown {
 
 		public const int ScreenWidth = 960;
 		public const int ScreenHeight = 720;
+		public const int TargetFPS = 60;
 	}
 
     static class Game {
@@ -60,7 +62,7 @@ namespace Topdown {
             // WINDOW INITIALIZATION
             //--------------------------------------------------
             Raylib.InitWindow(Globals.ScreenWidth, Globals.ScreenHeight, "Some RPG");
-            Raylib.SetTargetFPS(60);
+            Raylib.SetTargetFPS(Globals.TargetFPS);
 
             // MAP DICTIONARY INITIALIZATION
             //--------------------------------------------------

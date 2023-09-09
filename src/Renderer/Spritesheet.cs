@@ -115,6 +115,14 @@ namespace Topdown.Renderer {
 			_currentAnimation = AnimDictionary[name];
 			_frame = 0;
 		}
+		
+		/// <summary>
+		/// Modifies frame buffer in terms of frames per second
+		/// </summary>
+		/// <param name="fps"></param>
+		public void SetFPS(int fps) {
+			_frameBuffer = (Raylib.GetFPS() == 0) ? Globals.TargetFPS / fps : Raylib.GetFPS() / fps;
+		}
     }
 
 	/// <summary>

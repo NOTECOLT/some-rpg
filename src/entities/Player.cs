@@ -20,7 +20,8 @@ namespace Topdown {
 												new Vector2(17, 20), 
 												new Vector2(14, 23), 
 												new Vector2(34, 25),
-												8, 0);
+												1, 0);
+			playerSheet.SetFPS(6);
 			playerSheet.AnimDictionary["IdleSouth"] = new Animation {
 				StartFrame = 0, FrameCount = 5 };
 			playerSheet.AnimDictionary["IdleSide"] = new Animation {
@@ -43,7 +44,6 @@ namespace Topdown {
 		
         public void OnKeyInput() {
             ETransform transform = GetComponent<ETransform>();
-			Spritesheet ss = GetComponent<EntityRender>().RenderObject as Spritesheet;
 
 			if (!transform.IsMoving) {
 				CheckKeys();
@@ -51,41 +51,51 @@ namespace Topdown {
 
 			// This shouldn't be here but i'll keep this here for now
 			// TODO: MOVE THIS SOMEWHERE BETTER
-			if (!transform.IsMoving) {
-				switch(GetComponent<ETransform>().Facing) {
-					case Direction.North:
-						ss.SetAnimation("IdleNorth");
-						break;
-					case Direction.South:
-						ss.SetAnimation("IdleSouth");	
-						break;
-					case Direction.East:
-						ss.SetAnimation("IdleSide");
-						ss.FlipX = false;
-						break;
-					case Direction.West:
-						ss.SetAnimation("IdleSide");
-						ss.FlipX = true;
-						break;
-				}
-			} else {
-				switch(GetComponent<ETransform>().Facing) {
-					case Direction.North:
-						ss.SetAnimation("WalkNorth");
-						break;
-					case Direction.South:
-						ss.SetAnimation("WalkSouth");
-						break;
-					case Direction.East:
-						ss.SetAnimation("WalkSide");
-						ss.FlipX = false;
-						break;
-					case Direction.West:
-						ss.SetAnimation("WalkSide");
-						ss.FlipX = true;
-						break;
+			if (GetComponent<EntityRender>().RenderObject is Spritesheet) {
+				Spritesheet ss = GetComponent<EntityRender>().RenderObject as Spritesheet;
+
+				if (transform.IsRunning && transform.IsMoving)
+					ss.SetFPS(15);
+				else
+					ss.SetFPS(6);
+
+				if (!transform.IsMoving) {
+					switch(GetComponent<ETransform>().Facing) {
+						case Direction.North:
+							ss.SetAnimation("IdleNorth");
+							break;
+						case Direction.South:
+							ss.SetAnimation("IdleSouth");	
+							break;
+						case Direction.East:
+							ss.SetAnimation("IdleSide");
+							ss.FlipX = false;
+							break;
+						case Direction.West:
+							ss.SetAnimation("IdleSide");
+							ss.FlipX = true;
+							break;
+					}
+				} else {
+					switch(GetComponent<ETransform>().Facing) {
+						case Direction.North:
+							ss.SetAnimation("WalkNorth");
+							break;
+						case Direction.South:
+							ss.SetAnimation("WalkSouth");
+							break;
+						case Direction.East:
+							ss.SetAnimation("WalkSide");
+							ss.FlipX = false;
+							break;
+						case Direction.West:
+							ss.SetAnimation("WalkSide");
+							ss.FlipX = true;
+							break;
+					}
 				}
 			}
+
         }
 
 		public bool CheckKeys() {
