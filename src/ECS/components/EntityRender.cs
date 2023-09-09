@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------
-/* E(NTITY) SPRITE
+/* ENTITY RENDER
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
@@ -9,23 +9,24 @@ using Topdown.Renderer;
 namespace Topdown.ECS {
     /// <summary>
     /// <para>Not to be confused with the Sprite Class. </para>
-    /// This Component is meant to couple an entity with a sprite object.
+    /// This Component is meant to couple an entity with a Renderable object
+    /// Renderable objects can be Sprites or Spritesheets
     /// </summary>
-    public class ESprite : Component {
+    public class EntityRender : Component {
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-		public Sprite Sprite { get; set; }
+		public IRenderable RenderObject { get; set; }
 		public int RenderLayer { get; }
 
-		public ESprite(string path, int renderLayer) {
-            Sprite = new Sprite(path, new Vector2(18, 22), new Vector2(13, 21), 0);
-			RenderLayer = renderLayer;
+		// public ESprite(string path, Vector2 origin, Vector2 size, int renderLayer) {
+        //     Sprite = new Sprite(path, origin, size, 0);
+		// 	RenderLayer = renderLayer;
 
-            ESpriteSystem.Register(this);
-		}
+        //     ESpriteSystem.Register(this);
+		// }
 
-        public ESprite(Sprite sprite, int renderLayer) {
-            Sprite = sprite;
+        public EntityRender(IRenderable sprite, int renderLayer) {
+            RenderObject = sprite;
             RenderLayer = renderLayer;
 
             ESpriteSystem.Register(this);
@@ -41,15 +42,15 @@ namespace Topdown.ECS {
 
             ETransform transform = entity.GetComponent<ETransform>();
 
-            if (Sprite is null) {
+            if (RenderObject is null) {
                 Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.ScaledTileSize, Globals.ScaledTileSize, Color.MAGENTA);
                 return;
             }
 
             Vector2 sprPos = new Vector2(transform.Position.X + Globals.ScaledTileSize/2, transform.Position.Y + Globals.ScaledTileSize);
-            Vector2 offset = new Vector2(Sprite.Size.X /** scale / 2*/, Sprite.Size.Y * Globals.WorldScale);
+            Vector2 offset = new Vector2(RenderObject.Size.X /** scale / 2*/, RenderObject.Size.Y * Globals.WorldScale);
 
-            Sprite.RenderSprite(sprPos, offset, Globals.WorldScale, Color.WHITE);
+            RenderObject.Render(sprPos, offset, Globals.WorldScale, Color.WHITE);
         }
     }
 }

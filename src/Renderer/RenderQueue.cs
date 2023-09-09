@@ -20,7 +20,7 @@ namespace Topdown.Renderer {
 
         public static Camera2D Camera = new Camera2D();
         
-        public static void RenderAllLayers(List<Map> maps, List<ESprite> entities) {
+        public static void RenderAllLayers(List<Map> maps, List<EntityRender> entities) {
 			// Because of how the Render Queue is set up, tiled layers need to be made in accordance to what layer the player is
 			// TODO: Improve by tagging tiled layers with "render above/below entities"?
             for (int i = MinRenderLayer; i < MaxRenderLayer; i++) {
@@ -29,7 +29,7 @@ namespace Topdown.Renderer {
                         m.RenderMapLayer(Camera, Globals.WorldScale, i, Globals.ScreenWidth, Globals.ScreenHeight);
                 }
 
-                foreach(ESprite s in entities) {
+                foreach(EntityRender s in entities) {
 					if (s.RenderLayer == i)
                     	s.Update();
                 }

@@ -158,7 +158,7 @@ namespace Topdown {
 				defaultEntity:
 					Entity entity = new Entity();
 					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize)));
-					entity.AddComponent(new ESprite(ReturnSpriteFromGID(obj.gid), 0));
+					entity.AddComponent(new EntityRender(ReturnSpriteFromGID(obj.gid), 0));
 					entity.SetTiledProperties(obj.properties);
 					EntityList.Add(entity);
 
@@ -231,7 +231,7 @@ namespace Topdown {
 						}
                         
                         // Represents the retrieved texture & rect as sprite then renders
-                        ReturnSpriteFromGID(gid).RenderSprite(drawPos, new Vector2(0, 0), scale, Color.WHITE);;
+                        ReturnSpriteFromGID(gid).Render(drawPos, new Vector2(0, 0), scale, Color.WHITE);;
                     }
                 }
             // }

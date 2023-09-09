@@ -13,7 +13,7 @@ namespace Topdown {
             ETransform transform = new ETransform(tile);
 
             AddComponent(transform);
-            AddComponent(new ESprite(sprite, 0));
+            AddComponent(new EntityRender(sprite, 0));
 			AddComponent(new EDialogue(dialogue));
         }
 

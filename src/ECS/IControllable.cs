@@ -9,10 +9,17 @@ namespace Topdown.ECS {
 	/// </summary>
 	public interface IControllable {
 		/// <summary>
-		/// Triggers when player wants to move an entity
+		/// Main "Update" function. Will get called every frame
 		/// </summary>
 		void OnKeyInput() {
 
+		}
+
+		/// <summary>
+		/// Helper function which should return true if correct input triggers have been met
+		/// </summary>
+		bool CheckKeys() {
+			return false;
 		}
 	}
 }

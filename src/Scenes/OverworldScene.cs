@@ -61,8 +61,7 @@ namespace Topdown {
             //--------------------------------------------------
             ETransform playerT = _player.GetComponent<ETransform>();
 
-			IControllable p = _player as IControllable;
-			p.OnKeyInput();
+			_player.OnKeyInput();
 
 			// Player Interaction
 			if (Raylib.IsKeyReleased(KeyboardKey.KEY_SPACE)) {
@@ -97,7 +96,7 @@ namespace Topdown {
 			// 2 - PHYSICS
 			//--------------------------------------------------
 
-			if (!playerT.IsMoving && playerT.TargetTile != playerT.Tile) {
+			if (playerT.TargetTile != playerT.Tile) {
 				// Map Reloading
 				// TODO: Improve this? not really the best way to handle it atm
 				if (_loadedMaps.Count > 0) {
@@ -115,6 +114,7 @@ namespace Topdown {
 
 				// Tile Collision
 				if (!_loadedMaps[0].IsTileWalkable(playerT.TargetTile)) {
+					// Console.WriteLine("YEAH");
 					// Note: When colliding with a tile on the border of a map, the current map loaded changes (even when it shouldn't in theory)
 					//		Atm, this isn't causing any problems, but it may in the future
 					playerT.TargetTile = playerT.Tile;
