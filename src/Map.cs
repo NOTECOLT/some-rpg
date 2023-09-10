@@ -17,7 +17,7 @@ using TiledCS;
 using Raylib_cs;
 using Topdown.ECS;
 using Topdown.Renderer;
-using System.Reflection.Metadata.Ecma335;
+using Topdown.DialogueSystem;
 
 namespace Topdown {
 	public enum Direction {

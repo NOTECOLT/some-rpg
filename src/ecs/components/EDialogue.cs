@@ -2,6 +2,8 @@
 /* E(NTITY) DIALOGUE
 */
 //------------------------------------------------------------------------------------------
+using Topdown.DialogueSystem;
+
 namespace Topdown.ECS {
     /// <summary>
     /// <para> Not to be confused with the Dialogue Class </para>

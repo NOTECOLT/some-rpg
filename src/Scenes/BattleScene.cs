@@ -9,13 +9,14 @@ using Topdown.ECS;
 using Topdown.GUI;
 using Topdown.Renderer;
 using Topdown.SceneManager;
+using Topdown.DialogueSystem;
 
 namespace Topdown {
 	/// <summary>
 	/// Scene for when the player is in the overworld.
 	/// </summary>
     public class BattleScene : IScene {
-        private Player _player;
+        // private Player _player;
 		// private Vector2 _startingTile;
 		// private List<Map> _loadedMaps = new List<Map>();
 		private DialogueManager _dialogueManager;

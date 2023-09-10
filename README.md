@@ -8,18 +8,12 @@ This project uses:
 - [Tiled](https://www.mapeditor.org/)
 - [TiledCS](https://github.com/TheBoneJarmer/TiledCS)
 
-## Goal / Vision
-
-The plan is to create a small bite-sized JRPG-type game. A la Pokemon, Zelda, Final Fantasy, and other classic JRPG/Adventure games.\
-Possible points of interest:
-
-- Filipino / Fantasy - infused aesthetic & world
-- Turn-based combat
-
-A single main quest line with a boss at the end will do, perhaps with a single small dungeon.
-I'll make a GDD once I get around to actual conceptualization.
-
 ## References
 
 - <https://github.com/raylib-extras/RPGExample/tree/main/RPG>
 - <https://docs.google.com/document/d/1lxpR6WbbjmCi9X_seGPYPYz7UhFcAKkX5Xl3pVfEwHs/edit>
+
+## Publishing Help
+
+- <https://www.reddit.com/r/csharp/comments/p91q6d/how_to_publish_from_a_windows_machine_for_mac/>
+- <https://www.xamboy.com/2020/05/28/net-core-application-macos-packaging-and-notarization/>

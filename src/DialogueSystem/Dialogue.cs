@@ -2,7 +2,7 @@
 /* DIALOGUE
 */
 //------------------------------------------------------------------------------------------
-namespace Topdown {
+namespace Topdown.DialogueSystem {
     public class Dialogue {
         public List<Message> Messages { get; set; }
 

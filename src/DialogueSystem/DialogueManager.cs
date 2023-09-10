@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using Topdown.GUI;
 using Raylib_cs;
 
-namespace Topdown {
+namespace Topdown.DialogueSystem {
     public class DialogueManager {
 		// FIELDS
 		//------------------------------------------------------------------------------------------	

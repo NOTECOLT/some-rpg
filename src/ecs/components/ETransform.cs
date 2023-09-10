@@ -116,7 +116,7 @@ namespace Topdown.ECS {
 
 			Raylib.DrawText($"position: ({Position.X}, {Position.Y})", (int)pos.X, (int)pos.Y, 30, Color.RAYWHITE);
 			Raylib.DrawText($"Tile: ({Tile.X}, {Tile.Y})", (int)pos.X, (int)pos.Y + 35, 30, Color.RAYWHITE);
-			Raylib.DrawText($"targetTile: ({TargetTile.X}, {TargetTile.Y})", (int)pos.X, (int)pos.Y + 70, 30, Color.WHITE);
+			// Raylib.DrawText($"targetTile: ({TargetTile.X}, {TargetTile.Y})", (int)pos.X, (int)pos.Y + 70, 30, Color.WHITE);
 
 			// int x = (int)(_targetTile.X - _tile.Y);
 			// int signX = Convert.ToInt32(x > 0) - Convert.ToInt32(x < 0);		// remember false = 0, true = 1

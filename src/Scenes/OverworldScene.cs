@@ -3,12 +3,12 @@
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 using Topdown.ECS;
 using Topdown.GUI;
 using Topdown.Renderer;
 using Topdown.SceneManager;
+using Topdown.DialogueSystem;
 
 namespace Topdown {
 	/// <summary>

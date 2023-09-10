@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------
 using System.Xml;
 
-namespace Topdown {
+namespace Topdown.DialogueSystem {
 	public static class XMLDialogueParser {
 		/// <summary>
 		/// Parses an XML file and converts it into a dialogue object.
