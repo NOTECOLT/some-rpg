@@ -18,7 +18,6 @@ namespace Topdown.DialogueSystem {
 			// 1 - FILE READ
 			//--------------------------------------------------
 			string fileText = File.ReadAllText(path);
-			// Console.WriteLine($"[DIALOGUE MANAGER] XML File Read: \n{fileText}");
 
 			XmlDocument xml = new XmlDocument();
 			xml.LoadXml(fileText);

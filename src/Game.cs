@@ -55,6 +55,7 @@ namespace Topdown {
 
     static class Game {
 		const bool devMode = true;
+		public static PlayerData playerData;
 
         private static void Main() {
 			DebugState debugState = DebugState.GAME;
@@ -68,9 +69,17 @@ namespace Topdown {
             //--------------------------------------------------
 			Map.CreateMapDictionary();
 
+            // PLAYER INITIALIZATION
+            //--------------------------------------------------
+			playerData = new PlayerData("savedata/testdata.xml");
+			// playerData.ResetToDefault();
+			// playerData.Save("savedata/testdata2.xml");
+			// PlayerData newPlayerData = new PlayerData("savedata/testdata2.xml");
+
+
             // SCENE INITIALIZATION
             //--------------------------------------------------
-			OverworldScene overworldScene = new OverworldScene("Test Map 1", new Vector2(25, 15));
+			OverworldScene overworldScene = new OverworldScene(playerData.Map, playerData.Tile);
 
 			SceneLoader.LoadScene(overworldScene);
 

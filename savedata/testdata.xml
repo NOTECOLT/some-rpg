@@ -1,0 +1,13 @@
+<playerdata>
+    <name>Test Name</name>
+    <savedPos>
+        <map>Test Map 1</map>
+        <tile>
+            <x>0</x>
+            <y>0</y>
+        </tile>
+    </savedPos>
+    <flags>
+
+    </flags>
+</playerdata>

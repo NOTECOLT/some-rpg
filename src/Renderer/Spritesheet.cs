@@ -91,7 +91,7 @@ namespace Topdown.Renderer {
 				Y = frameY * (Size.Y + _margin.Y) + _origin.Y
 			};
             
-            Rectangle spriteSrc = new Rectangle(src.X, src.Y, Size.X, Size.Y);
+            Rectangle spriteSrc;
 
 			if (!FlipX)
 				spriteSrc = new Rectangle(src.X, src.Y, Size.X, Size.Y);

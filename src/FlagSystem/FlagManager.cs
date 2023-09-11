@@ -10,7 +10,7 @@ namespace Topdown.FlagSystem {
 
 
 		public static void LoadFlags() {
-
+			
 		}
 	}
 

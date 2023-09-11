@@ -195,7 +195,7 @@ namespace Topdown {
 				_loadedMaps.Add(entry.Value);
 			}
 
-			Console.WriteLine($"[MAPLOADER] Main Map: {_loadedMaps[0].Name}");
+			Console.WriteLine($"[MAPLOADER] Current Loaded Map: {_loadedMaps[0].Name}");
 		}
 
 		/// <summary>
