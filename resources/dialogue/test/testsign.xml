@@ -9,6 +9,8 @@
     <message>
         <name>Test Sign</name>
         <text>Hola Soy Dora</text>
-        <flag name="TestFlag" status="false"/>
+        <flagChecks>
+            <flag name="TestFlag" status="false"/>
+        </flagChecks>
     </message>
 </dialogue>

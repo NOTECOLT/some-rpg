@@ -51,14 +51,15 @@ namespace Topdown.DialogueSystem {
 			if (MessageQueue is null) MessageQueue = new Queue<Message>();
 
 			foreach (Message msg in dialogue.Messages) {
-
 				// Only enqueue if the message matches all the flag checks
-				//	If the flag checks dictionary is empty, then
-				// foreach (Game.PlayerSaveData.Flags[]) {
+				//	If the flag checks dictionary is empty, then load the message anyway
+				bool meetsFlags = true;
 
-				// }
-				// if (Game.PlayerSaveData.Flags[])
-				MessageQueue.Enqueue(msg);
+				foreach (KeyValuePair<String, bool> flag in msg.FlagChecks) {
+					if (Game.PlayerSaveData.Flags[flag.Key] != flag.Value) meetsFlags = false;
+				}
+
+				if (meetsFlags) MessageQueue.Enqueue(msg);
 			}
         }
 
