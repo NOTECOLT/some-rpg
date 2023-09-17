@@ -18,6 +18,7 @@ namespace Topdown.ECS {
 
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
+		public virtual void Destroy() { }
 		public virtual void Update() { }
 	}
 

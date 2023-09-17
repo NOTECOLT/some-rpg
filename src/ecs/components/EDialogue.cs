@@ -24,10 +24,13 @@ namespace Topdown.ECS {
             // EDialogueSystem.Register(this);
         }
 
+        public override void Destroy() {
+            
+        }
+
         public override void Update() {
             if (!_dialogueActive) return;
 
-            // TODO: ADD IINTERACTABLE INTERFACE?
         }
 
 		// FUNCTIONS

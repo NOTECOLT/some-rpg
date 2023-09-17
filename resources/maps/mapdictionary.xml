@@ -13,4 +13,8 @@
         <name>Test House 1</name>
         <path>resources/maps/testhouse.tmx</path>
     </map>
+    <map>
+        <name>Test Map 3</name>
+        <path>resources/maps/testmap3.tmx</path>
+    </map>
 </maps>

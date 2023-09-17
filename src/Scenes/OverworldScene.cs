@@ -17,7 +17,8 @@ namespace Topdown {
     public class OverworldScene : IScene {
         private Player _player;
 		private Vector2 _startingTile;
-		private List<Map> _loadedMaps = new List<Map>();
+		// private List<Map> _loadedMaps = new List<Map>();
+		private Map[] _loadedMaps = new Map[5];
 		private DialogueManager _dialogueManager;
 		
 
@@ -35,7 +36,8 @@ namespace Topdown {
 				rotation = 0,
 				zoom = 1
 			};
-			_loadedMaps.Add(new Map(name, Vector2.Zero));
+			_loadedMaps[0] = new Map(name, Vector2.Zero);
+			// _loadedMaps.Add();
 			_startingTile = startingTile;
         }
 
@@ -49,7 +51,7 @@ namespace Topdown {
 
 			// 2 - MAP LOADING
 			//--------------------------------------------------
-			LoadMap(_loadedMaps[0]);
+			LoadMap(_loadedMaps[0], true);
 
             // 3 - PLAYER LOADING
             //--------------------------------------------------
@@ -57,10 +59,12 @@ namespace Topdown {
 		}
 
         public void Update() {
-            // 1 - INPUT
-            //--------------------------------------------------
             ETransform playerT = _player.GetComponent<ETransform>();
 
+            // 1 - INPUT
+            //--------------------------------------------------
+
+			// Player Movement
 			_player.OnKeyInput();
 
 			// Player Interaction
@@ -92,6 +96,13 @@ namespace Topdown {
 					}	
 				}
 			}
+
+			// Debug Keys
+			if (Globals.DevMode && Raylib.IsKeyDown(KeyboardKey.KEY_F3)) {
+				if (Raylib.IsKeyReleased(KeyboardKey.KEY_S)) {
+					SavePlayerData();
+				}
+			}
 		
 			// 2 - PHYSICS
 			//--------------------------------------------------
@@ -99,22 +110,21 @@ namespace Topdown {
 			if (playerT.TargetTile != playerT.Tile) {
 				// Map Reloading
 				// TODO: Improve this? not really the best way to handle it atm
-				if (_loadedMaps.Count > 0) {
+				if (_loadedMaps.Length > 0) {
 					Vector2 tile = playerT.TargetTile - _loadedMaps[0].Origin / Globals.ScaledTileSize;
 
-					if (tile.X < 0 && _loadedMaps[0].HasMapConnection(Direction.West))
-						LoadMap(_loadedMaps[0].AdjacentMaps[Direction.West]);
-					else if (tile.Y < 0 && _loadedMaps[0].HasMapConnection(Direction.North))
-						LoadMap(_loadedMaps[0].AdjacentMaps[Direction.North]);
+					if (tile.Y < 0 && _loadedMaps[0].HasMapConnection(Direction.North))
+						LoadMap(_loadedMaps[1]);
 					else if (tile.X >= _loadedMaps[0].LoadedMap.Width && _loadedMaps[0].HasMapConnection(Direction.East))
-						LoadMap(_loadedMaps[0].AdjacentMaps[Direction.East]);
+						LoadMap(_loadedMaps[2]);
 					else if (tile.Y >= _loadedMaps[0].LoadedMap.Height && _loadedMaps[0].HasMapConnection(Direction.South))
-						LoadMap(_loadedMaps[0].AdjacentMaps[Direction.South]);
+						LoadMap(_loadedMaps[3]);
+					else if (tile.X < 0 && _loadedMaps[0].HasMapConnection(Direction.West))
+						LoadMap(_loadedMaps[4]);
 				}
 
 				// Tile Collision
 				if (!_loadedMaps[0].IsTileWalkable(playerT.TargetTile)) {
-					// Console.WriteLine("YEAH");
 					// Note: When colliding with a tile on the border of a map, the current map loaded changes (even when it shouldn't in theory)
 					//		Atm, this isn't causing any problems, but it may in the future
 					playerT.TargetTile = playerT.Tile;
@@ -139,7 +149,7 @@ namespace Topdown {
             	RenderQueue.Camera.target = new Vector2(playerT.Position.X + (Globals.ScaledTileSize), playerT.Position.Y + (Globals.ScaledTileSize));
 				RenderQueue.Camera.offset = new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2);
 				Raylib.BeginMode2D(RenderQueue.Camera);
-					RenderQueue.RenderAllLayers(_loadedMaps, ESpriteSystem.Components);
+				RenderQueue.RenderAllLayers(_loadedMaps.ToList<Map>(), EntityRenderSystem.Components);
 				Raylib.EndMode2D();
 
 				// UI
@@ -157,7 +167,7 @@ namespace Topdown {
 
         public void Unload() {
 			// Unloading Component Systems once the scene ends because the list is static
-			ESpriteSystem.Unload();
+			EntityRenderSystem.Unload();
 			ETransformSystem.Unload();
 
 			UIEntitySystem.Unload();
@@ -167,35 +177,82 @@ namespace Topdown {
 
 		// FUNCTIONS
         //------------------------------------------------------------------------------------------
-
+		
 		/// <summary>
 		/// Loads a Map onto the _loadedMaps list, also loads the map's adjacent maps
 		/// </summary>
 		/// <param name="map"></param>
-		private void LoadMap(Map map) {
+		/// <param name="firstMap">True if this is the first map to be loaded onto the scene</param>
+		private void LoadMap(Map map, bool firstMap = false) {
+			String oldMap = _loadedMaps[0].Name;
+			
 			if (_loadedMaps[0].Name != map.Name) {
-				foreach (Map m in _loadedMaps) {
-					if (m.Name == map.Name) {
-						_loadedMaps.Remove(m);
-						break;
-					}
-				}
-				_loadedMaps.Insert(0, map);
+				_loadedMaps[0] = map;
 			}
 
-			_loadedMaps[0].LoadTextures();
-			_loadedMaps[0].LoadObjectsAsEntities();
+			// LOAD ADJACENT MAPS
+			//--------------------------------------------------
+			// KEY
+			// [0] - main map
+			// [1] - north map
+			// [2] - east map
+			// [3] - west map
+			// [4] - south map
+			if (_loadedMaps[0].HasMapConnection(Direction.North)) {
+				Map northMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.North], Vector2.Zero);
+				Vector2 newOrigin = _loadedMaps[0].Origin - new Vector2(0, northMap.LoadedMap.Height) * Globals.ScaledTileSize;
+				northMap.Origin = newOrigin;
+				_loadedMaps[1] = northMap;
+			}
 
-			_loadedMaps[0].LoadAdjacentMaps();
-			foreach (KeyValuePair<Direction, Map> entry in _loadedMaps[0].AdjacentMaps) {
-				if (IsMapLoaded(entry.Value)) continue;
-				entry.Value.LoadTextures();
-				entry.Value.LoadObjectsAsEntities();
+			if (_loadedMaps[0].HasMapConnection(Direction.East)) {
+				Map eastMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.East], Vector2.Zero);
+				Vector2 newOrigin = _loadedMaps[0].Origin + new Vector2(_loadedMaps[0].LoadedMap.Width, 0) * Globals.ScaledTileSize;
+				eastMap.Origin = newOrigin;
+				_loadedMaps[2] = eastMap;
+			}
 
-				_loadedMaps.Add(entry.Value);
+			if (_loadedMaps[0].HasMapConnection(Direction.South)) {
+				Map southMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.South], Vector2.Zero);
+				Vector2 newOrigin = _loadedMaps[0].Origin + new Vector2(0, _loadedMaps[0].LoadedMap.Height) * Globals.ScaledTileSize;
+				southMap.Origin = newOrigin;
+				_loadedMaps[3] = southMap;
+			}
+
+			if (_loadedMaps[0].HasMapConnection(Direction.West)) {
+				Map westMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.South], Vector2.Zero);
+				Vector2 newOrigin = _loadedMaps[0].Origin - new Vector2(westMap.LoadedMap.Width, 0) * Globals.ScaledTileSize;
+				westMap.Origin = newOrigin;
+				_loadedMaps[4] = westMap;
+			}
+
+			for (int i = ETransformSystem.Components.Count - 1; i >= 0; i--) {
+				if (ETransformSystem.Components[i].entity is Player) continue;
+
+				bool shouldBeLoaded = false;
+				foreach (Map m in _loadedMaps) {
+					if (m is null) continue;
+					if (ETransformSystem.Components[i].entity.Map == m.Name) shouldBeLoaded = true; 
+				}
+				
+				if (!shouldBeLoaded) ETransformSystem.Components[i].entity.Destroy();
+			}
+
+			// LOAD ALL TEXTURES & ENTITIES
+			//--------------------------------------------------
+			foreach (Map m in _loadedMaps) {
+				if (m is null) continue;
+				m.LoadTextures();
+
+				// Idea is that, there should only be 4 maps loaded at a time
+				//		if you are moving from one map to the other, then the only entities you should
+				//		be retaining are the ones from the old map and the new map
+				if ((m.Name == oldMap || m.Name == map.Name )&& !firstMap) continue;
+				m.LoadObjectsAsEntities();
 			}
 
 			Console.WriteLine($"[MAPLOADER] Current Loaded Map: {_loadedMaps[0].Name}");
+			Console.WriteLine($"[MAPLOADER] Number of Entities: {ETransformSystem.Components.Count}");
 		}
 
 		/// <summary>
@@ -218,5 +275,12 @@ namespace Topdown {
 			if (transform is null) return null;
 			else return transform.entity;
 		}
-    }
+    
+		private void SavePlayerData() {
+			Game.PlayerSaveData.Map = _loadedMaps[0].Name;
+			Game.PlayerSaveData.Tile = _player.GetComponent<ETransform>().Tile;
+			Game.PlayerSaveData.Save(Game.PlayerSaveData.FilePath);
+		}
+	
+	}
 }

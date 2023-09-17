@@ -25,6 +25,7 @@ namespace Topdown.Renderer {
 			// TODO: Improve by tagging tiled layers with "render above/below entities"?
             for (int i = MinRenderLayer; i < MaxRenderLayer; i++) {
                 foreach(Map m in maps) {
+                    if (m is null) continue;
                     if (i < m.LoadedMap.Layers.Length)
                         m.RenderMapLayer(Camera, Globals.WorldScale, i, Globals.ScreenWidth, Globals.ScreenHeight);
                 }

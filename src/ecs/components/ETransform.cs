@@ -38,14 +38,11 @@ namespace Topdown.ECS {
 			ETransformSystem.Register(this);
         }
 
+        public override void Destroy() {
+            ETransformSystem.Components.Remove(this);
+        }
 
-        // WARNING THIS FUNCTION USES GLOBALS 
-        // TODO I'll need to find a way to take this out methinks?
-        /// <summary>
-		/// Updates Player Movement by adding speed to position vectors.
-		/// This function is meant to update position vectors every frame.
-		/// </summary>
-		public override void Update() {
+        public override void Update() {
 			MoveToTargetTile();
 		}
 
@@ -54,7 +51,13 @@ namespace Topdown.ECS {
 		public void ChangeDirection(Direction dir) {
 			Facing = dir;
 		}
-		
+
+        // WARNING THIS FUNCTION USES GLOBALS 
+        // TODO I'll need to find a way to take this out methinks?
+        /// <summary>
+		/// Updates Player Movement by adding speed to position vectors.
+		/// This function is meant to update position vectors every frame.
+		/// </summary>	
 		public void MoveToTargetTile() {
 			int x = (int)(TargetTile.X - Tile.X);
 			int signX = Convert.ToInt32(x > 0) - Convert.ToInt32(x < 0);		// remember false = 0, true = 1

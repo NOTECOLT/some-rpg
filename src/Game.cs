@@ -1,8 +1,8 @@
 ﻿//------------------------------------------------------------------------------------------
 /*
 TODO: (Engine Stuff)
-/	Flag System
-/		Save Data
+/	Flag System <------ DIALOGUE BRANCHES
+//		Save Data
 // 	Spritesheet animations
 /	Debug Info Display
 
@@ -33,8 +33,8 @@ using Topdown.SceneManager;
 
 namespace Topdown {
     enum DebugState {
-        GAME,
-        DEBUG_MAPEDIT
+        GAME
+        // DEBUG_MAPEDIT
     }
 
 	/// <summary>
@@ -43,6 +43,9 @@ namespace Topdown {
 	/// </summary>
 	static class Globals {
         // RANDOM CONSTANTS, will eventually move these values
+		public const string Version = "Alpha 1.0";
+		public const bool DevMode = true;
+
         public const int TileSize = 16;
 		public const float WorldScale = 2.0f;
 
@@ -54,11 +57,10 @@ namespace Topdown {
 	}
 
     static class Game {
-		const bool devMode = true;
-		public static PlayerData playerData;
+		public static PlayerData PlayerSaveData;
 
         private static void Main() {
-			DebugState debugState = DebugState.GAME;
+			// DebugState debugState = DebugState.GAME;
 
             // WINDOW INITIALIZATION
             //--------------------------------------------------
@@ -71,7 +73,7 @@ namespace Topdown {
 
             // PLAYER INITIALIZATION
             //--------------------------------------------------
-			playerData = new PlayerData("savedata/testdata.xml");
+			PlayerSaveData = new PlayerData("savedata/testdata.xml");
 			// playerData.ResetToDefault();
 			// playerData.Save("savedata/testdata2.xml");
 			// PlayerData newPlayerData = new PlayerData("savedata/testdata2.xml");
@@ -79,28 +81,27 @@ namespace Topdown {
 
             // SCENE INITIALIZATION
             //--------------------------------------------------
-			OverworldScene overworldScene = new OverworldScene(playerData.Map, playerData.Tile);
+			OverworldScene overworldScene = new OverworldScene(PlayerSaveData.Map, PlayerSaveData.Tile);
 
 			SceneLoader.LoadScene(overworldScene);
 
             while (!Raylib.WindowShouldClose()) {
-				if (devMode) {
-					if (Raylib.IsKeyReleased(KeyboardKey.KEY_F3)) {
-						debugState = (DebugState)(((int)debugState + 1) % Enum.GetNames(typeof(DebugState)).Length);
-						Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {debugState}");
+				// if (Globals.DevMode) {
+				// 	if (Raylib.IsKeyReleased(KeyboardKey.KEY_F3)) {
+				// 		debugState = (DebugState)(((int)debugState + 1) % Enum.GetNames(typeof(DebugState)).Length);
+				// 		Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {debugState}");
 
-						switch (debugState) {
-							case DebugState.GAME:
-								SceneLoader.LoadScene(overworldScene);
-								break;
-							case DebugState.DEBUG_MAPEDIT:
-								// sceneLoader.LoadScene(mapEditorScene);
-								break;
-							default:
-								break;
-						}
-					}
-				}
+				// 		switch (debugState) {
+				// 			case DebugState.GAME:
+				// 				SceneLoader.LoadScene(overworldScene);
+				// 				break;
+				// 			case DebugState.DEBUG_MAPEDIT:
+				// 				break;
+				// 			default:
+				// 				break;
+				// 		}
+				// 	}
+				// }
 
 				SceneLoader.UpdateCurrentScene();
 

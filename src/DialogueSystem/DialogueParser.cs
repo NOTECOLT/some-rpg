@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------------------
-/* XMLDIALOGUEPARSER
+/* DIALOGUEPARSER
 */
 //------------------------------------------------------------------------------------------
 using System.Xml;
 
 namespace Topdown.DialogueSystem {
-	public static class XMLDialogueParser {
+	public static class DialogueParser {
 		/// <summary>
 		/// Parses an XML file and converts it into a dialogue object.
 		/// </summary>
@@ -38,13 +38,27 @@ namespace Topdown.DialogueSystem {
         public static Message ParseMessage(XmlNode node) {
 			if (node.Name != "message") return null;
 
-			string name = "", text = "";
+			Message msg = new Message("");
+
 			foreach (XmlNode child in node.ChildNodes) {
-				if (child.Name == "name") name = child.InnerText;
-				if (child.Name == "text") text = child.InnerText;
+				switch (child.Name) {
+					case "name":
+						msg.Name = child.InnerText;
+						break;
+					case "text":
+						msg.Text = child.InnerText;
+						break;
+					case "flagChecks":
+						foreach (XmlElement flag in child)
+							msg.FlagChecks[flag.GetAttribute("name")] = Convert.ToBoolean(flag.GetAttribute("status"));
+						break;
+					default:
+						break;
+				}
 			}
 
-			return new Message(text, name);
+
+			return msg;
         }
     }
 

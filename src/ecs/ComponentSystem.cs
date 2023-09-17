@@ -13,7 +13,7 @@ namespace Topdown.ECS {
 		//------------------------------------------------------------------------------------------
         protected static List<T> _components = new List<T>();
 
-        public static List<T> Components { get { return _components; } }
+        public static List<T> Components { get { return _components; } set { _components = value; } }
         
         public static void Register(T component) {
             _components.Add(component);
@@ -37,6 +37,6 @@ namespace Topdown.ECS {
     // Systems only exist for components that need to be updated constantly
     //------------------------------------------------------------------------------------------
     public class ETransformSystem : ComponentSystem<ETransform> { }
-    public class ESpriteSystem : ComponentSystem<EntityRender> { }
+    public class EntityRenderSystem : ComponentSystem<EntityRender> { }
     // public class EDialogueSystem : ComponentSystem<EDialogue> { }
 }

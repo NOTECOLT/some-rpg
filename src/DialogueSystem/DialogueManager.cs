@@ -51,6 +51,13 @@ namespace Topdown.DialogueSystem {
 			if (MessageQueue is null) MessageQueue = new Queue<Message>();
 
 			foreach (Message msg in dialogue.Messages) {
+
+				// Only enqueue if the message matches all the flag checks
+				//	If the flag checks dictionary is empty, then
+				// foreach (Game.PlayerSaveData.Flags[]) {
+
+				// }
+				// if (Game.PlayerSaveData.Flags[])
 				MessageQueue.Enqueue(msg);
 			}
         }

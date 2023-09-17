@@ -13,13 +13,17 @@ namespace Topdown {
         public String Name { get; set; } = "";
         public String Map { get; set; } = "";
         public Vector2 Tile { get; set; } = Vector2.Zero;
+        public String FilePath { get; }
+
+        public Dictionary<String, bool> Flags = new Dictionary<string, bool>();
         public PlayerData(string path) {
            Load(path); 
+            FilePath = path;
         }
 
         public PlayerData() { }
 
-		// FUNCTIONS
+		// PUBLIC FUNCTIONS
 		//------------------------------------------------------------------------------------------
         public void Load(string path) {
             // if (!File.Exists(path)) {
@@ -48,30 +52,15 @@ namespace Topdown {
                         ParseSavedPosition(node);
                         Console.WriteLine($"[PLAYER DATA] [Profile {Name}] Loading player to map {Map} on tile {Tile}");
                         break;
+                    case "flags":
+                        ParseFlags(node);
+                        break;
                     default:
                         break;
                 }
             }
 
             
-        }
-
-        private void ParseSavedPosition(XmlElement root) {
-            foreach (XmlElement node in root) {
-                switch (node.Name) {
-                    case "map":
-                        Map = node.InnerText;
-                        break;
-                    case "tile":
-                        int x = Int32.Parse(node.FirstChild.InnerText);
-                        int y = Int32.Parse(node.LastChild.InnerText);
-
-                        Tile = new Vector2(x, y);
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
 
         public void Save(string path) {
@@ -108,7 +97,25 @@ namespace Topdown {
                 savedPos.AppendChild(tile);
             playerData.AppendChild(savedPos);
 
-            Console.WriteLine(playerData.OuterXml);
+            // FLAGS
+			//--------------------------------------------------
+            XmlElement flags = xml.CreateElement("flags");
+            foreach (KeyValuePair<String, bool> flag in Flags) {
+                XmlElement flagElement = xml.CreateElement("flag");
+
+                XmlElement nameTag = xml.CreateElement("name");
+                nameTag.InnerText = flag.Key;
+                flagElement.AppendChild(nameTag);
+
+                XmlElement statusTag = xml.CreateElement("status");
+                statusTag.InnerText = Convert.ToString(flag.Value);
+                flagElement.AppendChild(statusTag);
+
+                flags.AppendChild(flagElement);
+            }
+            playerData.AppendChild(flags);
+
+            // Console.WriteLine(playerData.OuterXml);
             File.WriteAllText(path, playerData.OuterXml);
             
         }
@@ -121,6 +128,48 @@ namespace Topdown {
             Name = "Steve";
             Tile = new Vector2(13, 16);
         }
-    
+        
+		// PRIVATE FUNCTIONS
+		//------------------------------------------------------------------------------------------ 
+        private void ParseSavedPosition(XmlElement root) {
+            foreach (XmlElement node in root) {
+                switch (node.Name) {
+                    case "map":
+                        Map = node.InnerText;
+                        break;
+                    case "tile":
+                        int x = Int32.Parse(node.FirstChild.InnerText);
+                        int y = Int32.Parse(node.LastChild.InnerText);
+
+                        Tile = new Vector2(x, y);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void ParseFlags(XmlElement root) {
+            foreach (XmlElement flag in root) {
+                String name = ""; bool status = false;
+                foreach (XmlElement node in flag) {
+                    switch (node.Name) {
+                        case "name":
+                            name = node.InnerText;
+                            break;
+                        case "status":
+                            status = Convert.ToBoolean(node.InnerText);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (name != "")
+                    Flags[name] = status;
+            }
+        }
+
+
     }
 }

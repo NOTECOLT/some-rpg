@@ -29,7 +29,11 @@ namespace Topdown.ECS {
             RenderObject = sprite;
             RenderLayer = renderLayer;
 
-            ESpriteSystem.Register(this);
+            EntityRenderSystem.Register(this);
+        }
+
+        public override void Destroy() {
+            EntityRenderSystem.Components.Remove(this);
         }
 
         // WARNING THIS FUNCTION USES GLOBALS 

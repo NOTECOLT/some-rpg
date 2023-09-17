@@ -16,6 +16,7 @@ namespace Topdown.ECS {
 	public class Entity {
 		public List<Component> Components { get; private set; } = new List<Component>();
 		public TiledProperty[] TiledProperties { get; private set; } = null;
+		public String Map = "";
 
 		public void AddComponent(Component component) {
 			Components.Add(component);
@@ -29,6 +30,12 @@ namespace Topdown.ECS {
 				}
 			}
 			return null;
+		}
+
+		public void Destroy() {
+			foreach (Component c in Components) {
+				c.Destroy();
+			}
 		}
 
 		public void SetTiledProperties(TiledProperty[] properties) {

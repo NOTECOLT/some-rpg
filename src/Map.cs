@@ -52,10 +52,11 @@ namespace Topdown {
 		/// <summary>
 		/// Marks the origin of the map (top left corner.) Defined in world coordinates
 		/// </summary>	
-		public Vector2 Origin { get; private set; }
+		public Vector2 Origin { get; set; }
 		public TiledMap LoadedMap { get; private set; }
 		public Dictionary<int, TiledTileset> LoadedTilesets { get; private set; }
-		public Dictionary<Direction, Map> AdjacentMaps { get; set; } = new Dictionary<Direction, Map>();
+		public Dictionary<Direction, String> AdjacentMaps { get; private set; } = new Dictionary<Direction, String>();
+		public bool EntitiesLoaded = false;
 
 		/// <summary>
 		/// Map Constructor loads the map from the file, but does not load any textures nor entities into the game
@@ -67,20 +68,13 @@ namespace Topdown {
 
 			Name = name;
 			Origin = origin;
+			List<Direction> directions = new List<Direction>() {Direction.North, Direction.East, Direction.South, Direction.West};
+			foreach (Direction dir in directions) {
+				TiledProperty prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir.ToString(), null);
+				if (prop is null) continue;
+				AdjacentMaps[dir] = prop.value;
+			}
 		}
-
-		/// <summary>
-		/// Map Constructor loads the map from the file, but does not load any textures nor entities into the game
-		/// </summary>
-		/// <param name="path"></param>
-		public Map(String name) {
-			LoadedMap = new TiledMap(MapDictionary[name]);
-			LoadedTilesets = LoadedMap.GetTiledTilesets("resources/maps/");
-
-			Name = name;
-			Origin = Vector2.Zero;
-		}
-
 
 		// STATIC FUNCTIONS
 		//------------------------------------------------------------------------------------------
@@ -115,7 +109,10 @@ namespace Topdown {
 				}
 
 				MapDictionary[name] = path;
+
+				Console.WriteLine($"[MAP LOADER] Creating Map Definition {name} from {path}");
 			}
+			
 		}
 
 		// FUNCTIONS
@@ -132,6 +129,8 @@ namespace Topdown {
 		}
 
 		public List<Entity> LoadObjectsAsEntities() {
+			if (EntitiesLoaded) return new List<Entity>();
+
 			List<Entity> EntityList = new List<Entity>();
 
 			TiledLayer layer = LoadedMap.Layers.FirstOrDefault(layer => layer.type == TiledLayerType.ObjectLayer, null);
@@ -147,9 +146,10 @@ namespace Topdown {
 				string type = prop.value;
 					
 				if (type == "signpost") {
-					Dialogue dialogue = XMLDialogueParser.LoadDialogueFromFile(obj.properties.First(prop => prop.name == "Dialogue").value);
+					Dialogue dialogue = DialogueParser.LoadDialogueFromFile(obj.properties.First(prop => prop.name == "Dialogue").value);
 					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize), dialogue, ReturnSpriteFromGID(obj.gid));
 					signpost.SetTiledProperties(obj.properties);
+					signpost.Map = Name;
 					EntityList.Add(signpost);
 
 					continue;
@@ -160,46 +160,48 @@ namespace Topdown {
 					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize)));
 					entity.AddComponent(new EntityRender(ReturnSpriteFromGID(obj.gid), 0));
 					entity.SetTiledProperties(obj.properties);
+					entity.Map = Name;
 					EntityList.Add(entity);
 
 
 			}
 
+			EntitiesLoaded = true;
 			return EntityList;
 		}
 
-		public void LoadAdjacentMaps() {
-			List<Direction> directions = new List<Direction>() {Direction.North, Direction.East, Direction.South, Direction.West};
-			foreach (Direction dir in directions) {
-				TiledProperty prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir.ToString(), null);
+		// public void LoadAdjacentMaps() {
+		// 	List<Direction> directions = new List<Direction>() {Direction.North, Direction.East, Direction.South, Direction.West};
+		// 	foreach (Direction dir in directions) {
+		// 		TiledProperty prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir.ToString(), null);
 
-				if (prop is null) continue;
+		// 		if (prop is null) continue;
 
-				AdjacentMaps[dir] = new Map(prop.value);
+		// 		AdjacentMaps[dir] = new Map(prop.value);
 
-				Vector2 newOrigin = Origin;
+		// 		Vector2 newOrigin = Origin;
 				
-				// sloppy but whatever:
-				switch (dir) {
-					case Direction.North:
-						newOrigin -= new Vector2(0, AdjacentMaps[dir].LoadedMap.Height) * _tileSize;
-						break;
-					case Direction.East:
-						newOrigin += new Vector2(LoadedMap.Width, 0) * _tileSize;
-						break;
-					case Direction.South:
-						newOrigin += new Vector2(0, LoadedMap.Height) * _tileSize;
-						break;
-					case Direction.West:
-						newOrigin -= new Vector2(AdjacentMaps[dir].LoadedMap.Width, 0) * _tileSize;
-						break;
-					default:
-						break;
-				}
+		// 		// sloppy but whatever:
+		// 		switch (dir) {
+		// 			case Direction.North:
+		// 				newOrigin -= new Vector2(0, AdjacentMaps[dir].LoadedMap.Height) * _tileSize;
+		// 				break;
+		// 			case Direction.East:
+		// 				newOrigin += new Vector2(LoadedMap.Width, 0) * _tileSize;
+		// 				break;
+		// 			case Direction.South:
+		// 				newOrigin += new Vector2(0, LoadedMap.Height) * _tileSize;
+		// 				break;
+		// 			case Direction.West:
+		// 				newOrigin -= new Vector2(AdjacentMaps[dir].LoadedMap.Width, 0) * _tileSize;
+		// 				break;
+		// 			default:
+		// 				break;
+		// 		}
 
-				AdjacentMaps[dir].Origin = newOrigin;
-			}
-		}
+		// 		AdjacentMaps[dir].Origin = newOrigin;
+		// 	}
+		// }
 
 		/// <summary>
         /// <para>Renders Map using TiledCS Library</para>
@@ -287,26 +289,27 @@ namespace Topdown {
 		/// <param name="dir"></param>
 		/// <returns></returns>
 		public bool HasMapConnection(Direction dir) {
-			// TODO: Improve this, can be better
-			TiledProperty prop = null;
-			switch (dir) {
-				case Direction.North:
-					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "North", null);
-					break;
-				case Direction.East:
-					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "East", null);
-					break;
-				case Direction.West:
-					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "West", null);
-					break;
-				case Direction.South:
-					prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "South", null);
-					break;
-				default:
-					return false;
-			}
+			return AdjacentMaps.ContainsKey(dir);
+			// // TODO: Improve this, can be better
+			// TiledProperty prop = null;
+			// switch (dir) {
+			// 	case Direction.North:
+			// 		prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "North", null);
+			// 		break;
+			// 	case Direction.East:
+			// 		prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "East", null);
+			// 		break;
+			// 	case Direction.West:
+			// 		prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "West", null);
+			// 		break;
+			// 	case Direction.South:
+			// 		prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "South", null);
+			// 		break;
+			// 	default:
+			// 		return false;
+			// }
 
-			return prop is not null;
+			// return prop is not null;
 		}
 
 		// PRIVATE FUNCTIONS

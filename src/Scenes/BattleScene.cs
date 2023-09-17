@@ -94,7 +94,7 @@ namespace Topdown {
 
         public void Unload() {
 			// Unloading Component Systems once the scene ends because the list is static
-			ESpriteSystem.Unload();
+			EntityRenderSystem.Unload();
 			ETransformSystem.Unload();
 
 			UIEntitySystem.Unload();

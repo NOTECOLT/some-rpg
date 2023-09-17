@@ -2,9 +2,13 @@
     <message>
         <name>Test Sign</name>
         <text>Hello World!</text>
+        <flagChecks>
+            <flag name="TestFlag" status="true"/>
+        </flagChecks>
     </message>
     <message>
         <name>Test Sign</name>
         <text>Hola Soy Dora</text>
+        <flag name="TestFlag" status="false"/>
     </message>
 </dialogue>
