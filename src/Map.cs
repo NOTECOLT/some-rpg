@@ -157,7 +157,7 @@ namespace Topdown {
 
 				defaultEntity:
 					Entity entity = new Entity();
-					entity.AddComponent(new ETransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize)));
+					entity.AddComponent(new TileTransform(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize)));
 					entity.AddComponent(new EntityRender(ReturnSpriteFromGID(obj.gid), 0));
 					entity.SetTiledProperties(obj.properties);
 					entity.Map = Name;
@@ -433,10 +433,10 @@ namespace Topdown {
 		}
 
 		private static List<Entity> GetEntityListAtTile(Vector2 tile) {
-			if (ETransformSystem.Components.Count == 0) return null;	
-			List<ETransform> transforms = ETransformSystem.Components.Where(c => c.Tile == tile).ToList();
+			if (TileTransformSystem.Components.Count == 0) return null;	
+			List<TileTransform> transforms = TileTransformSystem.Components.Where(c => c.Tile == tile).ToList();
 			List<Entity> entityList = new List<Entity>();
-			foreach (ETransform t in transforms) {
+			foreach (TileTransform t in transforms) {
 				entityList.Add(t.entity);
 			}
 

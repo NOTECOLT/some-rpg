@@ -1,10 +1,10 @@
 ﻿//------------------------------------------------------------------------------------------
 /*
 TODO: (Engine Stuff)
-/	Flag System <------ DIALOGUE BRANCHES
-//		Save Data
-// 	Spritesheet animations
 /	Debug Info Display
+/	Dialogue System
+/		Response Select
+/		Dialogue Branches
 
 TODO: (Mechanic / Game Design Stuff)
 /	Game Loop
@@ -22,7 +22,7 @@ DONE (BUT COULD BE IMPROVED?)
 /	NPCs / Interactable Objects		
 /	Dialogue Box & Text Printing
 	/	Text Alignment and justify
-	/	Choices
+/	Flag System
 
 WELCOME TO C#! lol
 */

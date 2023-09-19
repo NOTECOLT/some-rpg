@@ -10,7 +10,7 @@ namespace Topdown.ECS {
 	/// <summary>
 	/// Allows the entity to exist within the game world
 	/// </summary>
-	public class ETransform : Component {
+	public class TileTransform : Component {
 		private const int DefaultWalkSpeed = 50;
 		private const int DefaultRunSpeed = 100;
 		// FIELDS
@@ -27,7 +27,7 @@ namespace Topdown.ECS {
 		public bool IsRunning { get; set; } = false;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
 		public Direction Facing { get; private set; } = Direction.South;
 
-        public ETransform(Vector2 tile, float walkSpeed = DefaultWalkSpeed, float runSpeed = DefaultRunSpeed) {
+        public TileTransform(Vector2 tile, float walkSpeed = DefaultWalkSpeed, float runSpeed = DefaultRunSpeed) {
 			Tile = tile;
 			TargetTile = tile;
 			Position = new Vector2(tile.X * Globals.ScaledTileSize, tile.Y * Globals.ScaledTileSize); 
@@ -35,11 +35,11 @@ namespace Topdown.ECS {
             _speed = walkSpeed;
 			_runSpeed = runSpeed;
 			
-			ETransformSystem.Register(this);
+			TileTransformSystem.Register(this);
         }
 
         public override void Destroy() {
-            ETransformSystem.Components.Remove(this);
+            TileTransformSystem.Components.Remove(this);
         }
 
         public override void Update() {

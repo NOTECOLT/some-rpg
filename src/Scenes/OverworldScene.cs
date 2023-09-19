@@ -59,7 +59,7 @@ namespace Topdown {
 		}
 
         public void Update() {
-            ETransform playerT = _player.GetComponent<ETransform>();
+            TileTransform playerT = _player.GetComponent<TileTransform>();
 
             // 1 - INPUT
             //--------------------------------------------------
@@ -139,7 +139,7 @@ namespace Topdown {
 				}	
 			}
 
-			ETransformSystem.Update();
+			TileTransformSystem.Update();
 
 			// 3 - RENDERING
 			//--------------------------------------------------
@@ -168,7 +168,7 @@ namespace Topdown {
         public void Unload() {
 			// Unloading Component Systems once the scene ends because the list is static
 			EntityRenderSystem.Unload();
-			ETransformSystem.Unload();
+			TileTransformSystem.Unload();
 
 			UIEntitySystem.Unload();
 
@@ -226,16 +226,16 @@ namespace Topdown {
 				_loadedMaps[4] = westMap;
 			}
 
-			for (int i = ETransformSystem.Components.Count - 1; i >= 0; i--) {
-				if (ETransformSystem.Components[i].entity is Player) continue;
+			for (int i = TileTransformSystem.Components.Count - 1; i >= 0; i--) {
+				if (TileTransformSystem.Components[i].entity is Player) continue;
 
 				bool shouldBeLoaded = false;
 				foreach (Map m in _loadedMaps) {
 					if (m is null) continue;
-					if (ETransformSystem.Components[i].entity.Map == m.Name) shouldBeLoaded = true; 
+					if (TileTransformSystem.Components[i].entity.Map == m.Name) shouldBeLoaded = true; 
 				}
 				
-				if (!shouldBeLoaded) ETransformSystem.Components[i].entity.Destroy();
+				if (!shouldBeLoaded) TileTransformSystem.Components[i].entity.Destroy();
 			}
 
 			// LOAD ALL TEXTURES & ENTITIES
@@ -252,7 +252,7 @@ namespace Topdown {
 			}
 
 			Console.WriteLine($"[MAPLOADER] Current Loaded Map: {_loadedMaps[0].Name}");
-			Console.WriteLine($"[MAPLOADER] Number of Entities: {ETransformSystem.Components.Count}");
+			Console.WriteLine($"[MAPLOADER] Number of Entities: {TileTransformSystem.Components.Count}");
 		}
 
 		/// <summary>
@@ -269,8 +269,8 @@ namespace Topdown {
 		}
 		
 		private static Entity GetEntityAtTile(Vector2 tile) {
-			if (ETransformSystem.Components.Count == 0) return null;	
-			ETransform transform = ETransformSystem.Components.FirstOrDefault(c => c.Tile == tile, null) ?? null;
+			if (TileTransformSystem.Components.Count == 0) return null;	
+			TileTransform transform = TileTransformSystem.Components.FirstOrDefault(c => c.Tile == tile, null) ?? null;
 			
 			if (transform is null) return null;
 			else return transform.entity;
@@ -278,7 +278,7 @@ namespace Topdown {
     
 		private void SavePlayerData() {
 			Game.PlayerSaveData.Map = _loadedMaps[0].Name;
-			Game.PlayerSaveData.Tile = _player.GetComponent<ETransform>().Tile;
+			Game.PlayerSaveData.Tile = _player.GetComponent<TileTransform>().Tile;
 			Game.PlayerSaveData.Save(Game.PlayerSaveData.FilePath);
 		}
 	

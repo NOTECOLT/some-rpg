@@ -14,7 +14,7 @@ namespace Topdown {
         private const int PlayerRunSpeed = 300;
         
         public Player(Vector2 tile) {
-            ETransform transform = new ETransform(tile, PlayerWalkSpeed, PlayerRunSpeed);
+            TileTransform transform = new TileTransform(tile, PlayerWalkSpeed, PlayerRunSpeed);
             // ESprite sprite = new ESprite(, new Vector2(18, 22), new Vector2(13, 21), 1);
 			Spritesheet playerSheet = new Spritesheet("resources/sprites/characters/player.png", 
 												new Vector2(17, 20), 
@@ -43,7 +43,7 @@ namespace Topdown {
         }
 		
         public void OnKeyInput() {
-            ETransform transform = GetComponent<ETransform>();
+            TileTransform transform = GetComponent<TileTransform>();
 
 			if (!transform.IsMoving) {
 				CheckKeys();
@@ -60,7 +60,7 @@ namespace Topdown {
 					ss.SetFPS(6);
 
 				if (!transform.IsMoving) {
-					switch(GetComponent<ETransform>().Facing) {
+					switch(GetComponent<TileTransform>().Facing) {
 						case Direction.North:
 							ss.SetAnimation("IdleNorth");
 							break;
@@ -77,7 +77,7 @@ namespace Topdown {
 							break;
 					}
 				} else {
-					switch(GetComponent<ETransform>().Facing) {
+					switch(GetComponent<TileTransform>().Facing) {
 						case Direction.North:
 							ss.SetAnimation("WalkNorth");
 							break;
@@ -99,7 +99,7 @@ namespace Topdown {
         }
 
 		public bool CheckKeys() {
-			ETransform transform = GetComponent<ETransform>();
+			TileTransform transform = GetComponent<TileTransform>();
 
 			transform.IsRunning = Raylib.IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT);
 

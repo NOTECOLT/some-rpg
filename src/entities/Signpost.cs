@@ -11,7 +11,7 @@ namespace Topdown {
     public class Signpost : Entity, IInteractable {
         
         public Signpost(Vector2 tile, Dialogue dialogue, Sprite sprite) {
-            ETransform transform = new ETransform(tile);
+            TileTransform transform = new TileTransform(tile);
 
             AddComponent(transform);
             AddComponent(new EntityRender(sprite, 0));

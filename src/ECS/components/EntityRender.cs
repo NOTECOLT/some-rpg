@@ -42,9 +42,9 @@ namespace Topdown.ECS {
         /// Sprite Component must contain ETransform in order to render
         /// </summary>
         public override void Update() {
-            if (entity.GetComponent<ETransform>() is null) return;
+            if (entity.GetComponent<TileTransform>() is null) return;
 
-            ETransform transform = entity.GetComponent<ETransform>();
+            TileTransform transform = entity.GetComponent<TileTransform>();
 
             if (RenderObject is null) {
                 Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.ScaledTileSize, Globals.ScaledTileSize, Color.MAGENTA);

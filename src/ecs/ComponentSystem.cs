@@ -36,7 +36,7 @@ namespace Topdown.ECS {
     // SYSTEMS
     // Systems only exist for components that need to be updated constantly
     //------------------------------------------------------------------------------------------
-    public class ETransformSystem : ComponentSystem<ETransform> { }
+    public class TileTransformSystem : ComponentSystem<TileTransform> { }
     public class EntityRenderSystem : ComponentSystem<EntityRender> { }
     // public class EDialogueSystem : ComponentSystem<EDialogue> { }
 }
