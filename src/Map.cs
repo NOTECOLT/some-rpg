@@ -170,39 +170,6 @@ namespace Topdown {
 			return EntityList;
 		}
 
-		// public void LoadAdjacentMaps() {
-		// 	List<Direction> directions = new List<Direction>() {Direction.North, Direction.East, Direction.South, Direction.West};
-		// 	foreach (Direction dir in directions) {
-		// 		TiledProperty prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == dir.ToString(), null);
-
-		// 		if (prop is null) continue;
-
-		// 		AdjacentMaps[dir] = new Map(prop.value);
-
-		// 		Vector2 newOrigin = Origin;
-				
-		// 		// sloppy but whatever:
-		// 		switch (dir) {
-		// 			case Direction.North:
-		// 				newOrigin -= new Vector2(0, AdjacentMaps[dir].LoadedMap.Height) * _tileSize;
-		// 				break;
-		// 			case Direction.East:
-		// 				newOrigin += new Vector2(LoadedMap.Width, 0) * _tileSize;
-		// 				break;
-		// 			case Direction.South:
-		// 				newOrigin += new Vector2(0, LoadedMap.Height) * _tileSize;
-		// 				break;
-		// 			case Direction.West:
-		// 				newOrigin -= new Vector2(AdjacentMaps[dir].LoadedMap.Width, 0) * _tileSize;
-		// 				break;
-		// 			default:
-		// 				break;
-		// 		}
-
-		// 		AdjacentMaps[dir].Origin = newOrigin;
-		// 	}
-		// }
-
 		/// <summary>
         /// <para>Renders Map using TiledCS Library</para>
         /// Reference: https://github.com/TheBoneJarmer/TiledCS
@@ -290,26 +257,6 @@ namespace Topdown {
 		/// <returns></returns>
 		public bool HasMapConnection(Direction dir) {
 			return AdjacentMaps.ContainsKey(dir);
-			// // TODO: Improve this, can be better
-			// TiledProperty prop = null;
-			// switch (dir) {
-			// 	case Direction.North:
-			// 		prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "North", null);
-			// 		break;
-			// 	case Direction.East:
-			// 		prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "East", null);
-			// 		break;
-			// 	case Direction.West:
-			// 		prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "West", null);
-			// 		break;
-			// 	case Direction.South:
-			// 		prop = LoadedMap.Properties.FirstOrDefault(prop => prop.name == "South", null);
-			// 		break;
-			// 	default:
-			// 		return false;
-			// }
-
-			// return prop is not null;
 		}
 
 		// PRIVATE FUNCTIONS

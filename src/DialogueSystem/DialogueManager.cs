@@ -22,7 +22,7 @@ namespace Topdown.DialogueSystem {
 
 		public DialogueManager() {
 			TextStyles fp = new TextStyles(30, Color.BLACK) {
-				VerticalAlign = VerticalAlignment.Top,
+				VerticalAlign = Alignment.Top,
 				Margin = new Vector4(10, 10, 0, 0)
 			};
 
@@ -34,7 +34,7 @@ namespace Topdown.DialogueSystem {
 			_dialoguePanel.Enabled = false;
 		}
 
-		public void Render() {
+		public void UpdateDialogueBox() {
 			if (!DialogueActive) { 
 				_dialoguePanel.Enabled = false;
 				return;

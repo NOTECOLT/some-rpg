@@ -55,8 +55,8 @@ namespace Topdown.GUI {
 
 			Rectangle drawRect = new Rectangle(_absoluteRect.x + TextStyle.Margin.X,
 												_absoluteRect.y + TextStyle.Margin.Y,
-												Rect.width - TextStyle.Margin.Z,
-												Rect.height - TextStyle.Margin.W);
+												RelativeRect.width - TextStyle.Margin.Z,
+												RelativeRect.height - TextStyle.Margin.W);
 
 			DrawTextWrap(Text, drawRect, TextStyle.Size, TextStyle);	
 		}

@@ -20,7 +20,8 @@ namespace Topdown {
 		// private List<Map> _loadedMaps = new List<Map>();
 		private Map[] _loadedMaps = new Map[5];
 		private DialogueManager _dialogueManager;
-		
+		private UIEntity _menu;
+		private bool _gamePaused = false;
 
 		/// <summary>
 		/// Overworld Scene must be initialized with a map and player data
@@ -44,10 +45,18 @@ namespace Topdown {
 		// SCENE FUNCTIONS
         //------------------------------------------------------------------------------------------
         public void Load() {
-			// 1 - SYSTEM LOADING
+			// 1 - SYSTEM / UI LOADING
 			//--------------------------------------------------
 			// most DialogueManager functions uses static objects, but an object is needed for the UI elements
 			_dialogueManager = new DialogueManager();
+
+			_menu = new UIEntity(new Vector2(0, 0), new Vector2(Globals.ScreenWidth, Globals.ScreenHeight), new Color(0, 0, 0, 50));
+			Button btn = new Button(new Vector2(0, 0), new Vector2(100, 50), "Poop", new TextStyles(20, Color.BLACK), Color.RAYWHITE);
+			btn.SetParent(_menu);
+			btn.HorizontalAlign = Alignment.Center;
+			btn.VerticalAlign = Alignment.Center;
+			_menu.MoveToTop();
+
 
 			// 2 - MAP LOADING
 			//--------------------------------------------------
@@ -59,18 +68,76 @@ namespace Topdown {
 		}
 
         public void Update() {
-            TileTransform playerT = _player.GetComponent<TileTransform>();
+			TileTransform ptt = _player.GetComponent<TileTransform>();
 
-            // 1 - INPUT
-            //--------------------------------------------------
+			if (Raylib.IsKeyReleased(KeyboardKey.KEY_M)) _gamePaused = !_gamePaused;
 
+			if (!_gamePaused) {
+				DoInput(ptt);		// GAME INPUT
+
+				DoPhysics(ptt);		// GAME PHYSICS
+			}
+
+			if (Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT)) {
+				UIEntitySystem.DoMouseInputAll(Raylib.GetMousePosition());
+			}
+
+			// RENDERING
+			//--------------------------------------------------
+
+			Raylib.BeginDrawing();
+				Raylib.ClearBackground(Color.BLACK);
+            	RenderQueue.Camera.target = new Vector2(ptt.Position.X + Globals.ScaledTileSize, ptt.Position.Y + Globals.ScaledTileSize);
+				RenderQueue.Camera.offset = new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2);
+				
+				Raylib.BeginMode2D(RenderQueue.Camera);
+				RenderQueue.RenderAllLayers(_loadedMaps.ToList(), EntityRenderSystem.Components);
+				Raylib.EndMode2D();
+
+				// GAME UI
+				//--------------------------------------------------
+
+				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.RAYWHITE);
+				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.RAYWHITE);
+				ptt.DrawEntityDebugText(new Vector2(5, 75));
+				
+				_dialogueManager.UpdateDialogueBox();
+				UIEntitySystem.RenderAll();
+
+
+				// MENU UI
+				//--------------------------------------------------
+				if (_gamePaused) {
+					_menu.Enabled = true;
+					//Raylib.DrawText("Game Paused", 5, Globals.ScreenHeight - 75, 80, Color.WHITE);
+				} else {
+					_menu.Enabled = false;
+				}
+
+			Raylib.EndDrawing();
+        }
+
+        public void Unload() {
+			// Unloading Component Systems once the scene ends because the list is static
+			EntityRenderSystem.Unload();
+			TileTransformSystem.Unload();
+
+			UIEntitySystem.Unload();
+
+			Map.UnloadAllTextures();
+        }
+
+		// FUNCTIONS
+        //------------------------------------------------------------------------------------------
+		
+		private void DoInput(TileTransform ptt) {
 			// Player Movement
 			_player.OnKeyInput();
 
 			// Player Interaction
 			if (Raylib.IsKeyReleased(KeyboardKey.KEY_SPACE)) {
-				Vector2 target = playerT.Tile;
-				switch (playerT.Facing) {
+				Vector2 target = ptt.Tile;
+				switch (ptt.Facing) {
 					case Direction.North:
 						target -= Vector2.UnitY;
 						break;
@@ -103,15 +170,13 @@ namespace Topdown {
 					SavePlayerData();
 				}
 			}
-		
-			// 2 - PHYSICS
-			//--------------------------------------------------
-
-			if (playerT.TargetTile != playerT.Tile) {
+		}
+		private void DoPhysics(TileTransform ptt) {
+			if (ptt.TargetTile != ptt.Tile) {
 				// Map Reloading
 				// TODO: Improve this? not really the best way to handle it atm
 				if (_loadedMaps.Length > 0) {
-					Vector2 tile = playerT.TargetTile - _loadedMaps[0].Origin / Globals.ScaledTileSize;
+					Vector2 tile = ptt.TargetTile - _loadedMaps[0].Origin / Globals.ScaledTileSize;
 
 					if (tile.Y < 0 && _loadedMaps[0].HasMapConnection(Direction.North))
 						LoadMap(_loadedMaps[1]);
@@ -124,14 +189,14 @@ namespace Topdown {
 				}
 
 				// Tile Collision
-				if (!_loadedMaps[0].IsTileWalkable(playerT.TargetTile)) {
+				if (!_loadedMaps[0].IsTileWalkable(ptt.TargetTile)) {
 					// Note: When colliding with a tile on the border of a map, the current map loaded changes (even when it shouldn't in theory)
 					//		Atm, this isn't causing any problems, but it may in the future
-					playerT.TargetTile = playerT.Tile;
+					ptt.TargetTile = ptt.Tile;
 
 				// Tile Events
 				} else {
-					(String map, Vector2 tile)? warpTuple = _loadedMaps[0].IsTileWarpable(playerT.TargetTile);
+					(String map, Vector2 tile)? warpTuple = _loadedMaps[0].IsTileWarpable(ptt.TargetTile);
 
 					if (warpTuple is not null) {
 						SceneLoader.QueueScene(new OverworldScene(warpTuple.Value.map, warpTuple.Value.tile));
@@ -140,44 +205,8 @@ namespace Topdown {
 			}
 
 			TileTransformSystem.Update();
+		}
 
-			// 3 - RENDERING
-			//--------------------------------------------------
-
-			Raylib.BeginDrawing();
-				Raylib.ClearBackground(Color.BLACK);
-            	RenderQueue.Camera.target = new Vector2(playerT.Position.X + (Globals.ScaledTileSize), playerT.Position.Y + (Globals.ScaledTileSize));
-				RenderQueue.Camera.offset = new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2);
-				Raylib.BeginMode2D(RenderQueue.Camera);
-				RenderQueue.RenderAllLayers(_loadedMaps.ToList<Map>(), EntityRenderSystem.Components);
-				Raylib.EndMode2D();
-
-				// UI
-				//--------------------------------------------------
-
-				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.RAYWHITE);
-				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.RAYWHITE);
-				playerT.DrawEntityDebugText(new Vector2(5, 75));
-
-				UIEntitySystem.RenderAll();
-				_dialogueManager.Render();
-
-			Raylib.EndDrawing();
-        }
-
-        public void Unload() {
-			// Unloading Component Systems once the scene ends because the list is static
-			EntityRenderSystem.Unload();
-			TileTransformSystem.Unload();
-
-			UIEntitySystem.Unload();
-
-			Map.UnloadAllTextures();
-        }
-
-		// FUNCTIONS
-        //------------------------------------------------------------------------------------------
-		
 		/// <summary>
 		/// Loads a Map onto the _loadedMaps list, also loads the map's adjacent maps
 		/// </summary>
@@ -190,7 +219,7 @@ namespace Topdown {
 				_loadedMaps[0] = map;
 			}
 
-			// LOAD ADJACENT MAPS
+			// LOAD ADJACENT MAPS TO ARRAY
 			//--------------------------------------------------
 			// KEY
 			// [0] - main map
@@ -226,6 +255,8 @@ namespace Topdown {
 				_loadedMaps[4] = westMap;
 			}
 
+			// UNLOAD OLD ENTITIES
+			//--------------------------------------------------
 			for (int i = TileTransformSystem.Components.Count - 1; i >= 0; i--) {
 				if (TileTransformSystem.Components[i].entity is Player) continue;
 
@@ -253,19 +284,6 @@ namespace Topdown {
 
 			Console.WriteLine($"[MAPLOADER] Current Loaded Map: {_loadedMaps[0].Name}");
 			Console.WriteLine($"[MAPLOADER] Number of Entities: {TileTransformSystem.Components.Count}");
-		}
-
-		/// <summary>
-		/// Checks if a map is loaded in the map list. Uses filepath for equality check
-		/// </summary>
-		/// <param name="map"></param>
-		/// <returns></returns>
-		private bool IsMapLoaded(Map map) {
-			foreach (Map m in _loadedMaps) {
-				if (m.Name == map.Name) return true;
-			}
-
-			return false;
 		}
 		
 		private static Entity GetEntityAtTile(Vector2 tile) {

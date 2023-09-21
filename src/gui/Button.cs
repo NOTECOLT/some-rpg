@@ -9,7 +9,7 @@ namespace Topdown.GUI {
 	/// <summary>
 	/// A clickable UI element
 	/// </summary>
-    public class Button : UIEntity {
+    public class Button : UIEntity, IClickable {
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
 		public String Text { get; private set; }
@@ -42,7 +42,7 @@ namespace Topdown.GUI {
 		
 		public bool OnClick(Vector2 mousePos) {
 			if (!Enabled) return false;
-			return Raylib.CheckCollisionPointRec(mousePos, Rect) && Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
+			return Raylib.CheckCollisionPointRec(mousePos, _absoluteRect) && Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
 		}
 	}
 }

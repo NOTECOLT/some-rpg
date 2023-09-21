@@ -87,7 +87,7 @@ namespace Topdown {
 				// playerT.DrawEntityDebugText(new Vector2(5, 75));
 
 				UIEntitySystem.RenderAll();
-				_dialogueManager.Render();
+				_dialogueManager.UpdateDialogueBox();
 
 			Raylib.EndDrawing();
         }
