@@ -59,7 +59,8 @@ namespace Topdown.GUI {
 				if (uie.Enabled && uie is IClickable) {
 					IClickable ic = uie as IClickable;
 					if (ic.OnClick(mousePos)) {
-						Console.WriteLine($"[UIENTITY] Received Mouse Click for {ic} at position {mousePos}");
+						if (ic is Button) 
+							Console.WriteLine($"[UIENTITY] Received Mouse Click for {(ic as Button).Text} at position {mousePos}");
 						return true;
 					}
 				}

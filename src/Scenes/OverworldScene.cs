@@ -55,6 +55,10 @@ namespace Topdown {
 			btn.SetParent(_menu);
 			btn.HorizontalAlign = Alignment.Center;
 			btn.VerticalAlign = Alignment.Center;
+
+			Button btn2 = new Button(new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2), new Vector2(100, 100), "Bruh Moment", new TextStyles(20, Color.BLACK), Color.RED);
+			btn2.SetParent(_menu);
+			
 			_menu.MoveToTop();
 
 
@@ -214,6 +218,9 @@ namespace Topdown {
 		/// <param name="firstMap">True if this is the first map to be loaded onto the scene</param>
 		private void LoadMap(Map map, bool firstMap = false) {
 			String oldMap = _loadedMaps[0].Name;
+
+			for (int i = 1; i < _loadedMaps.Length; i++)
+				_loadedMaps[i] = null;
 			
 			if (_loadedMaps[0].Name != map.Name) {
 				_loadedMaps[0] = map;

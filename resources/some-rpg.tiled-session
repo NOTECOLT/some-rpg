@@ -19,8 +19,8 @@
             "scale": 4,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 47.75,
-                "y": 55.875
+                "x": 47.875,
+                "y": 56.125
             }
         },
         "maps/testmap.tmx": {
@@ -49,8 +49,8 @@
             "scale": 1.4071874999999998,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 238.77415056628917,
-                "y": 119.7423939595825
+                "x": 238.0635132134133,
+                "y": 119.03175660670664
             }
         },
         "tilesets/Houses.tsx": {
