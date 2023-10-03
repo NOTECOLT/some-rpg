@@ -12,6 +12,10 @@ namespace Topdown {
 		//------------------------------------------------------------------------------------------
         public String Name { get; set; } = "";
         public String Map { get; set; } = "";
+
+        /// <summary>
+        /// Tile saved is relative to the current map's origin (calculated upon loading)
+        /// </summary>
         public Vector2 Tile { get; set; } = Vector2.Zero;
         public String FilePath { get; }
 

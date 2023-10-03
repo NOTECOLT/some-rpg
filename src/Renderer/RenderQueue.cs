@@ -27,7 +27,7 @@ namespace Topdown.Renderer {
                 foreach(Map m in maps) {
                     if (m is null) continue;
                     if (i < m.LoadedMap.Layers.Length)
-                        m.RenderMapLayer(Camera, Globals.WorldScale, i, Globals.ScreenWidth, Globals.ScreenHeight);
+                        m.RenderMapLayer(Camera, Globals.WORLD_SCALE, i, Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT);
                 }
 
                 foreach(EntityRender s in entities) {

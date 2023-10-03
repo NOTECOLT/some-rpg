@@ -13,21 +13,16 @@ using Topdown.DialogueSystem;
 
 namespace Topdown {
 	/// <summary>
-	/// Scene for when the player is in the overworld.
+	/// Scene for when the player is in battle.
 	/// </summary>
     public class BattleScene : IScene {
-        // private Player _player;
-		// private Vector2 _startingTile;
-		// private List<Map> _loadedMaps = new List<Map>();
 		private DialogueManager _dialogueManager;
 		
 
 		/// <summary>
-		/// Overworld Scene must be initialized with a map and player data
+		/// Battle Scene must be initialized with ____
 		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="map"></param>
-        public BattleScene(string name, Vector2 startingTile) {
+        public BattleScene() {
 			// if (!Map.MapDictionary.ContainsKey(name)) {
 			// 	throw new Exception($"Map {name} not found in Map Dictionary!");
 			// }
@@ -83,8 +78,7 @@ namespace Topdown {
 				//--------------------------------------------------
 
 				Raylib.DrawText($"fps: {Raylib.GetFPS()}; Frame Time:{Raylib.GetFrameTime()}", 5, 5, 30, Color.RAYWHITE);
-				Raylib.DrawText($"Mode: OVERWORLD", 5, 40, 30, Color.RAYWHITE);
-				// playerT.DrawEntityDebugText(new Vector2(5, 75));
+				Raylib.DrawText($"Mode: BATTLE", 5, 40, 30, Color.RAYWHITE);
 
 				UIEntitySystem.RenderAll();
 				_dialogueManager.UpdateDialogueBox();

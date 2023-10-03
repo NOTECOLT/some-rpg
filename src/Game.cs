@@ -1,16 +1,19 @@
 ﻿//------------------------------------------------------------------------------------------
 /*
-TODO: (Engine Stuff)
+TODO: (TOP)
+/	Combat System
+/	
+
+
 /	Debug Info Display
 /	Dialogue System
 /		Response Select
 /		Dialogue Branches
 
-TODO: (Mechanic / Game Design Stuff)
+TODO: (Other Stuff)
 /	Game Loop
 /		Inventory System
 /		Experience System
-/	Combat System
 /	Menu System
 
 TODO: (Low ish priority; aesthetic, skin, etc.)
@@ -33,8 +36,8 @@ using Topdown.SceneManager;
 
 namespace Topdown {
     enum DebugState {
-        GAME
-        // DEBUG_MAPEDIT
+        Overworld,
+        Battle
     }
 
 	/// <summary>
@@ -43,29 +46,27 @@ namespace Topdown {
 	/// </summary>
 	static class Globals {
         // RANDOM CONSTANTS, will eventually move these values
-		public const string Version = "Alpha 1.0";
-		public const bool DevMode = true;
+		public const string VERSION = "Alpha 1.0";
+		public const bool DEV_MODE = true;
 
-        public const int TileSize = 16;
-		public const float WorldScale = 2.0f;
+        public const int TILE_SIZE = 16;
+		public const float WORLD_SCALE = 2.0f;
 
-		public static int ScaledTileSize { get { return (int)(TileSize * WorldScale); } }
+		public static int SCALED_TILE_SIZE { get { return (int)(TILE_SIZE * WORLD_SCALE); } }
 
-		public const int ScreenWidth = 960;
-		public const int ScreenHeight = 720;
-		public const int TargetFPS = 60;
+		public const int SCREEN_WIDTH = 960;
+		public const int SCREEN_HEIGHT = 720;
+		public const int TARGET_FPS = 60;
 	}
 
     static class Game {
 		public static PlayerData PlayerSaveData;
 
         private static void Main() {
-			// DebugState debugState = DebugState.GAME;
-
             // WINDOW INITIALIZATION
             //--------------------------------------------------
-            Raylib.InitWindow(Globals.ScreenWidth, Globals.ScreenHeight, "Some RPG");
-            Raylib.SetTargetFPS(Globals.TargetFPS);
+            Raylib.InitWindow(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT, "Some RPG");
+            Raylib.SetTargetFPS(Globals.TARGET_FPS);
 
             // MAP DICTIONARY INITIALIZATION
             //--------------------------------------------------
@@ -81,27 +82,32 @@ namespace Topdown {
 
             // SCENE INITIALIZATION
             //--------------------------------------------------
+			DebugState debugState = DebugState.Overworld;
 			OverworldScene overworldScene = new OverworldScene(PlayerSaveData.Map, PlayerSaveData.Tile);
+			BattleScene battleScene = new BattleScene();
 
 			SceneLoader.LoadScene(overworldScene);
 
             while (!Raylib.WindowShouldClose()) {
-				// if (Globals.DevMode) {
-				// 	if (Raylib.IsKeyReleased(KeyboardKey.KEY_F3)) {
-				// 		debugState = (DebugState)(((int)debugState + 1) % Enum.GetNames(typeof(DebugState)).Length);
-				// 		Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {debugState}");
+				if (Globals.DEV_MODE) {
+					if (Raylib.IsKeyReleased(KeyboardKey.KEY_F3)) {
+						debugState = (DebugState)(((int)debugState + 1) % Enum.GetNames(typeof(DebugState)).Length);
+						Console.WriteLine($"[DEVMODE] GAMESTATE CHANGED TO {debugState}");
 
-				// 		switch (debugState) {
-				// 			case DebugState.GAME:
-				// 				SceneLoader.LoadScene(overworldScene);
-				// 				break;
-				// 			case DebugState.DEBUG_MAPEDIT:
-				// 				break;
-				// 			default:
-				// 				break;
-				// 		}
-				// 	}
-				// }
+						switch (debugState) {
+							case DebugState.Overworld:
+								PlayerSaveData = new PlayerData("savedata/testdata.xml");
+								overworldScene = new OverworldScene(PlayerSaveData.Map, PlayerSaveData.Tile);
+								SceneLoader.LoadScene(overworldScene);
+								break;
+							case DebugState.Battle:
+								SceneLoader.LoadScene(battleScene);
+								break;
+							default:
+								break;
+						}
+					}
+				}
 
 				SceneLoader.UpdateCurrentScene();
 

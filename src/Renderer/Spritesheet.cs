@@ -121,7 +121,7 @@ namespace Topdown.Renderer {
 		/// </summary>
 		/// <param name="fps"></param>
 		public void SetFPS(int fps) {
-			_frameBuffer = (Raylib.GetFPS() == 0) ? Globals.TargetFPS / fps : Raylib.GetFPS() / fps;
+			_frameBuffer = (Raylib.GetFPS() == 0) ? Globals.TARGET_FPS / fps : Raylib.GetFPS() / fps;
 		}
     }
 

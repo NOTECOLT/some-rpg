@@ -31,7 +31,7 @@ namespace Topdown {
 	/// Class for map related functions. Class utilizes TiledCS library
 	/// </summary>
     public class Map {
-		private static int _tileSize = Globals.ScaledTileSize;
+		private static int _tileSize = Globals.SCALED_TILE_SIZE;
 
 		// STATIC PROPERTIES
 		//------------------------------------------------------------------------------------------

@@ -58,7 +58,7 @@ namespace Topdown.GUI {
 						break;
 					case Alignment.Center:
 						if (Parent is null)
-							_absoluteRect.y = (Globals.ScreenHeight - _absoluteRect.height) / 2;
+							_absoluteRect.y = (Globals.SCREEN_HEIGHT - _absoluteRect.height) / 2;
 						else
 							_absoluteRect.y = (Parent._absoluteRect.height - _absoluteRect.height) / 2;
 						break;
@@ -84,7 +84,7 @@ namespace Topdown.GUI {
 						break;
 					case Alignment.Center:
 						if (Parent is null)
-							_absoluteRect.x = (Globals.ScreenWidth - _absoluteRect.width) / 2;
+							_absoluteRect.x = (Globals.SCREEN_WIDTH - _absoluteRect.width) / 2;
 						else
 							_absoluteRect.x = (Parent._absoluteRect.width - _absoluteRect.width) / 2;
 						break;

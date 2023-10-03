@@ -30,7 +30,7 @@ namespace Topdown.ECS {
         public TileTransform(Vector2 tile, float walkSpeed = DefaultWalkSpeed, float runSpeed = DefaultRunSpeed) {
 			Tile = tile;
 			TargetTile = tile;
-			Position = new Vector2(tile.X * Globals.ScaledTileSize, tile.Y * Globals.ScaledTileSize); 
+			Position = new Vector2(tile.X * Globals.SCALED_TILE_SIZE, tile.Y * Globals.SCALED_TILE_SIZE); 
 
             _speed = walkSpeed;
 			_runSpeed = runSpeed;
@@ -66,15 +66,15 @@ namespace Topdown.ECS {
 
 			// Distance takes the signed distance from target position to position
 			//		Positive values indicate that the entity is moving towards target
-			float distX = (TargetTile.X * Globals.ScaledTileSize - Position.X) * signX;
-			float distY = (TargetTile.Y * Globals.ScaledTileSize - Position.Y) * signY;
+			float distX = (TargetTile.X * Globals.SCALED_TILE_SIZE - Position.X) * signX;
+			float distY = (TargetTile.Y * Globals.SCALED_TILE_SIZE - Position.Y) * signY;
 
 			// Conditions: If player moves close enough to target position or past the boundaries, snap player to grid
 			if ((distX < 0.005 && distY < 0.005 ) || (distX < 0 || distY < 0)) {
 				// CHECK AGAIN IF KEY IS STILL BEING PRESSED TO NEGATE THIS
 
 				Tile = TargetTile;
-				Position = new Vector2(Tile.X * Globals.ScaledTileSize, Tile.Y * Globals.ScaledTileSize);
+				Position = new Vector2(Tile.X * Globals.SCALED_TILE_SIZE, Tile.Y * Globals.SCALED_TILE_SIZE);
 				
 				IsMoving = false;
 

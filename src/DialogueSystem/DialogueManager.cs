@@ -27,8 +27,8 @@ namespace Topdown.DialogueSystem {
 			};
 
 
-			_dialoguePanel = new UIEntity(new Vector2(Globals.ScreenWidth * 0.025f, Globals.ScreenHeight * 0.775f), new Vector2(Globals.ScreenWidth * 0.95f, Globals.ScreenHeight * 0.2f), Color.LIGHTGRAY);
-			_dialogueText = new TextObject(new Vector2(0, 0), new Vector2(Globals.ScreenWidth * 0.95f, Globals.ScreenHeight * 0.2f), "Test Text", fp, null);
+			_dialoguePanel = new UIEntity(new Vector2(Globals.SCREEN_WIDTH * 0.025f, Globals.SCREEN_HEIGHT * 0.775f), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), Color.LIGHTGRAY);
+			_dialogueText = new TextObject(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Test Text", fp, null);
 			_dialogueText.SetParent(_dialoguePanel);
 
 			_dialoguePanel.Enabled = false;

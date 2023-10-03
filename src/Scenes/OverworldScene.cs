@@ -39,7 +39,7 @@ namespace Topdown {
 			};
 			_loadedMaps[0] = new Map(name, Vector2.Zero);
 			// _loadedMaps.Add();
-			_startingTile = startingTile;
+			_startingTile = startingTile + (_loadedMaps[0].Origin / Globals.SCALED_TILE_SIZE);
         }
 
 		// SCENE FUNCTIONS
@@ -50,13 +50,13 @@ namespace Topdown {
 			// most DialogueManager functions uses static objects, but an object is needed for the UI elements
 			_dialogueManager = new DialogueManager();
 
-			_menu = new UIEntity(new Vector2(0, 0), new Vector2(Globals.ScreenWidth, Globals.ScreenHeight), new Color(0, 0, 0, 50));
+			_menu = new UIEntity(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT), new Color(0, 0, 0, 50));
 			Button btn = new Button(new Vector2(0, 0), new Vector2(100, 50), "Poop", new TextStyles(20, Color.BLACK), Color.RAYWHITE);
 			btn.SetParent(_menu);
 			btn.HorizontalAlign = Alignment.Center;
 			btn.VerticalAlign = Alignment.Center;
 
-			Button btn2 = new Button(new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2), new Vector2(100, 100), "Bruh Moment", new TextStyles(20, Color.BLACK), Color.RED);
+			Button btn2 = new Button(new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2), new Vector2(100, 100), "Bruh Moment", new TextStyles(20, Color.BLACK), Color.RED);
 			btn2.SetParent(_menu);
 			
 			_menu.MoveToTop();
@@ -91,8 +91,8 @@ namespace Topdown {
 
 			Raylib.BeginDrawing();
 				Raylib.ClearBackground(Color.BLACK);
-            	RenderQueue.Camera.target = new Vector2(ptt.Position.X + Globals.ScaledTileSize, ptt.Position.Y + Globals.ScaledTileSize);
-				RenderQueue.Camera.offset = new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2);
+            	RenderQueue.Camera.target = new Vector2(ptt.Position.X + Globals.SCALED_TILE_SIZE, ptt.Position.Y + Globals.SCALED_TILE_SIZE);
+				RenderQueue.Camera.offset = new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2);
 				
 				Raylib.BeginMode2D(RenderQueue.Camera);
 				RenderQueue.RenderAllLayers(_loadedMaps.ToList(), EntityRenderSystem.Components);
@@ -169,7 +169,7 @@ namespace Topdown {
 			}
 
 			// Debug Keys
-			if (Globals.DevMode && Raylib.IsKeyDown(KeyboardKey.KEY_F3)) {
+			if (Globals.DEV_MODE && Raylib.IsKeyDown(KeyboardKey.KEY_F4)) {
 				if (Raylib.IsKeyReleased(KeyboardKey.KEY_S)) {
 					SavePlayerData();
 				}
@@ -180,7 +180,7 @@ namespace Topdown {
 				// Map Reloading
 				// TODO: Improve this? not really the best way to handle it atm
 				if (_loadedMaps.Length > 0) {
-					Vector2 tile = ptt.TargetTile - _loadedMaps[0].Origin / Globals.ScaledTileSize;
+					Vector2 tile = ptt.TargetTile - _loadedMaps[0].Origin / Globals.SCALED_TILE_SIZE;
 
 					if (tile.Y < 0 && _loadedMaps[0].HasMapConnection(Direction.North))
 						LoadMap(_loadedMaps[1]);
@@ -236,28 +236,28 @@ namespace Topdown {
 			// [4] - south map
 			if (_loadedMaps[0].HasMapConnection(Direction.North)) {
 				Map northMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.North], Vector2.Zero);
-				Vector2 newOrigin = _loadedMaps[0].Origin - new Vector2(0, northMap.LoadedMap.Height) * Globals.ScaledTileSize;
+				Vector2 newOrigin = _loadedMaps[0].Origin - new Vector2(0, northMap.LoadedMap.Height) * Globals.SCALED_TILE_SIZE;
 				northMap.Origin = newOrigin;
 				_loadedMaps[1] = northMap;
 			}
 
 			if (_loadedMaps[0].HasMapConnection(Direction.East)) {
 				Map eastMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.East], Vector2.Zero);
-				Vector2 newOrigin = _loadedMaps[0].Origin + new Vector2(_loadedMaps[0].LoadedMap.Width, 0) * Globals.ScaledTileSize;
+				Vector2 newOrigin = _loadedMaps[0].Origin + new Vector2(_loadedMaps[0].LoadedMap.Width, 0) * Globals.SCALED_TILE_SIZE;
 				eastMap.Origin = newOrigin;
 				_loadedMaps[2] = eastMap;
 			}
 
 			if (_loadedMaps[0].HasMapConnection(Direction.South)) {
 				Map southMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.South], Vector2.Zero);
-				Vector2 newOrigin = _loadedMaps[0].Origin + new Vector2(0, _loadedMaps[0].LoadedMap.Height) * Globals.ScaledTileSize;
+				Vector2 newOrigin = _loadedMaps[0].Origin + new Vector2(0, _loadedMaps[0].LoadedMap.Height) * Globals.SCALED_TILE_SIZE;
 				southMap.Origin = newOrigin;
 				_loadedMaps[3] = southMap;
 			}
 
 			if (_loadedMaps[0].HasMapConnection(Direction.West)) {
 				Map westMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.South], Vector2.Zero);
-				Vector2 newOrigin = _loadedMaps[0].Origin - new Vector2(westMap.LoadedMap.Width, 0) * Globals.ScaledTileSize;
+				Vector2 newOrigin = _loadedMaps[0].Origin - new Vector2(westMap.LoadedMap.Width, 0) * Globals.SCALED_TILE_SIZE;
 				westMap.Origin = newOrigin;
 				_loadedMaps[4] = westMap;
 			}
@@ -303,7 +303,9 @@ namespace Topdown {
     
 		private void SavePlayerData() {
 			Game.PlayerSaveData.Map = _loadedMaps[0].Name;
-			Game.PlayerSaveData.Tile = _player.GetComponent<TileTransform>().Tile;
+
+			// tile saved is relative to the map's current origin
+			Game.PlayerSaveData.Tile = _player.GetComponent<TileTransform>().Tile - (_loadedMaps[0].Origin / Globals.SCALED_TILE_SIZE);
 			Game.PlayerSaveData.Save(Game.PlayerSaveData.FilePath);
 		}
 	

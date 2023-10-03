@@ -47,14 +47,14 @@ namespace Topdown.ECS {
             TileTransform transform = entity.GetComponent<TileTransform>();
 
             if (RenderObject is null) {
-                Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.ScaledTileSize, Globals.ScaledTileSize, Color.MAGENTA);
+                Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.SCALED_TILE_SIZE, Globals.SCALED_TILE_SIZE, Color.MAGENTA);
                 return;
             }
 
-            Vector2 sprPos = new Vector2(transform.Position.X + Globals.ScaledTileSize/2, transform.Position.Y + Globals.ScaledTileSize);
-            Vector2 offset = new Vector2(RenderObject.Size.X /** scale / 2*/, RenderObject.Size.Y * Globals.WorldScale);
+            Vector2 sprPos = new Vector2(transform.Position.X + Globals.SCALED_TILE_SIZE/2, transform.Position.Y + Globals.SCALED_TILE_SIZE);
+            Vector2 offset = new Vector2(RenderObject.Size.X /** scale / 2*/, RenderObject.Size.Y * Globals.WORLD_SCALE);
 
-            RenderObject.Render(sprPos, offset, Globals.WorldScale, Color.WHITE);
+            RenderObject.Render(sprPos, offset, Globals.WORLD_SCALE, Color.WHITE);
         }
     }
 }
