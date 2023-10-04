@@ -61,7 +61,7 @@ namespace Topdown {
 			//--------------------------------------------------
 
 
-			TileTransformSystem.Update();
+			EntityTransformSystem.Update();
 
 			// 3 - RENDERING
 			//--------------------------------------------------
@@ -89,7 +89,7 @@ namespace Topdown {
         public void Unload() {
 			// Unloading Component Systems once the scene ends because the list is static
 			EntityRenderSystem.Unload();
-			TileTransformSystem.Unload();
+			EntityTransformSystem.Unload();
 
 			UIEntitySystem.Unload();
 

@@ -10,11 +10,11 @@ using Topdown.Renderer;
 
 namespace Topdown {
     public class Player : Entity, IControllable {
-        private const int PlayerWalkSpeed = 200;
-        private const int PlayerRunSpeed = 300;
+        private const int PLAYER_WALK_SPD = 200;
+        private const int PLAYER_RUN_SPD = 300;
         
         public Player(Vector2 tile) {
-            TileTransform transform = new TileTransform(tile, PlayerWalkSpeed, PlayerRunSpeed);
+            TileTransform transform = new TileTransform(tile, PLAYER_WALK_SPD, PLAYER_RUN_SPD);
             // ESprite sprite = new ESprite(, new Vector2(18, 22), new Vector2(13, 21), 1);
 			Spritesheet playerSheet = new Spritesheet("resources/sprites/characters/player.png", 
 												new Vector2(17, 20), 

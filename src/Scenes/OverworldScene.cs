@@ -124,7 +124,7 @@ namespace Topdown {
         public void Unload() {
 			// Unloading Component Systems once the scene ends because the list is static
 			EntityRenderSystem.Unload();
-			TileTransformSystem.Unload();
+			EntityTransformSystem.Unload();
 
 			UIEntitySystem.Unload();
 
@@ -208,7 +208,7 @@ namespace Topdown {
 				}	
 			}
 
-			TileTransformSystem.Update();
+			EntityTransformSystem.Update();
 		}
 
 		/// <summary>
@@ -264,16 +264,16 @@ namespace Topdown {
 
 			// UNLOAD OLD ENTITIES
 			//--------------------------------------------------
-			for (int i = TileTransformSystem.Components.Count - 1; i >= 0; i--) {
-				if (TileTransformSystem.Components[i].entity is Player) continue;
+			for (int i = EntityTransformSystem.Components.Count - 1; i >= 0; i--) {
+				if (EntityTransformSystem.Components[i].entity is Player) continue;
 
 				bool shouldBeLoaded = false;
 				foreach (Map m in _loadedMaps) {
 					if (m is null) continue;
-					if (TileTransformSystem.Components[i].entity.Map == m.Name) shouldBeLoaded = true; 
+					if (EntityTransformSystem.Components[i].entity.Map == m.Name) shouldBeLoaded = true; 
 				}
 				
-				if (!shouldBeLoaded) TileTransformSystem.Components[i].entity.Destroy();
+				if (!shouldBeLoaded) EntityTransformSystem.Components[i].entity.Destroy();
 			}
 
 			// LOAD ALL TEXTURES & ENTITIES
@@ -290,12 +290,22 @@ namespace Topdown {
 			}
 
 			Console.WriteLine($"[MAPLOADER] Current Loaded Map: {_loadedMaps[0].Name}");
-			Console.WriteLine($"[MAPLOADER] Number of Entities: {TileTransformSystem.Components.Count}");
+			Console.WriteLine($"[MAPLOADER] Number of Entities: {EntityTransformSystem.Components.Count}");
 		}
 		
 		private static Entity GetEntityAtTile(Vector2 tile) {
-			if (TileTransformSystem.Components.Count == 0) return null;	
-			TileTransform transform = TileTransformSystem.Components.FirstOrDefault(c => c.Tile == tile, null) ?? null;
+			if (EntityTransformSystem.Components.Count == 0) return null;
+			TileTransform transform = null;
+			foreach (EntityTransform etc in EntityTransformSystem.Components) {
+				if (etc is TileTransform) {
+					TileTransform tt = etc as TileTransform;
+					if (tt.Tile == tile) {
+						transform = tt;
+						break;
+					}
+				}
+			}
+			// TileTransform transform = EntityTransformSystem.Components.FirstOrDefault(c => c.Tile == tile, null) ?? null;
 			
 			if (transform is null) return null;
 			else return transform.entity;

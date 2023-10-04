@@ -15,15 +15,15 @@ namespace Topdown.Renderer {
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
         // Render Layers should only be between 0 <= x < 16
-        public const int MinRenderLayer = 0;
-        public const int MaxRenderLayer = 16;
+        public const int MIN_RENDER_LAYER = 0;
+        public const int MAX_RENDER_LAYER = 16;
 
         public static Camera2D Camera = new Camera2D();
         
         public static void RenderAllLayers(List<Map> maps, List<EntityRender> entities) {
 			// Because of how the Render Queue is set up, tiled layers need to be made in accordance to what layer the player is
 			// TODO: Improve by tagging tiled layers with "render above/below entities"?
-            for (int i = MinRenderLayer; i < MaxRenderLayer; i++) {
+            for (int i = MIN_RENDER_LAYER; i < MAX_RENDER_LAYER; i++) {
                 foreach(Map m in maps) {
                     if (m is null) continue;
                     if (i < m.LoadedMap.Layers.Length)

@@ -380,8 +380,17 @@ namespace Topdown {
 		}
 
 		private static List<Entity> GetEntityListAtTile(Vector2 tile) {
-			if (TileTransformSystem.Components.Count == 0) return null;	
-			List<TileTransform> transforms = TileTransformSystem.Components.Where(c => c.Tile == tile).ToList();
+			if (EntityTransformSystem.Components.Count == 0) return null;
+			List<TileTransform> transforms = new List<TileTransform>();
+			foreach (EntityTransform etc in EntityTransformSystem.Components) {
+				if (etc is TileTransform) {
+					TileTransform tt = etc as TileTransform;
+					if (tt.Tile == tile) {
+						transforms.Add(tt);
+					}
+				}
+			}
+			// List<TileTransform> transforms = EntityTransformSystem.Components.Where(c => c is TileTransform	c.Tile == tile).ToList();
 			List<Entity> entityList = new List<Entity>();
 			foreach (TileTransform t in transforms) {
 				entityList.Add(t.entity);

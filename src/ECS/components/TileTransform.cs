@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------------------
-/* E(NTITY) TRANSFORM
+/* Tile TRANSFORM
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
@@ -8,11 +8,11 @@ using Raylib_cs;
 namespace Topdown.ECS {
 
 	/// <summary>
-	/// Allows the entity to exist within the game world
+	/// Allows entity to exist in the game overworld as a tile entity
 	/// </summary>
-	public class TileTransform : Component {
-		private const int DefaultWalkSpeed = 50;
-		private const int DefaultRunSpeed = 100;
+	public class TileTransform : EntityTransform {
+		private const int DEFAULT_WALK_SPD = 50;
+		private const int DEFAULT_RUN_SPD = 100;
 		// FIELDS
 		//------------------------------------------------------------------------------------------            
 		private float _speed = 0;		// Speed of the entity whilst walking
@@ -20,26 +20,23 @@ namespace Topdown.ECS {
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
-		public Vector2 Position { get; private set; }		// Refers to the position of the player with respect to the screen / global coordinate system  
+		// public Vector2 Position { get; private set; }		// Refers to the position of the player with respect to the screen / global coordinate system  
 		public Vector2 Tile { get; private set; }			// Refers to the position of player relative to the world grid
 		public Vector2 TargetTile { get; set; }				// Entity's target world vector. Each entity will constantly move to this location if it is not already.	
 		public bool IsMoving { get; private set; } = false;	// 1 if the entity is moving, 0 otherwise
 		public bool IsRunning { get; set; } = false;		// 1 if the entity is running, 0 otherwise. isMoving must be set to 1 for this to take effect.
 		public Direction Facing { get; private set; } = Direction.South;
 
-        public TileTransform(Vector2 tile, float walkSpeed = DefaultWalkSpeed, float runSpeed = DefaultRunSpeed) {
+        public TileTransform(Vector2 tile, float walkSpeed = DEFAULT_WALK_SPD, float runSpeed = DEFAULT_RUN_SPD) : base(tile * Globals.SCALED_TILE_SIZE) {
 			Tile = tile;
 			TargetTile = tile;
-			Position = new Vector2(tile.X * Globals.SCALED_TILE_SIZE, tile.Y * Globals.SCALED_TILE_SIZE); 
 
             _speed = walkSpeed;
 			_runSpeed = runSpeed;
-			
-			TileTransformSystem.Register(this);
         }
 
         public override void Destroy() {
-            TileTransformSystem.Components.Remove(this);
+			base.Destroy();
         }
 
         public override void Update() {
@@ -113,8 +110,7 @@ namespace Topdown.ECS {
 		/// <summary>
 		/// Renders all debug info relating an entity
 		/// </summary>
-		/// <param name="tileSize"></param>
-		public void DrawEntityDebugText(Vector2 pos) {
+		public override void DrawEntityDebugText(Vector2 pos) {
 			if (!Enabled) return;
 
 			Raylib.DrawText($"position: ({Position.X}, {Position.Y})", (int)pos.X, (int)pos.Y, 30, Color.RAYWHITE);
