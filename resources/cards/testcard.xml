@@ -1,0 +1,7 @@
+<card>
+    <name>Test Card</name>
+    <texture>resources/sprites/tilesets/grass.png</texture>
+    <description>
+        This is a test
+    </description>
+</card>

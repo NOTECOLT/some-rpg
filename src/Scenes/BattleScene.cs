@@ -18,21 +18,18 @@ namespace Topdown {
     public class BattleScene : IScene {
 		private DialogueManager _dialogueManager;
 		
+		private Entity _testEntity;
+		private List<Card> _cardDeck = new List<Card>();
+		
 
 		/// <summary>
 		/// Battle Scene must be initialized with ____
 		/// </summary>
         public BattleScene() {
-			// if (!Map.MapDictionary.ContainsKey(name)) {
-			// 	throw new Exception($"Map {name} not found in Map Dictionary!");
-			// }
-
             RenderQueue.Camera = new Camera2D() {
 				rotation = 0,
 				zoom = 1
-			};
-			// _loadedMaps.Add(new Map(name, Vector2.Zero));
-			// _startingTile = startingTile;
+			}; 
         }
 
 		// SCENE FUNCTIONS
@@ -45,11 +42,13 @@ namespace Topdown {
 
 			// 2 - MAP LOADING
 			//--------------------------------------------------
-			// LoadMap(_loadedMaps[0]);
 
             // 3 - PLAYER LOADING
             //--------------------------------------------------
-			// _player = new Player(_startingTile);			
+			
+			_testEntity = new Entity();	
+			_testEntity.AddComponent(new EntityTransform(Vector2.Zero));
+			_testEntity.AddComponent(new EntityRender(PlayerData.Cards["Test Card"].Sprite, 0));		
 		}
 
         public void Update() {
@@ -60,7 +59,6 @@ namespace Topdown {
 			// 2 - PHYSICS
 			//--------------------------------------------------
 
-
 			EntityTransformSystem.Update();
 
 			// 3 - RENDERING
@@ -68,10 +66,10 @@ namespace Topdown {
 
 			Raylib.BeginDrawing();
 				Raylib.ClearBackground(Color.BLACK);
-            	// RenderQueue.Camera.target = new Vector2(playerT.Position.X + (Globals.ScaledTileSize), playerT.Position.Y + (Globals.ScaledTileSize));
-				// RenderQueue.Camera.offset = new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2);
+            	RenderQueue.Camera.target = Vector2.Zero;
+				RenderQueue.Camera.offset = new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2);
 				Raylib.BeginMode2D(RenderQueue.Camera);
-					// RenderQueue.RenderAllLayers(_loadedMaps, ESpriteSystem.Components);
+					RenderQueue.RenderAllLayers(null, EntityRenderSystem.Components);
 				Raylib.EndMode2D();
 
 				// UI

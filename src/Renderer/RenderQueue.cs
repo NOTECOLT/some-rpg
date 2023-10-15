@@ -24,10 +24,12 @@ namespace Topdown.Renderer {
 			// Because of how the Render Queue is set up, tiled layers need to be made in accordance to what layer the player is
 			// TODO: Improve by tagging tiled layers with "render above/below entities"?
             for (int i = MIN_RENDER_LAYER; i < MAX_RENDER_LAYER; i++) {
-                foreach(Map m in maps) {
-                    if (m is null) continue;
-                    if (i < m.LoadedMap.Layers.Length)
-                        m.RenderMapLayer(Camera, Globals.WORLD_SCALE, i, Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT);
+                if (maps is not null) {
+                    foreach(Map m in maps) {
+                        if (m is null) continue;
+                        if (i < m.LoadedMap.Layers.Length)
+                            m.RenderMapLayer(Camera, Globals.WORLD_SCALE, i, Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT);
+                    }
                 }
 
                 foreach(EntityRender s in entities) {

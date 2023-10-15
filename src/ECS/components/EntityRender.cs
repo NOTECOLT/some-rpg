@@ -42,19 +42,23 @@ namespace Topdown.ECS {
         /// Sprite Component must contain ETransform in order to render
         /// </summary>
         public override void Update() {
-            if (entity.GetComponent<TileTransform>() is null) return;
+            if (entity.GetComponent<TileTransform>() is not null) {
+                TileTransform transform = entity.GetComponent<TileTransform>();
 
-            TileTransform transform = entity.GetComponent<TileTransform>();
+                if (RenderObject is null) {
+                    Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.SCALED_TILE_SIZE, Globals.SCALED_TILE_SIZE, Color.MAGENTA);
+                    return;
+                }
 
-            if (RenderObject is null) {
-                Raylib.DrawRectangle((int)transform.Position.X, (int)transform.Position.Y, Globals.SCALED_TILE_SIZE, Globals.SCALED_TILE_SIZE, Color.MAGENTA);
-                return;
+                Vector2 sprPos = new Vector2(transform.Position.X + Globals.SCALED_TILE_SIZE/2, transform.Position.Y + Globals.SCALED_TILE_SIZE);
+                Vector2 offset = new Vector2(RenderObject.Size.X /** scale / 2*/, RenderObject.Size.Y * Globals.WORLD_SCALE);
+
+                RenderObject.Render(sprPos, offset, Globals.WORLD_SCALE, Color.WHITE);
+            } else if (entity.GetComponent<EntityTransform>() is not null) {
+                EntityTransform transform = entity.GetComponent<EntityTransform>();
+
+                RenderObject.Render(transform.Position, Vector2.Zero, Globals.WORLD_SCALE, Color.WHITE);
             }
-
-            Vector2 sprPos = new Vector2(transform.Position.X + Globals.SCALED_TILE_SIZE/2, transform.Position.Y + Globals.SCALED_TILE_SIZE);
-            Vector2 offset = new Vector2(RenderObject.Size.X /** scale / 2*/, RenderObject.Size.Y * Globals.WORLD_SCALE);
-
-            RenderObject.Render(sprPos, offset, Globals.WORLD_SCALE, Color.WHITE);
         }
     }
 }
