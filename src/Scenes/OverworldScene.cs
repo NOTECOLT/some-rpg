@@ -50,13 +50,13 @@ namespace Topdown {
 			// most DialogueManager functions uses static objects, but an object is needed for the UI elements
 			_dialogueManager = new DialogueManager();
 
-			_menu = new UIEntity(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT), new Color(0, 0, 0, 50));
-			Button btn = new Button(new Vector2(0, 0), new Vector2(100, 50), "Poop", new TextStyles(20, Color.BLACK), Color.RAYWHITE);
+			_menu = new UIEntity(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT), "Menu", new Color(0, 0, 0, 50));
+			Button btn = new Button(new Vector2(0, 0), new Vector2(100, 50), "Poop", "Poop Button", new TextStyles(20, Color.BLACK), Color.RAYWHITE);
 			btn.SetParent(_menu);
 			btn.HorizontalAlign = Alignment.Center;
 			btn.VerticalAlign = Alignment.Center;
 
-			Button btn2 = new Button(new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2), new Vector2(100, 100), "Bruh Moment", new TextStyles(20, Color.BLACK), Color.RED);
+			Button btn2 = new Button(new Vector2(Globals.SCREEN_WIDTH / 2, Globals.SCREEN_HEIGHT / 2), new Vector2(100, 100), "Bruh Moment", "Bruh Moment Button", new TextStyles(20, Color.BLACK), Color.RED);
 			btn2.SetParent(_menu);
 			
 			_menu.MoveToTop();
@@ -82,7 +82,9 @@ namespace Topdown {
 				DoPhysics(ptt);		// GAME PHYSICS
 			}
 
-			if (Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT)) {
+			if (Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT) ||
+				Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT) ||
+				Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
 				UIEntitySystem.DoMouseInputAll(Raylib.GetMousePosition());
 			}
 

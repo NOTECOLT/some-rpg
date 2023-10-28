@@ -2,7 +2,7 @@
 /*
 TODO: (TOP)
 /	Combat System
-/	
+/	ENTITY DIAGRAM
 
 
 /	Debug Info Display

@@ -26,7 +26,7 @@ namespace Topdown.GUI {
 		/// <param name="charLimit"></param>
 		/// <param name="font"></param>
 		/// <param name="bgColor"></param>
-		public TextField(Vector2 pos, Vector2 size, int charLimit, TextStyles font, Color? bgColor) : base(pos, size, bgColor) {
+		public TextField(Vector2 pos, Vector2 size, int charLimit, String name, TextStyles font, Color? bgColor) : base(pos, size, name, bgColor) {
 			CharLimit = charLimit;
 			Font = font;
 		}

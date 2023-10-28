@@ -1,7 +1,5 @@
 <card>
     <name>Test Card</name>
     <texture>resources/sprites/tilesets/grass.png</texture>
-    <description>
-        This is a test
-    </description>
+    <description>This is a test. Lorem fucking ipsum</description>
 </card>

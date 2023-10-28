@@ -2,12 +2,13 @@
 /*  BUTTON
 */
 //------------------------------------------------------------------------------------------
+using System.Diagnostics;
 using System.Numerics;
 using Raylib_cs;
 
 namespace Topdown.GUI {
 	/// <summary>
-	/// A clickable UI element
+	/// A clickable UI element. Nothing more than a regular UIEntity with an IClickable interface
 	/// </summary>
     public class Button : UIEntity, IClickable {
 		// PROPERTIES
@@ -23,7 +24,7 @@ namespace Topdown.GUI {
 		/// <param name="text"></param>
 		/// <param name="font"></param>
 		/// <param name="bgColor"></param>
-		public Button(Vector2 pos, Vector2 size, String text, TextStyles font, Color? bgColor) : base(pos, size, bgColor) {
+		public Button(Vector2 pos, Vector2 size, String text, String name, TextStyles font, Color? bgColor) : base(pos, size, name, bgColor) {
 			Text = text;
 			Font = font;
 		}
@@ -39,10 +40,16 @@ namespace Topdown.GUI {
 			
 			Raylib.DrawText(Text, (int)_absoluteRect.x, drawY, Font.Size, Font.Color);
 		}
-		
-		public bool OnClick(Vector2 mousePos) {
-			if (!Enabled) return false;
-			return Raylib.CheckCollisionPointRec(mousePos, _absoluteRect) && Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
+
+		// ICLICKABLE
+		//------------------------------------------------------------------------------------------
+		// TODO: FIX THIS?
+		public void OnMousePress(Vector2 mousePos) { }
+	
+		public void OnMouseRelease(Vector2 mousePos) {
+			Console.WriteLine($"{Name} Clicked!");
 		}
+
+		public void OnMouseDown(Vector2 mousePos) { }
 	}
 }

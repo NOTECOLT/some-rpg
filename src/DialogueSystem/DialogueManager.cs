@@ -21,14 +21,14 @@ namespace Topdown.DialogueSystem {
         public static Queue<Message> MessageQueue { get; private set; } = new Queue<Message>();
 
 		public DialogueManager() {
-			TextStyles fp = new TextStyles(30, Color.BLACK) {
+			TextStyles ts = new TextStyles(30, Color.BLACK) {
 				VerticalAlign = Alignment.Top,
 				Margin = new Vector4(10, 10, 0, 0)
 			};
 
 
-			_dialoguePanel = new UIEntity(new Vector2(Globals.SCREEN_WIDTH * 0.025f, Globals.SCREEN_HEIGHT * 0.775f), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), Color.LIGHTGRAY);
-			_dialogueText = new TextObject(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Test Text", fp, null);
+			_dialoguePanel = new UIEntity(new Vector2(Globals.SCREEN_WIDTH * 0.025f, Globals.SCREEN_HEIGHT * 0.775f), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Dialogue Panel", Color.LIGHTGRAY);
+			_dialogueText = new TextObject(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Test Text", "Dialogue Text", ts, null);
 			_dialogueText.SetParent(_dialoguePanel);
 
 			_dialoguePanel.Enabled = false;

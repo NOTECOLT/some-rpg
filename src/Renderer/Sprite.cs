@@ -17,8 +17,8 @@ namespace Topdown.Renderer {
         private Vector2 _origin = Vector2.Zero;		// Start of the spritesheet
 		private Vector2 _margin = Vector2.Zero;		// Distance between each frame
 
-
-		private float _rotation; 
+		private float _rotation;
+		
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
 		public Vector2 Size { get; }				// Height and Width of the texture
@@ -49,6 +49,19 @@ namespace Topdown.Renderer {
 		public void Render(Vector2 position, Vector2 offset, float scale, Color color) {
 			Rectangle spriteSrc = new Rectangle(_origin.X, _origin.Y, Size.X, Size.Y);
 			Rectangle spriteDst = new Rectangle(position.X, position.Y, Size.X * scale, Size.Y * scale);
+
+			Raylib.DrawTexturePro(_texture, spriteSrc, spriteDst, offset, _rotation, color);
+		}
+
+		/// <summary>
+		/// Renders at position but allows for the texture to be stretched freely. In most situations offset is 0
+		/// </summary>
+		/// <param name="rect"></param>
+		/// <param name="offset"></param>
+		/// <param name="color"></param>
+		public void RenderStretch(Rectangle rect, Vector2 offset, Color color) {
+			Rectangle spriteSrc = new Rectangle(_origin.X, _origin.Y, Size.X, Size.Y);
+			Rectangle spriteDst = new Rectangle(rect.x, rect.y, rect.width, rect.height);
 
 			Raylib.DrawTexturePro(_texture, spriteSrc, spriteDst, offset, _rotation, color);
 		}

@@ -6,6 +6,7 @@ using System.Numerics;
 using System.ComponentModel;
 using Raylib_cs;
 using Topdown.ECS;
+using System.Data;
 
 namespace Topdown.GUI {
     /// <summary>
@@ -19,11 +20,14 @@ namespace Topdown.GUI {
 		protected Rectangle _relativeRect;		// Relative Rect, relative to its parent
 		protected Alignment _verticalAlign = Alignment.None;
 		protected Alignment _horizontalAlign = Alignment.None;
+
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
+		public string Name = "Untitled Object";
 		public bool Enabled { get; set; } = true;
 		public UIEntity Parent { get; protected set; } = null;
 		public List<UIEntity> Children { get; protected set; } = new List<UIEntity>();
+		public bool CullMouseClick { get; set; } = true;
 
 		/// <summary>
 		/// Position and Size of UIEntity relative to its parent.
@@ -32,15 +36,9 @@ namespace Topdown.GUI {
 			get { return _relativeRect; }
 			set { 
 				_relativeRect = value;
-				UIEntity p = Parent;
-				while (p is not null) {
-					_absoluteRect.x += p.RelativeRect.x;
-					_absoluteRect.y += p.RelativeRect.y;
-					p = p.Parent;
-				}	
+				UpdateAbsoluteRect();
 			} 
 		}	
-
 		public Alignment VerticalAlign { 
 			get { return _verticalAlign; } 
 			set { 
@@ -102,9 +100,10 @@ namespace Topdown.GUI {
 		/// <param name="pos"></param>
 		/// <param name="size"></param>
 		/// <param name="bgColor"></param>
-		public UIEntity(Vector2 pos, Vector2 size, Color? bgColor) {
+		public UIEntity(Vector2 pos, Vector2 size, string name, Color? bgColor) {
 			_absoluteRect = RelativeRect = new Rectangle(pos.X, pos.Y, size.X, size.Y);
 			BGColor = bgColor;
+			Name = name;
 
             UIEntitySystem.Register(this);
 		}
@@ -112,8 +111,7 @@ namespace Topdown.GUI {
 		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
 		public virtual void Render() { 
-			if (BGColor == null) return; // null coalescing operator at the end will never trigger anyway
-
+			if (BGColor is null) return; // null coalescing operator at the end will never trigger anyway
 
 			Raylib.DrawRectangle((int)_absoluteRect.x, (int)_absoluteRect.y, (int)_absoluteRect.width, (int)_absoluteRect.height, BGColor ?? Color.WHITE);
 		}
@@ -125,21 +123,30 @@ namespace Topdown.GUI {
 		public void SetParent(UIEntity newParent) {
 			if (Parent is not null) {
 				Parent.Children.Remove(this);
-				Console.WriteLine($"Removed Entity {this} from parent {Parent}");
+				// Console.WriteLine($"[UIENTITY] Removed Entity {this.Name} from parent {Parent.Name}");
 			} else {
 				UIEntitySystem.RemoveEntity(this);
-				Console.WriteLine($"Removed Entity {this} from entitylist");
+				// Console.WriteLine($"[UIENTITY] Removed Entity {this.Name} from entitylist");
 			}
 
 			newParent.Children.Add(this);
 			Parent = newParent;
 
+			UpdateAbsoluteRect();
+
+			Console.WriteLine($"[UIENTITY] Set Entity {this.Name} parent to {Parent.Name}");
+		}
+
+		// TODO FIX THIS MAYBE
+		private void UpdateAbsoluteRect() {
+			// _relativeRect = value;
+			_absoluteRect = RelativeRect;
 			UIEntity p = Parent;
 			while (p is not null) {
 				_absoluteRect.x += p.RelativeRect.x;
 				_absoluteRect.y += p.RelativeRect.y;
 				p = p.Parent;
-			}
+			}	
 		}
 
 		/// <summary>
@@ -152,6 +159,17 @@ namespace Topdown.GUI {
 				Parent.Children.Remove(this);
 				Parent.Children.Insert(0, this);
 			}
+
+			Console.WriteLine($"[UIENTITY] Moved Entity {this.Name} to top of render list");
+		}
+
+		/// <summary>
+		/// Returns true if the mouse is found within the absolute rect of the UIEntity
+		/// </summary>
+		/// <param name="mousePos"></param>
+		/// <returns></returns>
+		public bool IsMouseInRect(Vector2 mousePos) {
+			return Raylib.CheckCollisionPointRec(mousePos, _absoluteRect);
 		}
     }
 }

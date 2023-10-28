@@ -2,7 +2,7 @@
 /*  UI ENTITY SYSTEM
 */
 //------------------------------------------------------------------------------------------
-
+using Raylib_cs;
 using System.Numerics;
 
 namespace Topdown.GUI {
@@ -53,14 +53,27 @@ namespace Topdown.GUI {
 		private static bool DoMouseInputInList(List<UIEntity> list, Vector2 mousePos) {
 			foreach (UIEntity uie in list) {
 				bool inChildren = DoMouseInputInList(uie.Children, mousePos);
+				if (!uie.CullMouseClick) continue; // Ignore UIEntities that do not cull mouse clicks
 
 				if (inChildren) return true;
 
 				if (uie.Enabled && uie is IClickable) {
 					IClickable ic = uie as IClickable;
-					if (ic.OnClick(mousePos)) {
-						if (ic is Button) 
-							Console.WriteLine($"[UIENTITY] Received Mouse Click for {(ic as Button).Text} at position {mousePos}");
+					if (uie.IsMouseInRect(mousePos) && Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT)) {
+						ic.OnMousePress(mousePos);
+						Console.WriteLine($"[UIENTITY] OnMousePress Triggered for {(ic as UIEntity).Name} at position {mousePos}");
+						return true;
+					}
+
+					if (uie.IsMouseInRect(mousePos) && Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
+						ic.OnMouseDown(mousePos);
+						// Console.WriteLine($"[UIENTITY] OnMouseDown Triggered for {(ic as UIEntity).Name} at position {mousePos}");
+						return true;
+					}
+
+					if (uie.IsMouseInRect(mousePos) && Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT)) {
+						ic.OnMouseRelease(mousePos);
+						Console.WriteLine($"[UIENTITY] OnMouseRelease Triggered for {(ic as UIEntity).Name} at position {mousePos}");
 						return true;
 					}
 				}

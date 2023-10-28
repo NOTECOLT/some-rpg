@@ -11,10 +11,18 @@ namespace Topdown.GUI {
 	/// </summary>
 	public interface IClickable {
 		/// <summary>
-		/// Triggers when player clicks on a UIEntity
+		/// Triggers when player presses the mouse on a UIEntity
 		/// </summary>
-		bool OnClick(Vector2 mousePos) {
-            return false;
-		}
+		void OnMousePress(Vector2 mousePos) { }
+
+		/// <summary>
+		/// Triggers when player release the mouse on a UIEntity
+		/// </summary>
+		void OnMouseRelease(Vector2 mousePos) { }
+
+		/// <summary>
+		/// Triggers when player mouse input is down on a UIEntity
+		/// </summary>
+		void OnMouseDown(Vector2 mousePos) { }
 	}
 }

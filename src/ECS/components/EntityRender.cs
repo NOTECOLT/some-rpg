@@ -38,6 +38,7 @@ namespace Topdown.ECS {
 
         // WARNING THIS FUNCTION USES GLOBALS 
         // TODO I'll need to find a way to take this out methinks?
+        // TODO also i don't like the if statements checking for types
         /// <summary>
         /// Sprite Component must contain ETransform in order to render
         /// </summary>

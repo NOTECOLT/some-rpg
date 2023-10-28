@@ -8,6 +8,7 @@ using System.Xml;
 using Raylib_cs;
 using Topdown.Renderer;
 
+// TODO: FOR XML STUFF (EVEN DIALOGUE) REMOVE TABS AND NEWLINES
 namespace Topdown {
 	public class PlayerData {
 		// PROPERTIES

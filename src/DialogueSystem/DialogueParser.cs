@@ -4,6 +4,7 @@
 //------------------------------------------------------------------------------------------
 using System.Xml;
 
+// TODO: FOR XML STUFF (EVEN DIALOGUE) REMOVE TABS AND NEWLINES
 namespace Topdown.DialogueSystem {
 	public static class DialogueParser {
 		/// <summary>

@@ -18,7 +18,7 @@ namespace Topdown {
     public class BattleScene : IScene {
 		private DialogueManager _dialogueManager;
 		
-		private Entity _testEntity;
+		private UICard _testEntity;
 		private List<Card> _cardDeck = new List<Card>();
 		
 
@@ -46,16 +46,19 @@ namespace Topdown {
             // 3 - PLAYER LOADING
             //--------------------------------------------------
 			
-			_testEntity = new Entity();	
-			_testEntity.AddComponent(new EntityTransform(Vector2.Zero));
-			_testEntity.AddComponent(new EntityRender(PlayerData.Cards["Test Card"].Sprite, 0));		
+			_testEntity = new UICard(new Vector2(10, 270), PlayerData.Cards["Test Card"]);	
 		}
 
         public void Update() {
             // 1 - INPUT
             //--------------------------------------------------
 
-		
+			if (Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT) ||
+				Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT) ||
+				Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
+				UIEntitySystem.DoMouseInputAll(Raylib.GetMousePosition());
+			}
+			
 			// 2 - PHYSICS
 			//--------------------------------------------------
 

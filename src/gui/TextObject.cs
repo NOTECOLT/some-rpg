@@ -24,7 +24,7 @@ namespace Topdown.GUI {
 		/// <param name="text"></param>
 		/// <param name="textStyle"></param>
 		/// <param name="bgColor"></param>
-		public TextObject(Vector2 pos, Vector2 size, String text, TextStyles textStyle, Color? bgColor) : base(pos, size, bgColor) {
+		public TextObject(Vector2 pos, Vector2 size, String text, String name, TextStyles textStyle, Color? bgColor) : base(pos, size, name, bgColor) {
 			Text = text;
 			TextStyle = textStyle;
 		}
