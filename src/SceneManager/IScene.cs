@@ -10,7 +10,7 @@ namespace Topdown.SceneManager {
         /// <summary>
         /// Runs once at the start of a scene.
         /// </summary>
-        void Load();
+        void Load(PlayerData playerData, SceneLoader sceneLoader);
 
         /// <summary>
         /// Continuously runs at every frame

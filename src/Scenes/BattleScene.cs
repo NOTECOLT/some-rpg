@@ -5,7 +5,7 @@ TODO (BATTLE SCENE)
 - Enemy & Player Battle Class
 - Turns
 - Health
-- 
+- Generic Entity Type Work
 
 */
 //------------------------------------------------------------------------------------------
@@ -23,6 +23,8 @@ namespace Topdown {
 	/// </summary>
     public class BattleScene : IScene {
 		private DialogueManager _dialogueManager;
+		private SceneLoader _sceneLoader = null;
+		private PlayerData _playerData=  null;
 		
 		// private UICard _testEntity;
 		private List<UICard> cards;
@@ -40,11 +42,13 @@ namespace Topdown {
 
 		// SCENE FUNCTIONS
         //------------------------------------------------------------------------------------------
-        public void Load() {
+        public void Load(PlayerData playerData, SceneLoader sceneLoader) {
 			// 1 - SYSTEM LOADING
 			//--------------------------------------------------
 			// most DialogueManager functions uses static objects, but an object is needed for the UI elements
-			_dialogueManager = new DialogueManager();
+			_dialogueManager = new DialogueManager(playerData);
+			_sceneLoader = sceneLoader;
+			_playerData = playerData;
 
 			// 2 - MAP LOADING
 			//--------------------------------------------------
@@ -52,7 +56,7 @@ namespace Topdown {
             // 3 - PLAYER LOADING
             //--------------------------------------------------
 			int i = 0;
-			foreach (KeyValuePair<string, int> entry in Game.PlayerSaveData.Cards) {
+			foreach (KeyValuePair<string, int> entry in _playerData.Cards) {
 				if (entry.Value > 0) {
 					UICard e = new UICard(new Vector2(10 + i, 270), PlayerData.CardDictionary[entry.Key]);
 					_cardDeck.Add(e);

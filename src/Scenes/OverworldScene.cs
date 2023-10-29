@@ -17,9 +17,12 @@ namespace Topdown {
     public class OverworldScene : IScene {
         private Player _player;
 		private Vector2 _startingTile;
+		private String _startingMap;
 		// private List<Map> _loadedMaps = new List<Map>();
 		private Map[] _loadedMaps = new Map[5];
-		private DialogueManager _dialogueManager;
+		private DialogueManager _dialogueManager = null;
+		private SceneLoader _sceneLoader = null;
+		private PlayerData _playerData = null;
 		private UIEntity _menu;
 		private bool _gamePaused = false;
 
@@ -37,18 +40,21 @@ namespace Topdown {
 				rotation = 0,
 				zoom = 1
 			};
-			_loadedMaps[0] = new Map(name, Vector2.Zero);
-			// _loadedMaps.Add();
-			_startingTile = startingTile + (_loadedMaps[0].Origin / Globals.SCALED_TILE_SIZE);
+			
+			_startingMap = name;
+			_startingTile = startingTile;
         }
 
 		// SCENE FUNCTIONS
         //------------------------------------------------------------------------------------------
-        public void Load() {
+        public void Load(PlayerData playerData, SceneLoader sceneLoader) {
 			// 1 - SYSTEM / UI LOADING
 			//--------------------------------------------------
+			_playerData = playerData;
+			_sceneLoader = sceneLoader;
+
 			// most DialogueManager functions uses static objects, but an object is needed for the UI elements
-			_dialogueManager = new DialogueManager();
+			_dialogueManager = new DialogueManager(_playerData);
 
 			_menu = new UIEntity(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH, Globals.SCREEN_HEIGHT), "Menu", new Color(0, 0, 0, 50));
 			Button btn = new Button(new Vector2(0, 0), new Vector2(100, 50), "Poop", "Poop Button", new TextStyles(20, Color.BLACK), Color.RAYWHITE);
@@ -64,7 +70,9 @@ namespace Topdown {
 
 			// 2 - MAP LOADING
 			//--------------------------------------------------
+			_loadedMaps[0] = new Map(_startingMap, Vector2.Zero, _dialogueManager);
 			LoadMap(_loadedMaps[0], true);
+			_startingTile += _loadedMaps[0].Origin / Globals.SCALED_TILE_SIZE;
 
             // 3 - PLAYER LOADING
             //--------------------------------------------------
@@ -161,7 +169,7 @@ namespace Topdown {
 				}
 
 				if (DialogueManager.DialogueActive) {
-					DialogueManager.NextMessage();
+					_dialogueManager.NextMessage();
 				} else {
 					if (GetEntityAtTile(target) is not null && GetEntityAtTile(target) is IInteractable) {
 						IInteractable i = GetEntityAtTile(target) as IInteractable;
@@ -205,7 +213,7 @@ namespace Topdown {
 					(String map, Vector2 tile)? warpTuple = _loadedMaps[0].IsTileWarpable(ptt.TargetTile);
 
 					if (warpTuple is not null) {
-						SceneLoader.QueueScene(new OverworldScene(warpTuple.Value.map, warpTuple.Value.tile));
+						_sceneLoader.QueueScene(new OverworldScene(warpTuple.Value.map, warpTuple.Value.tile));
 					}	
 				}	
 			}
@@ -237,28 +245,28 @@ namespace Topdown {
 			// [3] - west map
 			// [4] - south map
 			if (_loadedMaps[0].HasMapConnection(Direction.North)) {
-				Map northMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.North], Vector2.Zero);
+				Map northMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.North], Vector2.Zero, _dialogueManager);
 				Vector2 newOrigin = _loadedMaps[0].Origin - new Vector2(0, northMap.LoadedMap.Height) * Globals.SCALED_TILE_SIZE;
 				northMap.Origin = newOrigin;
 				_loadedMaps[1] = northMap;
 			}
 
 			if (_loadedMaps[0].HasMapConnection(Direction.East)) {
-				Map eastMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.East], Vector2.Zero);
+				Map eastMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.East], Vector2.Zero, _dialogueManager);
 				Vector2 newOrigin = _loadedMaps[0].Origin + new Vector2(_loadedMaps[0].LoadedMap.Width, 0) * Globals.SCALED_TILE_SIZE;
 				eastMap.Origin = newOrigin;
 				_loadedMaps[2] = eastMap;
 			}
 
 			if (_loadedMaps[0].HasMapConnection(Direction.South)) {
-				Map southMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.South], Vector2.Zero);
+				Map southMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.South], Vector2.Zero, _dialogueManager);
 				Vector2 newOrigin = _loadedMaps[0].Origin + new Vector2(0, _loadedMaps[0].LoadedMap.Height) * Globals.SCALED_TILE_SIZE;
 				southMap.Origin = newOrigin;
 				_loadedMaps[3] = southMap;
 			}
 
 			if (_loadedMaps[0].HasMapConnection(Direction.West)) {
-				Map westMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.South], Vector2.Zero);
+				Map westMap = new Map(_loadedMaps[0].AdjacentMaps[Direction.South], Vector2.Zero, _dialogueManager);
 				Vector2 newOrigin = _loadedMaps[0].Origin - new Vector2(westMap.LoadedMap.Width, 0) * Globals.SCALED_TILE_SIZE;
 				westMap.Origin = newOrigin;
 				_loadedMaps[4] = westMap;
@@ -314,11 +322,11 @@ namespace Topdown {
 		}
     
 		private void SavePlayerData() {
-			Game.PlayerSaveData.Map = _loadedMaps[0].Name;
+			_playerData.Map = _loadedMaps[0].Name;
 
 			// tile saved is relative to the map's current origin
-			Game.PlayerSaveData.Tile = _player.GetComponent<TileTransform>().Tile - (_loadedMaps[0].Origin / Globals.SCALED_TILE_SIZE);
-			Game.PlayerSaveData.Save(Game.PlayerSaveData.FilePath);
+			_playerData.Tile = _player.GetComponent<TileTransform>().Tile - (_loadedMaps[0].Origin / Globals.SCALED_TILE_SIZE);
+			_playerData.Save(_playerData.FilePath);
 		}
 	
 	}

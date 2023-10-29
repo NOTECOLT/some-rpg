@@ -33,6 +33,10 @@ namespace Topdown {
     public class Map {
 		private static int _tileSize = Globals.SCALED_TILE_SIZE;
 
+		// FIELDS
+		//------------------------------------------------------------------------------------------
+		private DialogueManager _dialogueManager = null;
+		
 		// STATIC PROPERTIES
 		//------------------------------------------------------------------------------------------
 		/// <summary>
@@ -43,7 +47,7 @@ namespace Topdown {
 		/// <summary>
 		/// References file for all map names and their file paths
 		/// </summary>
-		public static Dictionary<string, string> MapDictionary = new Dictionary<string, string>();
+		public static Dictionary<string, string> MapDictionary { get; private set; } = new Dictionary<string, string>();
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
@@ -62,7 +66,9 @@ namespace Topdown {
 		/// Map Constructor loads the map from the file, but does not load any textures nor entities into the game
 		/// </summary>
 		/// <param name="path"></param>
-		public Map(String name, Vector2 origin) {
+		public Map(String name, Vector2 origin, DialogueManager dialogueManager) {
+			_dialogueManager = dialogueManager;
+
 			LoadedMap = new TiledMap(MapDictionary[name]);
 			LoadedTilesets = LoadedMap.GetTiledTilesets("resources/maps/");
 
@@ -82,6 +88,7 @@ namespace Topdown {
 			TilesetTextures = new Dictionary<String, Texture2D>();
 		}
 
+		// TODO FIX MAPDICTIONARY CREATION TO WORK WITH REGEX
         public static void CreateMapDictionary() {
 			string dictPath = "resources/maps/mapdictionary.xml";
 			if (!File.Exists(dictPath)) {
@@ -147,7 +154,7 @@ namespace Topdown {
 					
 				if (type == "signpost") {
 					Dialogue dialogue = DialogueParser.LoadDialogueFromFile(obj.properties.First(prop => prop.name == "Dialogue").value);
-					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize), dialogue, ReturnSpriteFromGID(obj.gid));
+					Signpost signpost = new Signpost(new Vector2(obj.x / LoadedMap.TileWidth, obj.y / LoadedMap.TileWidth - 1) + (Origin / _tileSize), dialogue, ReturnSpriteFromGID(obj.gid), _dialogueManager);
 					signpost.SetTiledProperties(obj.properties);
 					signpost.Map = Name;
 					EntityList.Add(signpost);

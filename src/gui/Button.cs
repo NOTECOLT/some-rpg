@@ -43,7 +43,6 @@ namespace Topdown.GUI {
 
 		// ICLICKABLE
 		//------------------------------------------------------------------------------------------
-		// TODO: FIX THIS?
 		public void OnMousePress(Vector2 mousePos) { }
 	
 		public void OnMouseRelease(Vector2 mousePos) {

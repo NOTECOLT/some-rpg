@@ -1,5 +1,6 @@
 //------------------------------------------------------------------------------------------
 /* DIALOGUEMANAGER
+	SINGLETON
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
@@ -13,19 +14,22 @@ namespace Topdown.DialogueSystem {
 		//------------------------------------------------------------------------------------------	
 		private UIEntity _dialoguePanel;
 		private TextObject _dialogueText;
-		private static Message _currentMessage;
+		private PlayerData _playerData;
+		
 
 		// STATIC PROPERTIES
 		//------------------------------------------------------------------------------------------
-        public static bool DialogueActive { get; private set; } = false;
+        private static Message _currentMessage;
+		public static bool DialogueActive { get; private set; } = false;
         public static Queue<Message> MessageQueue { get; private set; } = new Queue<Message>();
 
-		public DialogueManager() {
+		public DialogueManager(PlayerData playerData) {
+			_playerData = playerData;
+
 			TextStyles ts = new TextStyles(30, Color.BLACK) {
 				VerticalAlign = Alignment.Top,
 				Margin = new Vector4(10, 10, 0, 0)
 			};
-
 
 			_dialoguePanel = new UIEntity(new Vector2(Globals.SCREEN_WIDTH * 0.025f, Globals.SCREEN_HEIGHT * 0.775f), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Dialogue Panel", Color.LIGHTGRAY);
 			_dialogueText = new TextObject(new Vector2(0, 0), new Vector2(Globals.SCREEN_WIDTH * 0.95f, Globals.SCREEN_HEIGHT * 0.2f), "Test Text", "Dialogue Text", ts, null);
@@ -45,9 +49,13 @@ namespace Topdown.DialogueSystem {
 
 		}
 
-		// STATIC FUNCTIONS
+		public void test() {
+
+		}
+
+		// FUNCTIONS
 		//------------------------------------------------------------------------------------------
-        public static void QueueDialogue(Dialogue dialogue) {
+        public void QueueDialogue(Dialogue dialogue) {
 			if (MessageQueue is null) MessageQueue = new Queue<Message>();
 
 			foreach (Message msg in dialogue.Messages) {
@@ -56,21 +64,20 @@ namespace Topdown.DialogueSystem {
 				bool meetsFlags = true;
 
 				foreach (KeyValuePair<String, bool> flag in msg.FlagChecks) {
-					if (Game.PlayerSaveData.Flags[flag.Key] != flag.Value) meetsFlags = false;
+					if (_playerData.Flags[flag.Key] != flag.Value) meetsFlags = false;
 				}
 
 				if (meetsFlags) MessageQueue.Enqueue(msg);
 			}
         }
 
-        public static void NextMessage() {
+        public void NextMessage() {
 			if (MessageQueue is null || MessageQueue.Count() == 0) {
 				DialogueActive = false;
 				return;
 			}
 			DialogueActive = MessageQueue.Count() != 0;
 			_currentMessage = MessageQueue.Dequeue();
-			
 		}
     }
 }

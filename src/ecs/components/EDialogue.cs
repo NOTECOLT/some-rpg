@@ -13,12 +13,14 @@ namespace Topdown.ECS {
 		// FIELDS
 		//------------------------------------------------------------------------------------------
         private bool _dialogueActive = false;
+        private DialogueManager _dm = null;
 
 		// PROPERTIES
 		//------------------------------------------------------------------------------------------
         public Dialogue EntityDialogue { get; private set; } = new Dialogue();
 
-        public EDialogue(Dialogue dialogue) {
+        public EDialogue(Dialogue dialogue, DialogueManager dialogueManager) {
+            _dm = dialogueManager;
             EntityDialogue = dialogue;
 
             // EDialogueSystem.Register(this);
@@ -38,8 +40,8 @@ namespace Topdown.ECS {
         public void StartDialogue() {
 			if (_dialogueActive) return;
 
-			DialogueManager.QueueDialogue(EntityDialogue);
-			DialogueManager.NextMessage();		// Plays first message
+			_dm.QueueDialogue(EntityDialogue);
+			_dm.NextMessage();		// Plays first message
         }
     }
 }

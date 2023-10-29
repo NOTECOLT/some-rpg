@@ -9,6 +9,9 @@ TODO: (TOP)
 /		Response Select
 /		Dialogue Branches
 
+TODO: FIX
+/	FIX MAPDICTIONARY CREATION TO WORK WITH REGEX
+
 TODO: (Other Stuff)
 /	Game Loop
 /		Inventory System
@@ -59,7 +62,6 @@ namespace Topdown {
 	}
 
     static class Game {
-		public static PlayerData PlayerSaveData;
 
         private static void Main() {
             // WINDOW INITIALIZATION
@@ -73,7 +75,7 @@ namespace Topdown {
 
             // PLAYER INITIALIZATION
             //--------------------------------------------------
-			PlayerSaveData = new PlayerData("savedata/testdata.xml");
+			PlayerData playerData = new PlayerData("savedata/testdata.xml");
 			// playerData.ResetToDefault();
 			// playerData.Save("savedata/testdata2.xml");
 			// PlayerData newPlayerData = new PlayerData("savedata/testdata2.xml");
@@ -81,11 +83,13 @@ namespace Topdown {
 
             // SCENE INITIALIZATION
             //--------------------------------------------------
+			SceneLoader sceneLoader = new SceneLoader();
+
 			DebugState debugState = DebugState.Overworld;
-			OverworldScene overworldScene = new OverworldScene(PlayerSaveData.Map, PlayerSaveData.Tile);
+			OverworldScene overworldScene = new OverworldScene(playerData.Map, playerData.Tile);
 			BattleScene battleScene = new BattleScene();
 
-			SceneLoader.LoadScene(overworldScene);
+			sceneLoader.LoadScene(overworldScene, playerData);
 
             while (!Raylib.WindowShouldClose()) {
 				if (Globals.DEV_MODE) {
@@ -95,12 +99,12 @@ namespace Topdown {
 
 						switch (debugState) {
 							case DebugState.Overworld:
-								PlayerSaveData = new PlayerData("savedata/testdata.xml");
-								overworldScene = new OverworldScene(PlayerSaveData.Map, PlayerSaveData.Tile);
-								SceneLoader.LoadScene(overworldScene);
+								playerData = new PlayerData("savedata/testdata.xml");
+								overworldScene = new OverworldScene(playerData.Map, playerData.Tile);
+                                sceneLoader.LoadScene(overworldScene, playerData);
 								break;
 							case DebugState.Battle:
-								SceneLoader.LoadScene(battleScene);
+                                sceneLoader.LoadScene(battleScene, playerData);
 								break;
 							default:
 								break;
@@ -108,10 +112,10 @@ namespace Topdown {
 					}
 				}
 
-				SceneLoader.UpdateCurrentScene();
+                sceneLoader.UpdateCurrentScene();
 
-				if (SceneLoader.QueuedScene is not null)
-					SceneLoader.LoadSceneFromQueue();
+				if (sceneLoader.isSceneQueued())
+                    sceneLoader.LoadSceneFromQueue(playerData);
 
             }
 

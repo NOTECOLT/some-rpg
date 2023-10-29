@@ -10,12 +10,12 @@ using Topdown.DialogueSystem;
 namespace Topdown {
     public class Signpost : Entity, IInteractable {
         
-        public Signpost(Vector2 tile, Dialogue dialogue, Sprite sprite) {
+        public Signpost(Vector2 tile, Dialogue dialogue, Sprite sprite, DialogueManager dm) {
             TileTransform transform = new TileTransform(tile);
 
             AddComponent(transform);
             AddComponent(new EntityRender(sprite, 0));
-			AddComponent(new EDialogue(dialogue));
+			AddComponent(new EDialogue(dialogue, dm));
         }
 
 		public void OnInteract() {
