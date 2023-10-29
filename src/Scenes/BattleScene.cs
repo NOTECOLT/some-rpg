@@ -1,9 +1,15 @@
 //------------------------------------------------------------------------------------------
-/* OVERWORLD SCENE
+/* BATTLE SCENE
+
+TODO (BATTLE SCENE)
+- Enemy & Player Battle Class
+- Turns
+- Health
+- 
+
 */
 //------------------------------------------------------------------------------------------
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
 using Raylib_cs;
 using Topdown.ECS;
 using Topdown.GUI;
@@ -18,9 +24,9 @@ namespace Topdown {
     public class BattleScene : IScene {
 		private DialogueManager _dialogueManager;
 		
-		private UICard _testEntity;
-		private List<Card> _cardDeck = new List<Card>();
-		
+		// private UICard _testEntity;
+		private List<UICard> cards;
+		private List<UICard> _cardDeck = new List<UICard>();
 
 		/// <summary>
 		/// Battle Scene must be initialized with ____
@@ -45,8 +51,15 @@ namespace Topdown {
 
             // 3 - PLAYER LOADING
             //--------------------------------------------------
-			
-			_testEntity = new UICard(new Vector2(10, 270), PlayerData.Cards["Test Card"]);	
+			int i = 0;
+			foreach (KeyValuePair<string, int> entry in Game.PlayerSaveData.Cards) {
+				if (entry.Value > 0) {
+					UICard e = new UICard(new Vector2(10 + i, 270), PlayerData.CardDictionary[entry.Key]);
+					_cardDeck.Add(e);
+				}
+				i += 50;
+			} 
+				
 		}
 
         public void Update() {

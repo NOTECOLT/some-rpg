@@ -2,6 +2,7 @@
 /* PLAYER DATA
 */
 //------------------------------------------------------------------------------------------
+using System.Globalization;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -21,14 +22,16 @@ namespace Topdown {
 		/// </summary>
 		public Vector2 Tile { get; set; } = Vector2.Zero;
 
-
 		// TODO: HOW DO I HANDLE THIS?
 		//      Load all cards then figure out the quantity later?
 		//          Requires loading everything from the card resources
 		//      Load only the ones present in player data?
 		//          Where do i store card data?
-		public static Dictionary<String, Card> Cards { get; set; } = new Dictionary<string, Card>();
+		// TODO: OKAY I WILL PUT THIS IN A SEPARATE OBJECT
+		public static Dictionary<String, Card> CardDictionary { get; set; } = new Dictionary<string, Card>();
 		
+		public Dictionary<String, int> Cards { get; set; } = new Dictionary<string, int>();
+
 		public String FilePath { get; }
 
 		public Dictionary<String, bool> Flags = new Dictionary<string, bool>();
@@ -37,14 +40,12 @@ namespace Topdown {
 			FilePath = path;
 		}
 
-		public PlayerData() { }
-
 		// PUBLIC FUNCTIONS
 		//------------------------------------------------------------------------------------------
 		public void Load(string path) {
 			// 0 - LOADING CARD OBJs
 			//--------------------------------------------------
-			if (Cards.Count == 0)
+			if (CardDictionary.Count == 0)
 				LoadCardObjs();
 			
 			// 1 - FILE READ
@@ -69,6 +70,9 @@ namespace Topdown {
 						break;
 					case "flags":
 						ParseFlags(node);
+						break;
+					case "cardInventory":
+						ParseCardInv(node);
 						break;
 					default:
 						break;
@@ -129,16 +133,31 @@ namespace Topdown {
 			}
 			playerData.AppendChild(flags);
 
-
-			//TODO: ADD CARD INVENTORY
 			// CARDS
 			//--------------------------------------------------
-			XmlElement cards = xml.CreateElement("cards");
+			XmlElement cardsInv = xml.CreateElement("cardInventory");
 
+			foreach (KeyValuePair<string, Card> entry in CardDictionary) {
+				XmlElement cardElement = xml.CreateElement("card");
 
-			// Console.WriteLine(playerData.OuterXml);
+				XmlElement nameTag = xml.CreateElement("name");
+				nameTag.InnerText = entry.Key;
+				cardElement.AppendChild(nameTag);
+
+				XmlElement countTag = xml.CreateElement("count");
+
+				if (!Cards.ContainsKey(entry.Key)) {
+					countTag.InnerText = "0";
+				} else {
+					countTag.InnerText = Cards[entry.Key].ToString();
+				}
+				cardElement.AppendChild(countTag);
+
+				cardsInv.AppendChild(cardElement);
+			}
+			playerData.AppendChild(cardsInv);
+
 			File.WriteAllText(path, playerData.OuterXml);
-			
 		}
 
 		/// <summary>
@@ -157,7 +176,7 @@ namespace Topdown {
 		/// Looks through the resources/cards folder
 		/// </summary>
 		private void LoadCardObjs() {
-			Cards = new Dictionary<string, Card>();
+			CardDictionary = new Dictionary<string, Card>();
 
 			foreach (String fileName in Directory.EnumerateFiles("resources/cards")) {
 				Regex rx = new Regex(@".+(\.[Xx][Mm][Ll]){1}");
@@ -191,7 +210,7 @@ namespace Topdown {
 					}
 					// TODO: THIS CHANGE THE SIZE OF THE SPRITES (TO NOT BE PLACEHOLDER)
 					Card c = new Card(name, new Sprite(texture, Vector2.Zero, Vector2.One * 16, 0), description, 0);
-					Cards[c.Name] = c;
+					CardDictionary[c.Name] = c;
 				}
 			}
 		} 
@@ -236,6 +255,25 @@ namespace Topdown {
 			}
 		}
 
+		private void ParseCardInv(XmlElement root) {
+			foreach (XmlElement card in root) {
+				String name = ""; int count = 0;
+				foreach (XmlElement node in card) {
+					switch (node.Name) {
+						case "name":
+							name = node.InnerText;
+							break;
+						case "count":
+							count = Convert.ToInt16(node.InnerText);
+							break;
+						default:
+							break;
+					}
+				}
 
+				if (name != "")
+					Cards[name] = count;
+			}
+		}
 	}
 }
