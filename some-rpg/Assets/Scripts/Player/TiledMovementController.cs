@@ -4,7 +4,9 @@ using System.Linq.Expressions;
 using Unity.VisualScripting;
 using UnityEngine;
 
-// Used to control tiled player movement on a grid
+/// <summary>
+/// Used to control player movement in a tiled grid
+/// </summary>
 public class TiledMovementController : MonoBehaviour {
     public Vector2Int GridPosition { get; private set; } = Vector2Int.zero;
     [SerializeField] private Grid _worldGrid;
