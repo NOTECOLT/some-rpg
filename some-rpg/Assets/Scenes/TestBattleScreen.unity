@@ -154,7 +154,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyList:
   - EnemyType: {fileID: 11400000, guid: b8dd5b22ba373ac41a404545d01813ab, type: 2}
-  - EnemyType: {fileID: 11400000, guid: b8dd5b22ba373ac41a404545d01813ab, type: 2}
   OnPlayerTurnStart:
     m_PersistentCalls:
       m_Calls:
@@ -388,6 +387,7 @@ GameObject:
   - component: {fileID: 208286600}
   - component: {fileID: 208286599}
   - component: {fileID: 208286598}
+  - component: {fileID: 208286602}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -489,6 +489,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &208286602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 208286597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 51
+  m_MaxRayIntersections: 0
 --- !u!1 &319625164
 GameObject:
   m_ObjectHideFlags: 0

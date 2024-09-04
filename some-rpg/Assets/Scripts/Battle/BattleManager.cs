@@ -22,16 +22,24 @@ public class BattleManager : MonoBehaviour {
     [SerializeField] private GameObject _enemyTargetParent;
     [SerializeField] private GameObject _enemyTargetPrefab;
     void Start() {
+        // Spawn Enemy Targets
+
         int enemyCount = 0;
-        // Spawn Enemies
-        foreach (Enemy e in EnemyList) {
-            e.Instantiate(enemyCount++);
 
+        foreach (Enemy enemy in EnemyList) {
+            enemy.Instantiate(enemyCount); // Sets the TargetId of the enemy
+
+            // Create Enemy prefab
             GameObject enemyTarget = Instantiate(_enemyTargetPrefab, _enemyTargetParent.transform);
-            enemyTarget.name = e.EnemyType.name + " " + e.TargetId + " (Enemy Target)";
-            enemyTarget.GetComponent<SpriteRenderer>().sprite = e.EnemyType.Sprite;
+            enemyTarget.name = enemy.EnemyType.name + " " + enemy.TargetId + " (Enemy Target)";
+            enemyTarget.GetComponent<SpriteRenderer>().sprite = enemy.EnemyType.Sprite;
 
-            Debug.Log("gameObject name=" + enemyTarget.name + "; name=" + e.EnemyType.EnemyName + "; current HP=" + e.CurrentHitPoints + "; target id=" + e.TargetId + ";");
+            // UnityEvent listener used for selecting enemies
+            enemyTarget.GetComponent<EnemyTarget>().TargetId = enemyCount;
+            enemyTarget.GetComponent<EnemyTarget>().OnEnemyClicked.AddListener(OnEnemyClicked);
+
+            Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyTarget.name + "; name=" + enemy.EnemyType.EnemyName + "; current HP=" + enemy.CurrentHitPoints + "; target id=" + enemy.TargetId + ";");
+            enemyCount++;
         }
 
         // Decide who is the first turnholder
@@ -80,4 +88,10 @@ public class BattleManager : MonoBehaviour {
         UpdateState(BattleState.PLAYER_SELECT_ATTACK);
     }
 
+    private void OnEnemyClicked(int targetId) {
+        if (CurrentState == BattleState.PLAYER_SELECT_ATTACK) {
+            Debug.Log("[BattleManager] Player clicked on enemy target id=" + targetId);
+            UpdateState(BattleState.ENEMY_TURN);
+        }
+    }
 }
