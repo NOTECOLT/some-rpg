@@ -10,6 +10,7 @@ using UnityEngine.Events;
 /// </summary>
 public class BattleManager : MonoBehaviour {
     public BattleState CurrentState { get; private set; } = BattleState.PLAYER_TURN;
+    public List<Enemy> EnemyList = new List<Enemy>();
 
     // These UnityEvents are called upon the start of each BattleState
     public UnityEvent OnPlayerTurnStart;
@@ -18,7 +19,21 @@ public class BattleManager : MonoBehaviour {
     public UnityEvent OnActionSequenceStart;
 
     [SerializeField] private TMP_Text _mainTextbox;
+    [SerializeField] private GameObject _enemyTargetParent;
+    [SerializeField] private GameObject _enemyTargetPrefab;
     void Start() {
+        int enemyCount = 0;
+        // Spawn Enemies
+        foreach (Enemy e in EnemyList) {
+            e.Instantiate(enemyCount++);
+
+            GameObject enemyTarget = Instantiate(_enemyTargetPrefab, _enemyTargetParent.transform);
+            enemyTarget.name = e.EnemyType.name + " " + e.TargetId + " (Enemy Target)";
+            enemyTarget.GetComponent<SpriteRenderer>().sprite = e.EnemyType.Sprite;
+
+            Debug.Log("gameObject name=" + enemyTarget.name + "; name=" + e.EnemyType.EnemyName + "; current HP=" + e.CurrentHitPoints + "; target id=" + e.TargetId + ";");
+        }
+
         // Decide who is the first turnholder
     }
 
