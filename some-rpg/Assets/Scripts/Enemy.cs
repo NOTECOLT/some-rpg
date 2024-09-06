@@ -11,10 +11,12 @@ using UnityEngine;
 public class Enemy {
     public EnemyType EnemyType;
     public int TargetId { get; private set; } = -1;
-    public int CurrentHitPoints { get; private set; }
+
+    // These stats may change in battle through status effects
+    public EntityStats CurrentStats { get; private set; } = new EntityStats();   
 
     public void Instantiate(int targetId) {
-        CurrentHitPoints = EnemyType.BaseHitPoints;
+        CurrentStats = EnemyType.BaseStats;
         TargetId = targetId;
     }
 }

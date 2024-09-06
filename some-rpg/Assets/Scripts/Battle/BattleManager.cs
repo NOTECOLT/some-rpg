@@ -23,7 +23,6 @@ public class BattleManager : MonoBehaviour {
     [SerializeField] private GameObject _enemyTargetPrefab;
     void Start() {
         // Spawn Enemy Targets
-
         int enemyCount = 0;
 
         foreach (Enemy enemy in EnemyList) {
@@ -38,7 +37,7 @@ public class BattleManager : MonoBehaviour {
             enemyTarget.GetComponent<EnemyTarget>().TargetId = enemyCount;
             enemyTarget.GetComponent<EnemyTarget>().OnEnemyClicked.AddListener(OnEnemyClicked);
 
-            Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyTarget.name + "; name=" + enemy.EnemyType.EnemyName + "; current HP=" + enemy.CurrentHitPoints + "; target id=" + enemy.TargetId + ";");
+            Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyTarget.name + "; name=" + enemy.EnemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + "; target id=" + enemy.TargetId + ";");
             enemyCount++;
         }
 
