@@ -12,4 +12,8 @@ public class PlayerData : MonoBehaviour {
 
     // CurrentStats may change through status effects in battle
     public EntityStats CurrentStats = new EntityStats();
+
+    void Start() {
+        CurrentStats = (EntityStats)BaseStats.Clone();
+    }
 }

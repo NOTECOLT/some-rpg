@@ -16,7 +16,7 @@ public class Enemy {
     public EntityStats CurrentStats { get; private set; } = new EntityStats();   
 
     public void Instantiate(int targetId) {
-        CurrentStats = EnemyType.BaseStats;
+        CurrentStats = (EntityStats)EnemyType.BaseStats.Clone();
         TargetId = targetId;
     }
 }

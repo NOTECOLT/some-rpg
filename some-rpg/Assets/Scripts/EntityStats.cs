@@ -7,7 +7,7 @@ using UnityEngine;
 /// Object to store either enemy or player statistics
 /// </summary>
 [Serializable]
-public class EntityStats {
+public class EntityStats : ICloneable {
     public int HitPoints;
     public int Attack;
     public int Defense;
@@ -15,5 +15,14 @@ public class EntityStats {
 
     public EntityStats() {
         
+    }
+
+    public object Clone() {
+        return new EntityStats() {
+            HitPoints = this.HitPoints,
+            Attack = this.Attack,
+            Defense = this.Defense,
+            Speed = this.Speed
+        };
     }
 }
