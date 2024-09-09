@@ -16,6 +16,7 @@ public class BattleManager : MonoBehaviour {
     public UnityEvent OnActionSequenceStart;
 
     [SerializeField] private PlayerData _playerData;
+    [SerializeField] private GameObject _playerTarget;
     [SerializeField] private TMP_Text _mainTextbox;
     [SerializeField] private GameObject _enemyTargetParent;
     [SerializeField] private GameObject _enemyTargetPrefab;
@@ -82,8 +83,10 @@ public class BattleManager : MonoBehaviour {
                     break;
                 case BattleState.ACTION_SEQUENCE:
                     _mainTextbox.text = _currentState.ToString();
+                    ActionSequence();
                     OnActionSequenceStart.Invoke();
                     Debug.Log("[BattleManager: ACTION SEQUENCE] EventListeners Triggered: " + OnActionSequenceStart.GetPersistentEventCount());
+                    UpdateState(BattleState.PLAYER_TURN);
                     break;
                 default:
                     break;
@@ -135,5 +138,33 @@ public class BattleManager : MonoBehaviour {
         }
 
         UpdateState(BattleState.ACTION_SEQUENCE);
+    }
+
+    /// <summary>
+    /// Not to be confused with OnActionSequenceStart, <br></br>
+    /// This function is called before OnActionSequenceStart, during the ACTION_SEQUENCE BattleState. <br></br>
+    /// Concerned with the player/enemy turn animation and sequencing.
+    /// </summary>
+    public void ActionSequence() {
+        float animationTime = 0.3f; // HP animation time in seconds
+        // ENEMY
+        for (int i = 0; i < _enemyList.Count; i++) {
+            Enemy enemy = _enemyList[i];
+            GameObject enemyTarget = _enemyTargetList[i];
+
+            int newHP = enemy.CurrentStats.HitPoints - _playerData.CurrentStats.Attack;
+            enemyTarget.GetComponent<EntityInfoUI>().SetHPBar((float)newHP/enemy.EnemyType.BaseStats.HitPoints, animationTime);
+            enemy.CurrentStats.HitPoints = newHP;
+        }
+
+        // PLAYER
+        for (int i = 0; i < _enemyList.Count; i++) {
+            Enemy enemy = _enemyList[i];
+            GameObject enemyTarget = _enemyTargetList[i];
+
+            int newHP = _playerData.CurrentStats.HitPoints - enemy.CurrentStats.Attack;
+            _playerTarget.GetComponent<EntityInfoUI>().SetHPBar((float)newHP/_playerData.BaseStats.HitPoints, animationTime);
+            _playerData.CurrentStats.HitPoints = newHP;
+        }
     }
 }
