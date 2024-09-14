@@ -24,7 +24,6 @@ public class EntityInfoUI : MonoBehaviour {
     private IEnumerator AnimateHPBar(float newPercentage, float animationTime) {
         float oldPercentage = _hitpointsBar.fillAmount;
         float speed = (oldPercentage - newPercentage) / animationTime * Time.deltaTime;
-        Debug.Log(speed);
 
         while (Math.Round(_hitpointsBar.fillAmount, 2) != Math.Round(newPercentage, 2)) {
             _hitpointsBar.fillAmount -= speed;

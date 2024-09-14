@@ -12,7 +12,6 @@ public class BattleManager : MonoBehaviour {
     // These UnityEvents are called upon the start of each BattleState
     public UnityEvent OnPlayerTurnStart;
     public UnityEvent OnPlayerSelectAttackStart;
-    public UnityEvent OnEnemyTurnStart;
     public UnityEvent OnActionSequenceStart;
 
     [SerializeField] private PlayerData _playerData;
@@ -76,17 +75,13 @@ public class BattleManager : MonoBehaviour {
                     OnPlayerSelectAttackStart.Invoke();
                     Debug.Log("[BattleManager: PLAYER SELECT ATTACK] EventListeners Triggered: " + OnPlayerSelectAttackStart.GetPersistentEventCount());
                     break;
-                case BattleState.ENEMY_TURN:
-                    _mainTextbox.text = _currentState.ToString(); 
-                    OnEnemyTurnStart.Invoke();
-                    Debug.Log("[BattleManager: ENEMY TURN] EventListeners Triggered: " + OnEnemyTurnStart.GetPersistentEventCount());
-                    break;
                 case BattleState.ACTION_SEQUENCE:
                     _mainTextbox.text = _currentState.ToString();
-                    ActionSequence();
                     OnActionSequenceStart.Invoke();
                     Debug.Log("[BattleManager: ACTION SEQUENCE] EventListeners Triggered: " + OnActionSequenceStart.GetPersistentEventCount());
-                    UpdateState(BattleState.PLAYER_TURN);
+
+                    BuildActionSequence();
+                    StartCoroutine(ActionSequence());
                     break;
                 default:
                     break;
@@ -120,51 +115,54 @@ public class BattleManager : MonoBehaviour {
             _playerSelectedTarget = targetId;
 
             Debug.Log("[BattleManager] Player selected enemy target id=" + _playerSelectedTarget);
-            UpdateState(BattleState.ENEMY_TURN);
+            UpdateState(BattleState.ACTION_SEQUENCE);
         }
     }
 
     /// <summary>
-    /// Not to be confused with OnEnemyTurnStart, <br></br>
-    /// This function is called after OnEnemyTurnStart, during the ENEMY_TURN BattleState. <br></br>
-    /// Concerned with the selection enemy's action for of each turn.
+    /// Concerned with the selection building the sequencing of player and enemy's action for of each turn.
     /// </summary>
-    public void EnemyTurn() {
-        // TODO: okay, idea: for each enemy, we allow the enemy to store a function in a list of functions
-        // This list of functions will then get executed
-
-        for (int i = 0; i < _enemyList.Count; i++) {
-            _playerData.CurrentStats.HitPoints -= _enemyList[i].EnemyType.BaseStats.Attack;
-        }
-
-        UpdateState(BattleState.ACTION_SEQUENCE);
+    public void BuildActionSequence() {
+        // Build an "EntityAction" object that can be filled sequentially.
+        // This will be executed during the Action Sequence phase.
     }
 
     /// <summary>
     /// Not to be confused with OnActionSequenceStart, <br></br>
     /// This function is called before OnActionSequenceStart, during the ACTION_SEQUENCE BattleState. <br></br>
-    /// Concerned with the player/enemy turn animation and sequencing.
+    /// Concerned with the player/enemy action execution & animation.
     /// </summary>
-    public void ActionSequence() {
+    public IEnumerator ActionSequence() {
         float animationTime = 0.3f; // HP animation time in seconds
+        float gapTime = 1.0f;
         // ENEMY
         for (int i = 0; i < _enemyList.Count; i++) {
             Enemy enemy = _enemyList[i];
             GameObject enemyTarget = _enemyTargetList[i];
 
+            _mainTextbox.text = "Player attacked " + enemy.EnemyType.EnemyName + "!";
+
             int newHP = enemy.CurrentStats.HitPoints - _playerData.CurrentStats.Attack;
             enemyTarget.GetComponent<EntityInfoUI>().SetHPBar((float)newHP/enemy.EnemyType.BaseStats.HitPoints, animationTime);
             enemy.CurrentStats.HitPoints = newHP;
+
+            yield return new WaitForSeconds(gapTime);
         }
 
         // PLAYER
         for (int i = 0; i < _enemyList.Count; i++) {
             Enemy enemy = _enemyList[i];
-            GameObject enemyTarget = _enemyTargetList[i];
+
+            _mainTextbox.text = enemy.EnemyType.EnemyName + " attacked Player!";
 
             int newHP = _playerData.CurrentStats.HitPoints - enemy.CurrentStats.Attack;
             _playerTarget.GetComponent<EntityInfoUI>().SetHPBar((float)newHP/_playerData.BaseStats.HitPoints, animationTime);
             _playerData.CurrentStats.HitPoints = newHP;
+
+            yield return new WaitForSeconds(gapTime);
         }
+
+
+        UpdateState(BattleState.PLAYER_TURN);
     }
 }
