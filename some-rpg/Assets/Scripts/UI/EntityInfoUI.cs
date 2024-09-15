@@ -29,5 +29,7 @@ public class EntityInfoUI : MonoBehaviour {
             _hitpointsBar.fillAmount -= speed;
             yield return new WaitForSeconds(Time.deltaTime);
         }
+
+        _hitpointsBar.fillAmount = newPercentage;
     }
 }

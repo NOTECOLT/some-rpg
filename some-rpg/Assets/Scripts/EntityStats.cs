@@ -25,4 +25,10 @@ public class EntityStats : ICloneable {
             Speed = this.Speed
         };
     }
+
+    public int CalculateDamage(EntityStats defendingStats) {
+        float dmg = Mathf.Pow(this.Attack, 2) / (1.5f*defendingStats.Defense);
+
+        return Mathf.RoundToInt(dmg);
+    }
 }

@@ -24,11 +24,14 @@ public class BattleManager : MonoBehaviour {
     [SerializeField] private List<Enemy> _enemyList = new List<Enemy>();
     [SerializeField] private List<GameObject> _enemyTargetList = new List<GameObject>();
 
-    private Boolean _stateHasBeenUpdated = true;
-
+    private bool _stateHasBeenUpdated = true;
     private BattleState _currentState = BattleState.PLAYER_TURN;
     private int _playerSelectedTarget = -1;
+    private bool _qteSuccess = false;
     void Start() {
+        // Listener currently used for detecting successful QTE inputs
+        GetComponent<QTESystem>().OnQTESuccess.AddListener(SetQTESuccess);
+
         // Spawn Enemy Targets
         for (int i = 0; i < _enemyList.Count; i++) {
             _enemyList[i].Instantiate(i); // Sets the TargetId of the enemy
@@ -45,8 +48,10 @@ public class BattleManager : MonoBehaviour {
             _enemyTargetList.Add(enemyTarget);
             Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyTarget.name + "; name=" + _enemyList[i].EnemyType.EnemyName + "; current HP=" + _enemyList[i].CurrentStats.HitPoints + "; target id=" + _enemyList[i].TargetId + ";");
         }
+    }
 
-        // Decide who is the first turnholder
+    void OnDisable() {
+        GetComponent<QTESystem>().OnQTESuccess.RemoveListener(SetQTESuccess);
     }
 
     void Update() {
@@ -87,8 +92,10 @@ public class BattleManager : MonoBehaviour {
                     break;
             }
         }
+    }
 
-
+    private void SetQTESuccess(float timeLeft) {
+        _qteSuccess = true;
     }
 
     /// <summary>
@@ -125,6 +132,8 @@ public class BattleManager : MonoBehaviour {
     public void BuildActionSequence() {
         // Build an "EntityAction" object that can be filled sequentially.
         // This will be executed during the Action Sequence phase.
+
+        // TODO: BUILD ACTION SEQUENCE
     }
 
     /// <summary>
@@ -134,28 +143,42 @@ public class BattleManager : MonoBehaviour {
     /// </summary>
     public IEnumerator ActionSequence() {
         float animationTime = 0.3f; // HP animation time in seconds
-        float gapTime = 1.0f;
-        // ENEMY
+        float gapTime = 2.0f;
+
+        // PLAYER ATTACK ENEMY
         for (int i = 0; i < _enemyList.Count; i++) {
             Enemy enemy = _enemyList[i];
             GameObject enemyTarget = _enemyTargetList[i];
 
-            _mainTextbox.text = "Player attacked " + enemy.EnemyType.EnemyName + "!";
 
-            int newHP = enemy.CurrentStats.HitPoints - _playerData.CurrentStats.Attack;
+            yield return GetComponent<QTESystem>().GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S});
+
+            int damageDealt = _playerData.CurrentStats.CalculateDamage(enemy.CurrentStats);
+
+            if (_qteSuccess) {
+                damageDealt *= 2; 
+                _qteSuccess = false;
+
+                _mainTextbox.text = "Critical hit! Player attacked " + enemy.EnemyType.EnemyName + " for " + damageDealt + " damage!";
+            } else {
+                _mainTextbox.text = "Player attacked " + enemy.EnemyType.EnemyName + " for " + damageDealt + " damage!";
+            }
+
+            int newHP = enemy.CurrentStats.HitPoints - damageDealt;
             enemyTarget.GetComponent<EntityInfoUI>().SetHPBar((float)newHP/enemy.EnemyType.BaseStats.HitPoints, animationTime);
             enemy.CurrentStats.HitPoints = newHP;
 
             yield return new WaitForSeconds(gapTime);
         }
 
-        // PLAYER
+        // ENEMY ATTACK PLAYER
         for (int i = 0; i < _enemyList.Count; i++) {
             Enemy enemy = _enemyList[i];
+            int damageDealt = enemy.CurrentStats.CalculateDamage(enemy.CurrentStats);
 
-            _mainTextbox.text = enemy.EnemyType.EnemyName + " attacked Player!";
+            _mainTextbox.text = enemy.EnemyType.EnemyName + " attacked Player for " + damageDealt + " damage!";
 
-            int newHP = _playerData.CurrentStats.HitPoints - enemy.CurrentStats.Attack;
+            int newHP = _playerData.CurrentStats.HitPoints - damageDealt;
             _playerTarget.GetComponent<EntityInfoUI>().SetHPBar((float)newHP/_playerData.BaseStats.HitPoints, animationTime);
             _playerData.CurrentStats.HitPoints = newHP;
 
@@ -165,4 +188,7 @@ public class BattleManager : MonoBehaviour {
 
         UpdateState(BattleState.PLAYER_TURN);
     }
+
+    // TODO: QUICK TIME EVENT 
+    // TODO: https://www.youtube.com/watch?v=pzr1f85xeMc
 }
