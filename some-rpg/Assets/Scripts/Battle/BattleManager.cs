@@ -151,7 +151,7 @@ public class BattleManager : MonoBehaviour {
             GameObject enemyTarget = _enemyTargetList[i];
 
 
-            yield return GetComponent<QTESystem>().GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S});
+            yield return GetComponent<QTESystem>().GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, 0.2f);
 
             int damageDealt = _playerData.CurrentStats.CalculateDamage(enemy.CurrentStats);
 
