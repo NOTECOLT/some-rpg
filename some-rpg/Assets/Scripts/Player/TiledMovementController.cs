@@ -42,15 +42,12 @@ public class TiledMovementController : MonoBehaviour {
         float movementTime = Vector2.Distance(startPos, endPos) / _movementSpeed;
 
         while (elapsedTime < movementTime) {
+            transform.position = Vector2.Lerp(startPos, endPos, elapsedTime / movementTime);
             elapsedTime += Time.deltaTime;
-            float percent = elapsedTime / movementTime;
-
-            transform.position = Vector2.Lerp(startPos, endPos, percent);
             yield return null;
         }
 
-        if (!Input.GetKey(inputCode))
-            transform.position = endPos;
+        transform.position = endPos;
         isMoving = false;
     }
 }
