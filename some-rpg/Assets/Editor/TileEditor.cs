@@ -17,9 +17,9 @@ public class TileEditor : Editor {
 
         foreach (Object obj in Selection.objects) {
             if (obj is null || obj.GetType() != typeof(Tile)) continue;
+            
+            ConvertSingleTile(obj);
         }
-
-        ConvertSingleTile(Selection.activeObject);
     }
 
     public static void ConvertSingleTile(Object obj) {

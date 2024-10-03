@@ -9,5 +9,5 @@ using UnityEngine.Tilemaps;
 /// </summary>
 [CreateAssetMenu(fileName="SpecialTile", menuName="SpecialTile", order=2)]  
 public class SpecialTile : Tile {
-
+    public bool isWalkable = true;
 }
