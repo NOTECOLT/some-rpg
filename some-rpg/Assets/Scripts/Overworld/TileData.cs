@@ -8,6 +8,8 @@ using UnityEngine.Tilemaps;
 /// </summary>
 [CreateAssetMenu(fileName="TileData", menuName="TileData", order=2)]
 public class TileData : ScriptableObject {
-    public List<Tile> tiles;
-    public bool isWalkable = true;
+    // TileDatas can be used to group multiple tiles under a single rule.
+    // But no single TileBase should appear in more than one TileData
+    public List<TileBase> Tiles;
+    public bool IsWalkable = true;
 }

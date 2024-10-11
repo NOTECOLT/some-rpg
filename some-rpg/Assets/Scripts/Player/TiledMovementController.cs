@@ -1,53 +1,68 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 /// <summary>
 /// Used to control player movement in a tiled grid
 /// </summary>
 public class TiledMovementController : MonoBehaviour {
-    public Vector2Int GridPosition { get; private set; } = Vector2Int.zero;
-    [SerializeField] private Grid _worldGrid;
+    public Vector3Int Cell { get; private set; } = Vector3Int.zero;
+    public Vector3Int StartCell = Vector3Int.zero;
+    private MapManager _mapManager;
+    [SerializeField] private Tilemap _tileMap;
     [SerializeField] private float _movementSpeed = 20f;
     private bool isMoving = false;
     void Start() {
-        transform.position = new Vector3(GridPosition.x * _worldGrid.cellSize.x, GridPosition.y * _worldGrid.cellSize.y,0);
+        transform.position = _tileMap.CellToWorld(StartCell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
+        Debug.Log(transform.position);
+        
+        _mapManager = FindObjectOfType<MapManager>();
     }
 
     void Update() {
         if (isMoving) return;
-
+        
         if (Input.GetKey(KeyCode.LeftArrow)) {
-            StartCoroutine(MoveTo(GridPosition + Vector2Int.left, KeyCode.LeftArrow));
+            if (!_mapManager.GetTileIsWalkable(transform.position + Vector3Int.left)) return;
+
+            StartCoroutine(MoveTo(Cell + Vector3Int.left, KeyCode.LeftArrow));
         } else if (Input.GetKey(KeyCode.RightArrow)) {
-            StartCoroutine(MoveTo(GridPosition + Vector2Int.right, KeyCode.RightArrow));
+            if (!_mapManager.GetTileIsWalkable(transform.position + Vector3Int.right)) return;
+
+            StartCoroutine(MoveTo(Cell + Vector3Int.right, KeyCode.RightArrow));
         } else if (Input.GetKey(KeyCode.UpArrow)) {
-            StartCoroutine(MoveTo(GridPosition + Vector2Int.up, KeyCode.UpArrow));
+            if (!_mapManager.GetTileIsWalkable(transform.position + Vector3Int.up)) return;
+
+            StartCoroutine(MoveTo(Cell + Vector3Int.up, KeyCode.UpArrow));
         } else if (Input.GetKey(KeyCode.DownArrow)) {
-            StartCoroutine(MoveTo(GridPosition + Vector2Int.down, KeyCode.DownArrow));
+            if (!_mapManager.GetTileIsWalkable(transform.position + Vector3Int.down)) return;
+
+            StartCoroutine(MoveTo(Cell + Vector3Int.down, KeyCode.DownArrow));
         } 
     }
 
     // Coroutine for moving the object to specified worldgrid position
-    private IEnumerator MoveTo(Vector2Int target, KeyCode inputCode) {
+    private IEnumerator MoveTo(Vector3Int target, KeyCode keyInput) {
         isMoving = true;
-        GridPosition = target;
+        Cell = target;
         
-        Vector2 startPos = transform.position;
-        Vector2 endPos = new Vector2(target.x * _worldGrid.cellSize.x, target.y * _worldGrid.cellSize.y);
+        Vector2 startPosition = transform.position;
+        Vector2 endPosition = _tileMap.CellToWorld(target) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
         
         float elapsedTime = 0;
-        float movementTime = Vector2.Distance(startPos, endPos) / _movementSpeed;
+        float movementTime = Vector2.Distance(startPosition, endPosition) / _movementSpeed;
 
         while (elapsedTime < movementTime) {
-            transform.position = Vector2.Lerp(startPos, endPos, elapsedTime / movementTime);
+            transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / movementTime);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        transform.position = endPos;
+        if (keyInput != 0) transform.position = endPosition;
         isMoving = false;
     }
 }
