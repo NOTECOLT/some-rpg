@@ -30,3 +30,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1b9b613634bbda3449b912190e5fd0f9, type: 2}
   - {fileID: 11400000, guid: 61aea45316e7e8041a6eb41f142e9f0c, type: 2}
   IsWalkable: 0
+  HasWildEncounters: 0
+  EncounterRates: []

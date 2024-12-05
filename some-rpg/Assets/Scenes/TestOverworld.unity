@@ -383,6 +383,7 @@ MonoBehaviour:
   - {fileID: 1438837304}
   _tileDatas:
   - {fileID: 11400000, guid: c7b872189e779374494c497524abaf11, type: 2}
+  - {fileID: 11400000, guid: 391744c172888af4b8bcdb2deca85254, type: 2}
 --- !u!4 &995214072
 Transform:
   m_ObjectHideFlags: 0

@@ -12,4 +12,5 @@ public class TileData : ScriptableObject {
     // But no single TileBase should appear in more than one TileData
     public List<TileBase> Tiles;
     public bool IsWalkable = true;
+    public bool HasWildEncounters = false;
 }

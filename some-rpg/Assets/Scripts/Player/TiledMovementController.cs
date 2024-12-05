@@ -26,6 +26,8 @@ public class TiledMovementController : MonoBehaviour {
     void Update() {
         if (isMoving) return;
         
+        // Movement
+
         if (Input.GetKey(KeyCode.LeftArrow)) {
             if (!_mapManager.GetTileIsWalkable(transform.position + Vector3Int.left)) return;
 
@@ -43,6 +45,10 @@ public class TiledMovementController : MonoBehaviour {
 
             StartCoroutine(MoveTo(Cell + Vector3Int.down, KeyCode.DownArrow));
         } 
+    }
+
+    private void CheckEncounterRates() {
+        
     }
 
     // Coroutine for moving the object to specified worldgrid position
