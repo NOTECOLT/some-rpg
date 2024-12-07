@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class MapManager : MonoBehaviour {
     // This dictionary will be used as a lookup table for the MapManager
     // This is built on Awake()
     private Dictionary<TileBase, TileData> _tileDictionary; 
+    private System.Random _rnd = new System.Random();
     void Awake() {
         // Building the Tile Dictionary
 
@@ -30,7 +32,7 @@ public class MapManager : MonoBehaviour {
 
         // Building the Encounter Rates
         
-        int totalWeight = 0;
+        float totalWeight = 0;
         foreach (EncounterWeight encounterWeight in _encounterWeights) {
             totalWeight += encounterWeight.Weight;
         }
@@ -62,5 +64,20 @@ public class MapManager : MonoBehaviour {
         }
         
         return false;     
+    }
+
+    // Generates a random encounter based on the internal encounter rate dictionary
+    // Note: Does not determine if the player will even run into a wild encounter at all. That's handled in TiledMovementController.cs at the moment
+    public EnemyType GenerateWildEncounter() {
+        int generatedValue = _rnd.Next(0, 100);
+        int threshold = 0;
+
+        foreach (KeyValuePair<EnemyType, float> entry in EncounterRates) {
+            threshold += Mathf.CeilToInt(entry.Value*100);
+
+            if (generatedValue < threshold) return entry.Key;
+        }
+
+        return null;
     }
 }
