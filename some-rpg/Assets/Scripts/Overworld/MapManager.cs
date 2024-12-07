@@ -24,6 +24,7 @@ public class MapManager : MonoBehaviour {
                     Debug.LogWarning($"Tile Dictionary already contains definition for {tileBase.name} from {_tileDictionary[tileBase].name}. Ignoring new definition from {tileData.name}.");
                     continue;
                 }
+                _tileDictionary.Add(tileBase, tileData);
             }
         }
 
