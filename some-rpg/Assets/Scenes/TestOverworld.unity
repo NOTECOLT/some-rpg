@@ -1240,7 +1240,7 @@ GameObject:
   - component: {fileID: 1728058054}
   - component: {fileID: 1728058055}
   m_Layer: 0
-  m_Name: EncounterManager
+  m_Name: SceneLoader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

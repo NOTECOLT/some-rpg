@@ -110,10 +110,17 @@ public class BattleManager : MonoBehaviour {
         Debug.Log("[BattleManager] State Updated to " + nextState.ToString());
     }
 
-    // At the moment this is only called when the Attack button in the UI is clicked.
+    // BUTTON FUNCTIONS ---------------------------------------------
+    // At the moment these are only called when certain buttons in the UI are clicked.
     public void SetStateToPlayerSelectAttack() {
         UpdateState(BattleState.PLAYER_SELECT_ATTACK);
     }
+
+    public void ReturnToOverworldScene() {
+        SceneLoader.Instance.LoadOverworld();
+    }
+
+    // --------------------------------------------------------------
 
     // Listener Function to be added to every enemy target.
     /// <summary>
@@ -172,6 +179,10 @@ public class BattleManager : MonoBehaviour {
             enemy.CurrentStats.HitPoints = newHP;
 
             yield return new WaitForSeconds(gapTime);
+
+            if (newHP < 0) {
+                SceneLoader.Instance.LoadOverworld();
+            }
         }
 
         // ENEMY ATTACK PLAYER
@@ -186,6 +197,10 @@ public class BattleManager : MonoBehaviour {
             _playerData.CurrentStats.HitPoints = newHP;
 
             yield return new WaitForSeconds(gapTime);
+
+            if (newHP <= 0) {
+                SceneLoader.Instance.LoadOverworld();
+            }
         }
 
 

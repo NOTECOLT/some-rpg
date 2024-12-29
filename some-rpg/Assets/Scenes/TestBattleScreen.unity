@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -153,46 +152,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b9c69bef8caa524e8b79325f749e64b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnPlayerTurnStart:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1873223477}
-        m_TargetAssemblyTypeName: BattleMenuUI, Assembly-CSharp
-        m_MethodName: SetPlayerTurnMenu
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnPlayerSelectAttackStart:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1873223477}
-        m_TargetAssemblyTypeName: BattleMenuUI, Assembly-CSharp
-        m_MethodName: SetPlayerSelectAttackMenu
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnActionSequenceStart:
-    m_PersistentCalls:
-      m_Calls: []
   _playerData: {fileID: 899135660}
   _playerTarget: {fileID: 422450749}
   _mainTextbox: {fileID: 2069903060}
   _enemyTargetParent: {fileID: 92304708}
   _enemyTargetPrefab: {fileID: 8500554299142817837, guid: f4446db8c98beeb459015b0802f2147b, type: 3}
-  _enemyList:
-  - EnemyType: {fileID: 11400000, guid: b8dd5b22ba373ac41a404545d01813ab, type: 2}
+  enemyList: []
   _enemyTargetList: []
 --- !u!4 &57585047
 Transform:
@@ -221,7 +186,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c80b79def2eb4224c9ae809de72765a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxTime: 0.5
   _qteButton: {fileID: 1447746486}
   OnQTEFail:
     m_PersistentCalls:
@@ -1221,7 +1185,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 892016723}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 57585046}
+        m_TargetAssemblyTypeName: BattleManager, Assembly-CSharp
+        m_MethodName: ReturnToOverworldScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &892016723
 MonoBehaviour:
   m_ObjectHideFlags: 0
