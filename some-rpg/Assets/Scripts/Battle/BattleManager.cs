@@ -21,7 +21,7 @@ public class BattleManager : MonoBehaviour {
     [SerializeField] private GameObject _enemyTargetPrefab;
 
     // List of enemy targets in the battle
-    [SerializeField] private List<Enemy> _enemyList = new List<Enemy>();
+    public List<Enemy> enemyList = new List<Enemy>();
     [SerializeField] private List<GameObject> _enemyTargetList = new List<GameObject>();
 
     private bool _stateHasBeenUpdated = true;
@@ -32,21 +32,32 @@ public class BattleManager : MonoBehaviour {
         // Listener currently used for detecting successful QTE inputs
         GetComponent<QTESystem>().OnQTESuccess.AddListener(SetQTESuccess);
 
-        // Spawn Enemy Targets
-        for (int i = 0; i < _enemyList.Count; i++) {
-            _enemyList[i].Instantiate(i); // Sets the TargetId of the enemy
+        SceneLoader sceneLoader = FindAnyObjectByType<SceneLoader>();
+
+        if (sceneLoader is null) {
+            Debug.LogError("Scene does not have BattleManager Component!");
+        } else {
+            enemyList = new List<Enemy>();
+            foreach (EnemyType enemyType in sceneLoader.Encounters) {
+                enemyList.Add(new Enemy(enemyType));
+            }
+        }
+
+        // Spawn encounters
+        for (int i = 0; i < enemyList.Count; i++) {
+            enemyList[i].Instantiate(i); // Sets the TargetId of the enemy
 
             // Create Enemy prefab
             GameObject enemyTarget = Instantiate(_enemyTargetPrefab, _enemyTargetParent.transform);
-            enemyTarget.name = _enemyList[i].EnemyType.name + " " + _enemyList[i].TargetId + " (Enemy Target)";
-            enemyTarget.GetComponent<SpriteRenderer>().sprite = _enemyList[i].EnemyType.Sprite;
+            enemyTarget.name = enemyList[i].EnemyType.name + " " + enemyList[i].TargetId + " (Enemy Target)";
+            enemyTarget.GetComponent<SpriteRenderer>().sprite = enemyList[i].EnemyType.Sprite;
 
             // UnityEvent listener used for selecting enemies
             enemyTarget.GetComponent<EnemyTarget>().TargetId = i;
             enemyTarget.GetComponent<EnemyTarget>().OnEnemyClicked.AddListener(OnEnemyClicked);
 
             _enemyTargetList.Add(enemyTarget);
-            Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyTarget.name + "; name=" + _enemyList[i].EnemyType.EnemyName + "; current HP=" + _enemyList[i].CurrentStats.HitPoints + "; target id=" + _enemyList[i].TargetId + ";");
+            Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyTarget.name + "; name=" + enemyList[i].EnemyType.EnemyName + "; current HP=" + enemyList[i].CurrentStats.HitPoints + "; target id=" + enemyList[i].TargetId + ";");
         }
     }
 
@@ -146,8 +157,8 @@ public class BattleManager : MonoBehaviour {
         float gapTime = 2.0f;
 
         // PLAYER ATTACK ENEMY
-        for (int i = 0; i < _enemyList.Count; i++) {
-            Enemy enemy = _enemyList[i];
+        for (int i = 0; i < enemyList.Count; i++) {
+            Enemy enemy = enemyList[i];
             GameObject enemyTarget = _enemyTargetList[i];
 
 
@@ -172,8 +183,8 @@ public class BattleManager : MonoBehaviour {
         }
 
         // ENEMY ATTACK PLAYER
-        for (int i = 0; i < _enemyList.Count; i++) {
-            Enemy enemy = _enemyList[i];
+        for (int i = 0; i < enemyList.Count; i++) {
+            Enemy enemy = enemyList[i];
             int damageDealt = enemy.CurrentStats.CalculateDamage(enemy.CurrentStats);
 
             _mainTextbox.text = enemy.EnemyType.EnemyName + " attacked Player for " + damageDealt + " damage!";

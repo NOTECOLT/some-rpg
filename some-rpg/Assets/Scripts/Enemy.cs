@@ -15,6 +15,10 @@ public class Enemy {
     // These stats may change in battle through status effects
     public EntityStats CurrentStats { get; private set; } = new EntityStats();   
 
+    public Enemy(EnemyType enemyType) {
+        this.EnemyType = enemyType;
+    }
+
     public void Instantiate(int targetId) {
         CurrentStats = (EntityStats)EnemyType.BaseStats.Clone();
         TargetId = targetId;

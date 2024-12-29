@@ -15,7 +15,6 @@ public class TiledMovementController : MonoBehaviour {
     private MapManager _mapManager;
     [SerializeField] private Tilemap _tileMap;
     [SerializeField] private float _movementSpeed = 20f;
-    private System.Random _rnd = new System.Random();
     private bool isMoving = false;
     void Start() {
         transform.position = _tileMap.CellToWorld(StartCell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
@@ -54,21 +53,7 @@ public class TiledMovementController : MonoBehaviour {
             StartCoroutine(MoveTo(Cell + Vector3Int.down, KeyCode.DownArrow));
         } 
 
-        CheckEncounterRates();
-    }
-
-    private void CheckEncounterRates() {
-        if (!_mapManager.GetTileHasWildEncounters(transform.position)) return;
-        
-        int generatedValue = _rnd.Next(0, 100);
-        float encounterChance = 0.067f;
-
-        if (generatedValue >= Mathf.CeilToInt(encounterChance*100)) return;
-        
-        EnemyType encounter = _mapManager.GenerateWildEncounter();
-        if (encounter is null) return;
-
-        Debug.Log($"Encounter with {encounter.name}!");    
+        _mapManager.DoEncounterCheck(transform.position);
     }
 
     // Coroutine for moving the object to specified worldgrid position

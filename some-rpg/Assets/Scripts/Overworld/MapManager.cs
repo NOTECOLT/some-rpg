@@ -54,7 +54,7 @@ public class MapManager : MonoBehaviour {
         return true;
     }
 
-    public bool GetTileHasWildEncounters(Vector3 worldPosition) {
+    private bool GetTileHasWildEncounters(Vector3 worldPosition) {
         foreach (Tilemap layer in _tilemapLayers) {
             Vector3Int cellPosition = layer.WorldToCell(worldPosition);
             TileBase tile = layer.GetTile(cellPosition);
@@ -67,8 +67,8 @@ public class MapManager : MonoBehaviour {
     }
 
     // Generates a random encounter based on the internal encounter rate dictionary
-    // Note: Does not determine if the player will even run into a wild encounter at all. That's handled in TiledMovementController.cs at the moment
-    public EnemyType GenerateWildEncounter() {
+    // Note: Does not determine if the player will even run into a wild encounter at all.
+    private EnemyType GenerateWildEncounter() {
         int generatedValue = _rnd.Next(0, 100);
         int threshold = 0;
 
@@ -79,5 +79,21 @@ public class MapManager : MonoBehaviour {
         }
 
         return null;
+    }
+
+    // Public function that determines if the player will run into a wild encounter. Does not generate the encounter itself.
+    public void DoEncounterCheck(Vector3 position) {
+        if (!GetTileHasWildEncounters(position)) return;
+        
+        int generatedValue = _rnd.Next(0, 100);
+        float encounterChance = 0.067f;
+
+        if (generatedValue >= Mathf.CeilToInt(encounterChance*100)) return;
+        
+        EnemyType encounter = GenerateWildEncounter();
+        if (encounter is null) return;
+
+        Debug.Log($"Encounter with {encounter.name}!");    
+        SceneLoader.Instance.LoadEncounter(new List<EnemyType>() {encounter});
     }
 }
