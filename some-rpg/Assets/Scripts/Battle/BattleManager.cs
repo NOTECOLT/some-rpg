@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,11 +10,6 @@ using UnityEngine.Events;
 /// Manages battle states and state changes
 /// </summary>
 public class BattleManager : MonoBehaviour {    
-    // These UnityEvents are called upon the start of each BattleState
-    public UnityEvent OnPlayerTurnStart;
-    public UnityEvent OnPlayerSelectAttackStart;
-    public UnityEvent OnActionSequenceStart;
-
     [SerializeField] private PlayerData _playerData;
     [SerializeField] private GameObject _playerTarget;
     [SerializeField] private TMP_Text _mainTextbox;
@@ -76,25 +72,21 @@ public class BattleManager : MonoBehaviour {
         // ? Maybe important to keep this in mind just in case
 
         // Invokes actions and other calls upon updating the state
-        // Was originally 
         if (_stateHasBeenUpdated) {
             _stateHasBeenUpdated = false;
 
             switch (_currentState) {
                 case BattleState.PLAYER_TURN:
                     _mainTextbox.text = "What will player do?";
-                    OnPlayerTurnStart.Invoke();
-                    Debug.Log($"[BattleManager: PLAYER TURN] EventListeners Triggered: " + OnPlayerTurnStart.GetPersistentEventCount());
+                    Debug.Log($"[BattleManager: PLAYER TURN]");
                     break;
                 case BattleState.PLAYER_SELECT_ATTACK:
                     _mainTextbox.text = "Select an enemy to attack.";
-                    OnPlayerSelectAttackStart.Invoke();
-                    Debug.Log("[BattleManager: PLAYER SELECT ATTACK] EventListeners Triggered: " + OnPlayerSelectAttackStart.GetPersistentEventCount());
+                    Debug.Log("[BattleManager: PLAYER SELECT ATTACK]");
                     break;
                 case BattleState.ACTION_SEQUENCE:
                     _mainTextbox.text = _currentState.ToString();
-                    OnActionSequenceStart.Invoke();
-                    Debug.Log("[BattleManager: ACTION SEQUENCE] EventListeners Triggered: " + OnActionSequenceStart.GetPersistentEventCount());
+                    Debug.Log("[BattleManager: ACTION SEQUENCE]");
 
                     BuildActionSequence();
                     StartCoroutine(ActionSequence());

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 
 public class SceneLoader : MonoBehaviour {
+    private static int OVERWORLD_SCENE = 0;
     private static int BATTLE_SCENE = 1; 
 
     public static SceneLoader Instance { get; private set; }
@@ -27,5 +28,9 @@ public class SceneLoader : MonoBehaviour {
     public void LoadEncounter(List<EnemyType> encounters) {
         Encounters = encounters;
         SceneManager.LoadScene(BATTLE_SCENE);
+    }
+
+    public void LoadOverworld() {
+        SceneManager.LoadScene(OVERWORLD_SCENE);
     }
 }
