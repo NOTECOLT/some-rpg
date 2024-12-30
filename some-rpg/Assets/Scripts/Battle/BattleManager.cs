@@ -39,6 +39,8 @@ public class BattleManager : MonoBehaviour {
             }
         }
 
+        _playerData = PlayerData.Instance;
+
         // Spawn encounters
         for (int i = 0; i < enemyList.Count; i++) {
             enemyList[i].Instantiate(i); // Sets the TargetId of the enemy
@@ -180,7 +182,7 @@ public class BattleManager : MonoBehaviour {
 
             yield return new WaitForSeconds(gapTime);
 
-            if (newHP < 0) {
+            if (newHP <= 0) {
                 SceneLoader.Instance.LoadOverworld();
             }
         }

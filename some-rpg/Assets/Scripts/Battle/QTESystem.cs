@@ -39,7 +39,7 @@ public class QTESystem : MonoBehaviour {
         _qteButton.SetActive(true);
         _qteButton.GetComponentInChildren<TMP_Text>().text = QTEKey.ToString();
         while (_qteIsActive) {
-            Debug.Log("[QTE System] Time: " + _currentTime + " ; Key: " + QTEKey.ToString());
+            // Debug.Log("[QTE System] Time: " + _currentTime + " ; Key: " + QTEKey.ToString());
 
             if (_currentTime <= 0) {
                 OnQTEFail.Invoke();

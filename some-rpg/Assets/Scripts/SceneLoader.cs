@@ -10,13 +10,14 @@ public class SceneLoader : MonoBehaviour {
     private static int OVERWORLD_SCENE = 0;
     private static int BATTLE_SCENE = 1; 
 
-    public static SceneLoader Instance { get; private set; }
     public List<EnemyType> Encounters { get; private set; }
+
+    public static SceneLoader Instance { get; private set; }
 
     private void Awake()  { 
         // If there is an instance, and it's not me, delete myself.
         if (Instance != null && Instance != this) { 
-            Destroy(this); 
+            Destroy(this.gameObject); 
         } else { 
             Instance = this; 
         } 

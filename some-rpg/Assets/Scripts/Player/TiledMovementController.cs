@@ -17,8 +17,12 @@ public class TiledMovementController : MonoBehaviour {
     [SerializeField] private float _movementSpeed = 20f;
     private bool isMoving = false;
     void Start() {
+        if (PlayerData.Instance is not null) {
+            StartCell = PlayerData.Instance.Cell;
+            Cell = PlayerData.Instance.Cell;
+        }
+
         transform.position = _tileMap.CellToWorld(StartCell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
-        Debug.Log(transform.position);
         
         _mapManager = FindObjectOfType<MapManager>();
     }
@@ -60,6 +64,7 @@ public class TiledMovementController : MonoBehaviour {
     private IEnumerator MoveTo(Vector3Int target, KeyCode keyInput) {
         isMoving = true;
         Cell = target;
+        PlayerData.Instance.Cell = target;
         
         Vector2 startPosition = transform.position;
         Vector2 endPosition = _tileMap.CellToWorld(target) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
