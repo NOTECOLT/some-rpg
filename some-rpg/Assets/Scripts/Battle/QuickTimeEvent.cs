@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using Unity.VisualScripting.FullSerializer;
 
 /// <summary>
-/// Script responsible for creating QTEs and receiving QTE Inputs. <br></br>
+/// Object responsible for creating QTEs and receiving QTE Inputs. <br></br>
 /// QTE = Quick Time Event, When the player is prompted to press a button on the keyboard within a limited time.
 /// </summary>
 public class QuickTimeEvent {

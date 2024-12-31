@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 /// Clickable enemy target sprite. Attached to enemy prefabs in battlesystem. <br></br>
 /// Does not represent or hold any data pertaining to enemy class.
 /// </summary>
-public class EnemyTarget : MonoBehaviour, IPointerClickHandler {
+public class EnemyObject : MonoBehaviour, IPointerClickHandler {
     public Enemy Enemy = null;
     
     public UnityEvent<Enemy> OnEnemyClicked = new UnityEvent<Enemy>();

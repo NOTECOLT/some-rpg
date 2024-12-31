@@ -38,8 +38,8 @@ public class BattleManager : MonoBehaviour {
             enemyTarget.GetComponent<SpriteRenderer>().sprite = enemy.EnemyType.Sprite;
 
             // UnityEvent listener used for selecting enemies
-            enemyTarget.GetComponent<EnemyTarget>().Enemy = enemy;
-            enemyTarget.GetComponent<EnemyTarget>().OnEnemyClicked.AddListener(OnEnemyClicked);
+            enemyTarget.GetComponent<EnemyObject>().Enemy = enemy;
+            enemyTarget.GetComponent<EnemyObject>().OnEnemyClicked.AddListener(OnEnemyClicked);
 
             _enemyTargetList.Add(enemyTarget);
             Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyTarget.name + "; name=" + enemy.EnemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
