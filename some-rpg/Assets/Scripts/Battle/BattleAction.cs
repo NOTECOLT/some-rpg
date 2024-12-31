@@ -8,15 +8,14 @@ using UnityEngine;
 /// </summary>
 [Serializable]
 public class BattleAction {
-    public EntityStats TargetStats;
-    public EntityStats ActorStats;
+    public BattleUnit TargetUnit;
+    public EntityStats ActorUnit;
     public ActionType ActionType;
 
-    public Enemy tempRef; // TODO: Remove this variable
-    public BattleAction(EntityStats target, ActionType actionType, EntityStats actor) {
-        TargetStats = target;
+    public BattleAction(BattleUnit targetUnit, ActionType actionType, EntityStats actorUnit) {
+        TargetUnit = targetUnit;
         ActionType = actionType;
-        ActorStats = actor;
+        ActorUnit = actorUnit;
     }
 }
 

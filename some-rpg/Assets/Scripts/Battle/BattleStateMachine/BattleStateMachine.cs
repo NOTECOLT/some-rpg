@@ -42,7 +42,7 @@ public class BattleStateMachine : MonoBehaviour {
     }
 
     public void AddBattleAction(BattleAction action) {
-        Debug.Log($"[BattleStateMachine] Battle Action Added: {action.ActionType} on {action.tempRef.EnemyType.EnemyName}" );
+        Debug.Log($"[BattleStateMachine] Battle Action Added: {action.ActionType} on {action.TargetUnit.Name}" );
         ActionSequence.Add(action);
     }
 }

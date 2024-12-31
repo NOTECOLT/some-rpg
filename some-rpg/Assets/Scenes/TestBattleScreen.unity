@@ -152,11 +152,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b9c69bef8caa524e8b79325f749e64b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerData: {fileID: 899135660}
   _playerTarget: {fileID: 422450749}
   _mainTextbox: {fileID: 2069903060}
-  _enemyTargetParent: {fileID: 92304708}
-  _enemyTargetPrefab: {fileID: 8500554299142817837, guid: f4446db8c98beeb459015b0802f2147b, type: 3}
+  _enemyObjectParent: {fileID: 92304708}
+  _enemyObjectPrefab: {fileID: 8500554299142817837, guid: f4446db8c98beeb459015b0802f2147b, type: 3}
   _enemyTargetList: []
 --- !u!4 &57585047
 Transform:
@@ -334,7 +333,7 @@ GameObject:
   m_Component:
   - component: {fileID: 92304709}
   m_Layer: 0
-  m_Name: Enemy Targets
+  m_Name: Enemy Objects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1288,17 +1287,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 892016720}
   m_CullTransparentMesh: 1
---- !u!114 &899135660 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
-  m_PrefabInstance: {fileID: 6038235145529795290}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7d2768d5a9ba39449d707193ebb5a52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &919647615
 GameObject:
   m_ObjectHideFlags: 0

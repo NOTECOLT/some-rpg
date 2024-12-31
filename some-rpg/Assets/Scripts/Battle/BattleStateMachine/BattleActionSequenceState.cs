@@ -40,19 +40,19 @@ public class BattleActionSequenceState : BattleBaseState {
                     QuickTimeEvent QTE = new QuickTimeEvent(battle.QTEButton);
                     yield return QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, 0.2f);
 
-                    int damageDealt = action.ActorStats.CalculateDamage(action.TargetStats);
+                    int damageDealt = action.ActorUnit.CalculateDamage(action.TargetUnit.CurrentStats);
 
                     if (QTE.Result >= 0) {
                         damageDealt *= 2; 
 
-                        battle.mainTextbox.text = "Critical hit! Player attacked " + action.tempRef.EnemyType.EnemyName + " for " + damageDealt + " damage!";
+                        battle.mainTextbox.text = "Critical hit! Player attacked " + action.TargetUnit.Name + " for " + damageDealt + " damage!";
                     } else {
-                        battle.mainTextbox.text = "Player attacked " + action.tempRef.EnemyType.EnemyName + " for " + damageDealt + " damage!";
+                        battle.mainTextbox.text = "Player attacked " + action.TargetUnit.Name + " for " + damageDealt + " damage!";
                     }
 
-                    int newHP = action.TargetStats.HitPoints - damageDealt;
-                    action.tempRef.Object.GetComponent<EntityInfoUI>().SetHPBar((float)newHP/action.tempRef.EnemyType.BaseStats.HitPoints, animationTime);
-                    action.TargetStats.HitPoints = newHP;
+                    int newHP = action.TargetUnit.CurrentStats.HitPoints - damageDealt;
+                    action.TargetUnit.Object.GetComponent<EntityInfoUI>().SetHPBar((float)newHP/action.TargetUnit.BaseStats.HitPoints, animationTime);
+                    action.TargetUnit.CurrentStats.HitPoints = newHP;
 
                     yield return new WaitForSeconds(gapTime);
 

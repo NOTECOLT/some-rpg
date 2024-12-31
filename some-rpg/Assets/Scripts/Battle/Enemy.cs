@@ -1,24 +1,19 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
 /// Object that holds all data pertaining to an enemy in a battle.
 /// </summary>
 [Serializable]
-public class Enemy {
+public class Enemy : BattleUnit {
     public EnemyType EnemyType;
-    public GameObject Object;
-
-    // These stats may change in battle through status effects
-    public EntityStats CurrentStats = new EntityStats();   
-
-    public Enemy(EnemyType enemyType, GameObject target) {
+    
+    public Enemy(EnemyType enemyType, GameObject obj) {
         this.EnemyType = enemyType;
-        CurrentStats = (EntityStats)EnemyType.BaseStats.Clone();
 
-        this.Object = target;
+        Name = enemyType.EnemyName;
+        BaseStats = (EntityStats)enemyType.BaseStats.Clone();
+        CurrentStats = (EntityStats)enemyType.BaseStats.Clone();
+        this.Object = obj;
     }
 }

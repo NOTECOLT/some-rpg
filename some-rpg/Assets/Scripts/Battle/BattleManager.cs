@@ -10,12 +10,11 @@ using UnityEngine.Events;
 /// Manages battle states and state changes
 /// </summary>
 public class BattleManager : MonoBehaviour {    
-    [SerializeField] private PlayerData _playerData;
     private BattleStateMachine _battleStateMachine;
     [SerializeField] private GameObject _playerTarget;
     [SerializeField] private TMP_Text _mainTextbox;
-    [SerializeField] private GameObject _enemyTargetParent;
-    [SerializeField] private GameObject _enemyTargetPrefab;
+    [SerializeField] private GameObject _enemyObjectParent;
+    [SerializeField] private GameObject _enemyObjectPrefab;
 
     // List of enemy targets in the battle
     [SerializeField] private List<GameObject> _enemyTargetList = new List<GameObject>();
@@ -26,23 +25,22 @@ public class BattleManager : MonoBehaviour {
             return;
         }
 
-        _playerData = PlayerData.Instance;
         _battleStateMachine = GetComponent<BattleStateMachine>();
         _playerSelectedAction = ActionType.NULL;
 
         foreach (EnemyType enemyType in SceneLoader.Instance.Encounters) {
-            GameObject enemyTarget = Instantiate(_enemyTargetPrefab, _enemyTargetParent.transform);
-            Enemy enemy = new Enemy(enemyType, enemyTarget);
+            GameObject enemyObject = Instantiate(_enemyObjectPrefab, _enemyObjectParent.transform);
+            Enemy enemy = new Enemy(enemyType, enemyObject);
             
-            enemyTarget.name = enemy.EnemyType.name + " (Enemy Target)";
-            enemyTarget.GetComponent<SpriteRenderer>().sprite = enemy.EnemyType.Sprite;
+            enemyObject.name = enemy.Name + " (Enemy Target)";
+            enemyObject.GetComponent<SpriteRenderer>().sprite = enemy.EnemyType.Sprite;
 
             // UnityEvent listener used for selecting enemies
-            enemyTarget.GetComponent<EnemyObject>().Enemy = enemy;
-            enemyTarget.GetComponent<EnemyObject>().OnEnemyClicked.AddListener(OnEnemyClicked);
+            enemyObject.GetComponent<EnemyObject>().Enemy = enemy;
+            enemyObject.GetComponent<EnemyObject>().OnEnemyClicked.AddListener(OnEnemyClicked);
 
-            _enemyTargetList.Add(enemyTarget);
-            Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyTarget.name + "; name=" + enemy.EnemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
+            _enemyTargetList.Add(enemyObject);
+            Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemy.EnemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
         }
     }
 
@@ -64,9 +62,7 @@ public class BattleManager : MonoBehaviour {
     /// <param name="targetEnemy">Passed Target Id of the clicked enemy</param>
     private void OnEnemyClicked(Enemy targetEnemy) {
         if (_battleStateMachine.CurrentState == _battleStateMachine.BattlePlayerTurnState) {
-            _battleStateMachine.AddBattleAction(new BattleAction(targetEnemy.CurrentStats, _playerSelectedAction, PlayerData.Instance.CurrentStats) {
-                tempRef = targetEnemy
-            });
+            _battleStateMachine.AddBattleAction(new BattleAction(targetEnemy, _playerSelectedAction, PlayerData.Instance.CurrentStats));
         }
 
         _battleStateMachine.ChangeState(_battleStateMachine.BattleActionSequenceState);
