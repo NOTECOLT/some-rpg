@@ -26,6 +26,11 @@ public class EntityStats : ICloneable {
         };
     }
 
+    /// <summary>
+    /// This function contains the damage formula on a battle unit and applies it on an entity's CurrentStats
+    /// </summary>
+    /// <param name="defendingStats"></param>
+    /// <returns></returns>
     public int CalculateDamage(EntityStats defendingStats) {
         float dmg = Mathf.Pow(this.Attack, 2) / (1.5f*defendingStats.Defense);
 

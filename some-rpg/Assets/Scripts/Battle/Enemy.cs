@@ -8,12 +8,7 @@ using UnityEngine;
 public class Enemy : BattleUnit {
     public EnemyType EnemyType;
     
-    public Enemy(EnemyType enemyType, GameObject obj) {
-        this.EnemyType = enemyType;
-
-        Name = enemyType.EnemyName;
-        BaseStats = (EntityStats)enemyType.BaseStats.Clone();
-        CurrentStats = (EntityStats)enemyType.BaseStats.Clone();
-        this.Object = obj;
+    public Enemy(EnemyType enemyType, GameObject obj) : base((EntityStats)enemyType.BaseStats.Clone(), obj, enemyType.EnemyName) {
+        EnemyType = enemyType;
     }
 }

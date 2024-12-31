@@ -9,10 +9,10 @@ using UnityEngine;
 [Serializable]
 public class BattleAction {
     public BattleUnit TargetUnit;
-    public EntityStats ActorUnit;
+    public BattleUnit ActorUnit;
     public ActionType ActionType;
 
-    public BattleAction(BattleUnit targetUnit, ActionType actionType, EntityStats actorUnit) {
+    public BattleAction(BattleUnit targetUnit, ActionType actionType, BattleUnit actorUnit) {
         TargetUnit = targetUnit;
         ActionType = actionType;
         ActorUnit = actorUnit;

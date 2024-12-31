@@ -11,7 +11,7 @@ using UnityEngine.Events;
 /// </summary>
 public class BattleManager : MonoBehaviour {    
     private BattleStateMachine _battleStateMachine;
-    [SerializeField] private GameObject _playerTarget;
+    [SerializeField] private GameObject _playerObject;
     [SerializeField] private TMP_Text _mainTextbox;
     [SerializeField] private GameObject _enemyObjectParent;
     [SerializeField] private GameObject _enemyObjectPrefab;
@@ -42,6 +42,8 @@ public class BattleManager : MonoBehaviour {
             _enemyTargetList.Add(enemyObject);
             Debug.Log("[BattleManager] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemy.EnemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
         }
+
+        PlayerData.Instance.BattleUnit = new BattleUnit(PlayerData.Instance.BaseStats, _playerObject, "Player");
     }
 
     // BUTTON FUNCTIONS ---------------------------------------------
@@ -62,7 +64,7 @@ public class BattleManager : MonoBehaviour {
     /// <param name="targetEnemy">Passed Target Id of the clicked enemy</param>
     private void OnEnemyClicked(Enemy targetEnemy) {
         if (_battleStateMachine.CurrentState == _battleStateMachine.BattlePlayerTurnState) {
-            _battleStateMachine.AddBattleAction(new BattleAction(targetEnemy, _playerSelectedAction, PlayerData.Instance.CurrentStats));
+            _battleStateMachine.AddBattleAction(new BattleAction(targetEnemy, _playerSelectedAction, PlayerData.Instance.BattleUnit));
         }
 
         _battleStateMachine.ChangeState(_battleStateMachine.BattleActionSequenceState);
