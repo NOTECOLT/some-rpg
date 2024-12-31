@@ -10,17 +10,15 @@ using UnityEngine;
 [Serializable]
 public class Enemy {
     public EnemyType EnemyType;
-    public int TargetId { get; private set; } = -1;
+    public GameObject Object;
 
     // These stats may change in battle through status effects
-    public EntityStats CurrentStats { get; private set; } = new EntityStats();   
+    public EntityStats CurrentStats = new EntityStats();   
 
-    public Enemy(EnemyType enemyType) {
+    public Enemy(EnemyType enemyType, GameObject target) {
         this.EnemyType = enemyType;
-    }
-
-    public void Instantiate(int targetId) {
         CurrentStats = (EntityStats)EnemyType.BaseStats.Clone();
-        TargetId = targetId;
+
+        this.Object = target;
     }
 }

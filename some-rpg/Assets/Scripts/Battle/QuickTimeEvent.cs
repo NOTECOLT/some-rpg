@@ -4,22 +4,29 @@ using Unity.VisualScripting;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using Unity.VisualScripting.FullSerializer;
 
 /// <summary>
-/// Script responsbile for creating QTEs and receiving QTE Inputs. <br></br>
+/// Script responsible for creating QTEs and receiving QTE Inputs. <br></br>
 /// QTE = Quick Time Event, When the player is prompted to press a button on the keyboard within a limited time.
 /// </summary>
-public class QTESystem : MonoBehaviour {
+public class QuickTimeEvent {
     public KeyCode QTEKey { get; private set; }
     private float _currentTime;
     private bool _qteIsActive = false;
 
-    [SerializeField] private GameObject _qteButton;
+    private GameObject _qteButton;
 
-    public UnityEvent OnQTEFail;
-    public UnityEvent<float> OnQTESuccess;
+    /// <summary>
+    /// The Result of the QTE.
+    /// Result = -1 if the QTE was a fail,
+    /// Result >=0 if the QTE was a success
+    /// </summary>
+    public float Result;
 
-    void Start() {
+    public QuickTimeEvent(GameObject qteButton) {
+        _qteButton = qteButton;
+
         _qteButton.SetActive(false);
     }
 
@@ -42,7 +49,7 @@ public class QTESystem : MonoBehaviour {
             // Debug.Log("[QTE System] Time: " + _currentTime + " ; Key: " + QTEKey.ToString());
 
             if (_currentTime <= 0) {
-                OnQTEFail.Invoke();
+                Result = -1;
                 Debug.Log("[QTE System] QTE Fail, no input!");
                 _qteIsActive = false;
                 break;
@@ -50,11 +57,11 @@ public class QTESystem : MonoBehaviour {
 
             if (Input.anyKey) {
                 if (Input.GetKey(QTEKey)) {
-                    OnQTESuccess.Invoke(_currentTime);
+                    Result = _currentTime;
                     Debug.Log("[QTE System] QTE Success!");
                     _qteIsActive = false;          
                 } else {
-                    OnQTEFail.Invoke();
+                    Result = -1;
                     Debug.Log("[QTE System] QTE Fail, wrong input!");
                     _qteIsActive = false;
                     break;

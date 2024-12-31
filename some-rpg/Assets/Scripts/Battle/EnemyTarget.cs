@@ -10,11 +10,11 @@ using UnityEngine.EventSystems;
 /// Does not represent or hold any data pertaining to enemy class.
 /// </summary>
 public class EnemyTarget : MonoBehaviour, IPointerClickHandler {
-    public int TargetId = -1;   // Stores the id of the enemy that the target corresponds in the battle
-                                // -1 denotes empty target
-    public UnityEvent<int> OnEnemyClicked = new UnityEvent<int>();
+    public Enemy Enemy = null;
+    
+    public UnityEvent<Enemy> OnEnemyClicked = new UnityEvent<Enemy>();
     
     public void OnPointerClick(PointerEventData eventData) {
-        OnEnemyClicked.Invoke(TargetId);
+        OnEnemyClicked.Invoke(Enemy);
     }
 }
