@@ -6,16 +6,10 @@ public class BattlePlayerTurnState : BattleBaseState {
     public override void EnterState(BattleStateMachine battle) {
         Debug.Log($"[BattleStateMachine: PLAYER TURN]");
 
+        battle.playerSelectedAction = ActionType.NULL;
         battle.mainTextbox.text = "What will player do?";
     }
     public override void UpdateState(BattleStateMachine battle) {
     
-    }
-
-    /// <summary>
-    /// Concerned with the selection building the sequencing of player and enemy's action for of each turn.
-    /// </summary>
-    public void BuildActionSequence() {
-        
     }
 }

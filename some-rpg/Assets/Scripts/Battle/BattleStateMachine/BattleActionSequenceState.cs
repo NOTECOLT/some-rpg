@@ -6,6 +6,18 @@ using UnityEngine;
 public class BattleActionSequenceState : BattleBaseState {
     public override void EnterState(BattleStateMachine battle) {
         Debug.Log($"[BattleStateMachine: ACTION SEQUENCE]");
+
+        // Create Battle Actions for each enemy on the field
+        // ? May move this to elsewhere? idk
+        // ? Idea: have each enemy facilitate their own battle action?, or maybe just their battle action type
+        //      - Would allow for enemy AI
+        //      - May be executed with unity events
+        foreach (GameObject obj in battle.enemyObjectList) {
+            Enemy enemy = obj.GetComponent<EnemyObject>().Enemy;
+
+            battle.AddBattleAction(new BattleAction(battle.playerBattleUnit, ActionType.ATTACK, enemy));
+        }
+
         battle.StartCoroutine(ActionSequence(battle));
     }
 
@@ -31,7 +43,7 @@ public class BattleActionSequenceState : BattleBaseState {
 
                         if (QTE.Result >= 0) {
                             damageDealt *= 2; 
-                            battleText += "Critical hit!";
+                            battleText += "Critical hit! ";
                         }
                     }
 
