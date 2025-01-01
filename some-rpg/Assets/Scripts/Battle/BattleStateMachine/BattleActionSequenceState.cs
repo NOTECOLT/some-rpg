@@ -1,12 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BattleActionSequenceState : BattleBaseState {
     public override void EnterState(BattleStateMachine battle) {
         Debug.Log($"[BattleStateMachine: ACTION SEQUENCE]");
 
+        BuildEnemyActions(battle);
+        SortBattleActions(battle);
+
+        foreach (BattleAction action in battle.ActionSequence)
+            Debug.Log($"[BattleStateMachine] {action}");
+
+        battle.StartCoroutine(ActionSequence(battle));
+    }
+
+    public override void UpdateState(BattleStateMachine battle) { }
+
+    public void BuildEnemyActions(BattleStateMachine battle) {
         // Create Battle Actions for each enemy on the field
         // ? May move this to elsewhere? idk
         // ? Idea: have each enemy facilitate their own battle action?, or maybe just their battle action type
@@ -17,11 +30,14 @@ public class BattleActionSequenceState : BattleBaseState {
 
             battle.AddBattleAction(new BattleAction(battle.playerBattleUnit, ActionType.ATTACK, enemy));
         }
-
-        battle.StartCoroutine(ActionSequence(battle));
     }
 
-    public override void UpdateState(BattleStateMachine battle) { }
+    /// <summary>
+    /// Sorts Battle Actions by priority. At the moment, priority is just defined by player speed
+    /// </summary>
+    public void SortBattleActions(BattleStateMachine battle) {
+        battle.ActionSequence.Sort((x,y) => y.priority.CompareTo(x.priority));
+    }
 
     /// </summary>
     /// Concerned with the player/enemy action execution & animation.
