@@ -6,18 +6,24 @@ using UnityEngine;
 
 // Class to handle all states in a turn based battle
 public class BattleStateMachine : MonoBehaviour {
-    [SerializeField] private GameObject _playerObject;
-    [SerializeField] private GameObject _enemyObjectParent;
-    [SerializeField] private GameObject _enemyObjectPrefab;
+    // Game Object References -----------------
+    public GameObject playerObject;
+    public GameObject enemyObjectParent;
+    public GameObject enemyObjectPrefab;
+    public TMP_Text mainTextbox;
+    public GameObject QTEButton;
+    // ----------------------------------------
 
-    // List of enemy targets in the battle
-    [SerializeField] private List<GameObject> _enemyTargetList = new List<GameObject>();
-    private ActionType _playerSelectedAction;
-    private BattleUnit _playerBattleUnit;
+    /// <summary> List of enemy objects in the battle </summary>
+    public List<GameObject> enemyObjectList = new List<GameObject>();
+    public ActionType playerSelectedAction;
+    public BattleUnit playerBattleUnit;
 
+    // Battle States --------------------------
     public BattleLoadState BattleLoadState = new BattleLoadState();
     public BattlePlayerTurnState BattlePlayerTurnState = new BattlePlayerTurnState();
     public BattleActionSequenceState BattleActionSequenceState = new BattleActionSequenceState();
+    // ----------------------------------------
 
     public BattleBaseState CurrentState;
 
@@ -26,35 +32,11 @@ public class BattleStateMachine : MonoBehaviour {
     /// </summary>
     public List<BattleAction> ActionSequence;
 
-    public TMP_Text mainTextbox;
-    public GameObject QTEButton;
-
     void Start() {
         if (SceneLoader.Instance is null) {
-            Debug.LogError("Scene does not have SceneLoader Component!");
+            Debug.LogError("Scene does not have SceneLoader Component! Battle failed to load.");
             return;
         }
-        _playerSelectedAction = ActionType.NULL;
-
-        foreach (EnemyType enemyType in SceneLoader.Instance.Encounters) {
-            GameObject enemyObject = Instantiate(_enemyObjectPrefab, _enemyObjectParent.transform);
-            Enemy enemy = new Enemy(enemyType, enemyObject);
-            
-            enemyObject.name = enemy.Name + " (Enemy Target)";
-            enemyObject.GetComponent<SpriteRenderer>().sprite = enemy.EnemyType.Sprite;
-
-            // UnityEvent listener used for selecting enemies
-            enemyObject.GetComponent<EnemyObject>().Enemy = enemy;
-            enemyObject.GetComponent<EnemyObject>().OnEnemyClicked.AddListener(OnEnemyClicked);
-
-            _enemyTargetList.Add(enemyObject);
-            Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemy.EnemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
-        }
-
-        _playerBattleUnit = new BattleUnit(PlayerData.Instance.BaseStats, _playerObject, "Player");
-
-
-        QTEButton.SetActive(false);
 
         CurrentState = BattleLoadState;
         CurrentState.EnterState(this);
@@ -63,7 +45,7 @@ public class BattleStateMachine : MonoBehaviour {
     // BUTTON FUNCTIONS ---------------------------------------------
     // At the moment these are only called when certain buttons in the UI are clicked.
     public void SetStateToPlayerSelectAttack() {
-        _playerSelectedAction = ActionType.ATTACK;
+        playerSelectedAction = ActionType.ATTACK;
     }
 
     public void ReturnToOverworldScene() {
@@ -76,9 +58,9 @@ public class BattleStateMachine : MonoBehaviour {
     /// Triggers when an enemy is clicked on during enemy target selection
     /// </summary>
     /// <param name="targetEnemy">Passed Target Id of the clicked enemy</param>
-    private void OnEnemyClicked(Enemy targetEnemy) {
+    public void OnEnemyClicked(Enemy targetEnemy) {
         if (CurrentState == BattlePlayerTurnState) {
-            AddBattleAction(new BattleAction(targetEnemy, _playerSelectedAction, _playerBattleUnit));
+            AddBattleAction(new BattleAction(targetEnemy, playerSelectedAction, playerBattleUnit));
         }
 
         ChangeState(BattleActionSequenceState);

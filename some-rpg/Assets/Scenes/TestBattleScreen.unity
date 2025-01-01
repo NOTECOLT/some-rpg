@@ -166,13 +166,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e857a148f37f741bb84549a502d2dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerObject: {fileID: 422450749}
-  _enemyObjectParent: {fileID: 92304708}
-  _enemyObjectPrefab: {fileID: 8500554299142817837, guid: f4446db8c98beeb459015b0802f2147b, type: 3}
-  _enemyTargetList: []
-  ActionSequence: []
+  playerObject: {fileID: 422450749}
+  enemyObjectParent: {fileID: 92304708}
+  enemyObjectPrefab: {fileID: 8500554299142817837, guid: f4446db8c98beeb459015b0802f2147b, type: 3}
   mainTextbox: {fileID: 2069903060}
   QTEButton: {fileID: 1447746486}
+  enemyObjectList: []
+  playerSelectedAction: 0
+  playerBattleUnit:
+    Object: {fileID: 0}
+  ActionSequence: []
 --- !u!1 &84502743
 GameObject:
   m_ObjectHideFlags: 0
