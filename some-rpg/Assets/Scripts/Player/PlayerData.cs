@@ -27,8 +27,6 @@ public class PlayerData : MonoBehaviour {
     // CurrentStats may change through status effects in battle
     public EntityStats CurrentStats = new EntityStats();
 
-    public BattleUnit BattleUnit;
-
     public Vector3Int Cell = Vector3Int.zero;
 
     void Start() {

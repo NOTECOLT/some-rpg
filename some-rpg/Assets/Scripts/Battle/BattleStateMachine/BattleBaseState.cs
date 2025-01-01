@@ -14,9 +14,4 @@ public abstract class BattleBaseState {
     /// Runs every frame in the Update() method
     /// </summary>
     public abstract void UpdateState(BattleStateMachine battle);
-
-    /// <summary>
-    /// Runs once a state is exited from. Runs before the EnterState() of the next state
-    /// </summary>
-    public abstract void ExitState(BattleStateMachine battle);
 }

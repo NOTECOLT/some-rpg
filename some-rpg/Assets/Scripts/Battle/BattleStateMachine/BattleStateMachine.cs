@@ -93,7 +93,6 @@ public class BattleStateMachine : MonoBehaviour {
     /// ? Idea: turn this into coroutine?
     /// </summary>
     public void ChangeState(BattleBaseState newState) {
-        CurrentState.ExitState(this);
         CurrentState = newState;
         CurrentState.EnterState(this);
     }

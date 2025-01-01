@@ -8,12 +8,14 @@ public class BattlePlayerTurnState : BattleBaseState {
 
         battle.mainTextbox.text = "What will player do?";
     }
-
-    public override void ExitState(BattleStateMachine battle) {
-
-    }
-
     public override void UpdateState(BattleStateMachine battle) {
     
+    }
+
+    /// <summary>
+    /// Concerned with the selection building the sequencing of player and enemy's action for of each turn.
+    /// </summary>
+    public void BuildActionSequence() {
+        
     }
 }

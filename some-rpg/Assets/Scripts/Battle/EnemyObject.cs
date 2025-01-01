@@ -17,4 +17,8 @@ public class EnemyObject : MonoBehaviour, IPointerClickHandler {
     public void OnPointerClick(PointerEventData eventData) {
         OnEnemyClicked.Invoke(Enemy);
     }
+
+    void OnDestroy() {
+        OnEnemyClicked.RemoveAllListeners();
+    }  
 }

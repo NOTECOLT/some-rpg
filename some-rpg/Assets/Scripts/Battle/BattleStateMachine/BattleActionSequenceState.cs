@@ -6,30 +6,13 @@ using UnityEngine;
 public class BattleActionSequenceState : BattleBaseState {
     public override void EnterState(BattleStateMachine battle) {
         Debug.Log($"[BattleStateMachine: ACTION SEQUENCE]");
-
-        // BuildActionSequence();
         battle.StartCoroutine(ActionSequence(battle));
     }
 
-    public override void ExitState(BattleStateMachine battle) {
-    }
+    public override void UpdateState(BattleStateMachine battle) { }
 
-    public override void UpdateState(BattleStateMachine battle) {
-    }
-
-
-    /// <summary>
-    /// Concerned with the selection building the sequencing of player and enemy's action for of each turn.
     /// </summary>
-    public void BuildActionSequence() {
-        // Build an "EntityAction" object that can be filled sequentially.
-        // This will be executed during the Action Sequence phase.
-
-        // TODO: BUILD ACTION SEQUENCE
-    }
-
     /// Concerned with the player/enemy action execution & animation.
-    /// </summary>
     /// <summary>
     public IEnumerator ActionSequence(BattleStateMachine battle) {
         float gapTime = 2.0f;
@@ -41,10 +24,10 @@ public class BattleActionSequenceState : BattleBaseState {
 
                     string battleText = "";
 
+                    // Generate QTE if the attacker is a player
                     if (action.ActorUnit is not Enemy) {
                         QuickTimeEvent QTE = new QuickTimeEvent(battle.QTEButton);
                         yield return QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, 0.2f);
-
 
                         if (QTE.Result >= 0) {
                             damageDealt *= 2; 
