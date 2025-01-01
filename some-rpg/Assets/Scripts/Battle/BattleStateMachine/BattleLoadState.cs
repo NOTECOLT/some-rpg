@@ -4,7 +4,7 @@ public class BattleLoadState : BattleBaseState {
     public override void EnterState(BattleStateMachine battle) {
         Debug.Log($"[BattleStateMachine: LOAD GAME]");
 
-        battle.playerSelectedAction = ActionType.NULL;
+        battle.SetPlayerAction(ActionType.NULL);
 
         foreach (EnemyType enemyType in SceneLoader.Instance.Encounters) {
             GameObject enemyObject = GameObject.Instantiate(battle.enemyObjectPrefab, battle.enemyObjectParent.transform);

@@ -6,8 +6,8 @@ public class BattlePlayerTurnState : BattleBaseState {
     public override void EnterState(BattleStateMachine battle) {
         Debug.Log($"[BattleStateMachine: PLAYER TURN]");
 
-        battle.playerSelectedAction = ActionType.NULL;
-        battle.mainTextbox.text = "What will player do?";
+        battle.SetPlayerAction(ActionType.NULL);
+        battle.OnEnterPlayerTurnState.Invoke();
     }
     public override void UpdateState(BattleStateMachine battle) {
     

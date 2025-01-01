@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 // Class to handle all states in a turn based battle
 public class BattleStateMachine : MonoBehaviour {
@@ -16,7 +17,7 @@ public class BattleStateMachine : MonoBehaviour {
 
     /// <summary> List of enemy objects in the battle </summary>
     public List<GameObject> enemyObjectList = new List<GameObject>();
-    public ActionType playerSelectedAction;
+    [SerializeField] public ActionType PlayerSelectedAction { get; private set; }
     public BattleUnit playerBattleUnit;
 
     // Battle States --------------------------
@@ -24,6 +25,9 @@ public class BattleStateMachine : MonoBehaviour {
     public BattlePlayerTurnState BattlePlayerTurnState = new BattlePlayerTurnState();
     public BattleActionSequenceState BattleActionSequenceState = new BattleActionSequenceState();
     // ----------------------------------------
+
+    public UnityEvent OnEnterPlayerTurnState;
+    public UnityEvent OnEnterActionSequenceState;
 
     public BattleBaseState CurrentState;
 
@@ -42,16 +46,10 @@ public class BattleStateMachine : MonoBehaviour {
         CurrentState.EnterState(this);
     }
 
-    // BUTTON FUNCTIONS ---------------------------------------------
-    // At the moment these are only called when certain buttons in the UI are clicked.
-    public void SetStateToPlayerSelectAttack() {
-        playerSelectedAction = ActionType.ATTACK;
+    void OnDestroy() {
+        OnEnterPlayerTurnState.RemoveAllListeners();
+        OnEnterActionSequenceState.RemoveAllListeners();
     }
-
-    public void ReturnToOverworldScene() {
-        SceneLoader.Instance.LoadOverworld();
-    }
-    // --------------------------------------------------------------
 
     // Listener Function to be added to every enemy target.
     /// <summary>
@@ -59,8 +57,8 @@ public class BattleStateMachine : MonoBehaviour {
     /// </summary>
     /// <param name="targetEnemy">Passed Target Id of the clicked enemy</param>
     public void OnEnemyClicked(Enemy targetEnemy) {
-        if (CurrentState == BattlePlayerTurnState) {
-            AddBattleAction(new BattleAction(targetEnemy, playerSelectedAction, playerBattleUnit));
+        if (CurrentState == BattlePlayerTurnState && PlayerSelectedAction != ActionType.NULL) {
+            AddBattleAction(new BattleAction(targetEnemy, PlayerSelectedAction, playerBattleUnit));
         }
 
         ChangeState(BattleActionSequenceState);
@@ -82,5 +80,13 @@ public class BattleStateMachine : MonoBehaviour {
     public void AddBattleAction(BattleAction action) {
         Debug.Log($"[BattleStateMachine] Battle Action Added: {action.ActionType} on {action.TargetUnit.Name}" );
         ActionSequence.Add(action);
+    }
+
+    public void SetPlayerAction(ActionType action) {
+        PlayerSelectedAction = action;
+    }
+
+    public void SetPlayerActionNull() {
+        PlayerSelectedAction = ActionType.NULL;
     }
 }

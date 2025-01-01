@@ -8,6 +8,8 @@ public class BattleActionSequenceState : BattleBaseState {
     public override void EnterState(BattleStateMachine battle) {
         Debug.Log($"[BattleStateMachine: ACTION SEQUENCE]");
 
+        battle.OnEnterActionSequenceState.Invoke();
+
         BuildEnemyActions(battle);
         SortBattleActions(battle);
 
