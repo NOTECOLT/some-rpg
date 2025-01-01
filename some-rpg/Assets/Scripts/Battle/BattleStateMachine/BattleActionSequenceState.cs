@@ -55,7 +55,7 @@ public class BattleActionSequenceState : BattleBaseState {
                     // Generate QTE if the attacker is a player
                     if (action.ActorUnit is not Enemy) {
                         QuickTimeEvent QTE = new QuickTimeEvent(battle.QTEButton);
-                        yield return QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, 0.2f);
+                        yield return QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, 0.2f, 0.4f);
 
                         if (QTE.Result >= 0) {
                             damageDealt *= 2; 
