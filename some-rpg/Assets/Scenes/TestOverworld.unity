@@ -229,6 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   focus: {fileID: 634637020}
+  speed: 10
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0

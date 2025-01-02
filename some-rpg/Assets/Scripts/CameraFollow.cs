@@ -12,6 +12,5 @@ public class CameraFollow : MonoBehaviour {
         if (focus == null) return;
 
         transform.position = Vector3.Lerp(transform.position, new Vector3(focus.position.x, focus.position.y, transform.position.z), speed * Time.deltaTime);
-        // transform.position = new Vector3(focus.position.x, focus.position.y, transform.position.z);
     }
 }
