@@ -20,12 +20,13 @@ public class TiledMovementController : MonoBehaviour {
     public Vector3Int Cell { get; private set; } = Vector3Int.zero;
     public Vector3Int StartCell = Vector3Int.zero;
     private MapManager _mapManager;
+    private Vector3 _movePoint;
     [SerializeField] private Tilemap _tileMap;
     [SerializeField] private float _movementSpeed = 20f;
     private bool isMoving = false;
     private Animator _animator = null;
     void Start() {
-        Application.targetFrameRate = -1;
+        Application.targetFrameRate = 60;
         if (PlayerData.Instance is not null) {
             StartCell = PlayerData.Instance.Cell;
             Cell = PlayerData.Instance.Cell;
@@ -34,13 +35,20 @@ public class TiledMovementController : MonoBehaviour {
         transform.position = _tileMap.CellToWorld(StartCell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
         
         _mapManager = FindObjectOfType<MapManager>();
-
         _animator = GetComponent<Animator>();
+
+        _movePoint = transform.position;
     }
 
     void Update() {
+        transform.position = Vector3.MoveTowards(transform.position, _movePoint, _movementSpeed * Time.deltaTime);
+        if (transform.position.Equals(_movePoint)) {
+            isMoving = false;
+            _animator.SetBool("IsWalking", false);
+        }
+
+
         if (isMoving) return;
-        
         CheckMovementInput();
     }
 
@@ -55,47 +63,35 @@ public class TiledMovementController : MonoBehaviour {
         if (Input.GetKey(KeyCode.LeftArrow)) {
             if (!_mapManager.GetTileIsWalkable(transform.position + Vector3Int.left)) return;
 
-            StartCoroutine(MoveTo(Cell + Vector3Int.left, KeyCode.LeftArrow, ANIMATION_DIRECTION_LEFT));
+            SetNewMovePoint(Cell + Vector3Int.left, ANIMATION_DIRECTION_LEFT);
         } else if (Input.GetKey(KeyCode.RightArrow)) {
             if (!_mapManager.GetTileIsWalkable(transform.position + Vector3Int.right)) return;
 
-            StartCoroutine(MoveTo(Cell + Vector3Int.right, KeyCode.RightArrow, ANIMATION_DIRECTION_RIGHT));
+            SetNewMovePoint(Cell + Vector3Int.right, ANIMATION_DIRECTION_RIGHT);
         } else if (Input.GetKey(KeyCode.UpArrow)) {
             if (!_mapManager.GetTileIsWalkable(transform.position + Vector3Int.up)) return;
 
-            StartCoroutine(MoveTo(Cell + Vector3Int.up, KeyCode.UpArrow, ANIMATION_DIRECTION_UP));
+            SetNewMovePoint(Cell + Vector3Int.up, ANIMATION_DIRECTION_UP);
         } else if (Input.GetKey(KeyCode.DownArrow)) {
             if (!_mapManager.GetTileIsWalkable(transform.position + Vector3Int.down)) return;
 
-            StartCoroutine(MoveTo(Cell + Vector3Int.down, KeyCode.DownArrow, ANIMATION_DIRECTION_DOWN));
+            SetNewMovePoint(Cell + Vector3Int.down, ANIMATION_DIRECTION_DOWN);
         } 
 
         _mapManager.DoEncounterCheck(transform.position);
     }
-
-    // Coroutine for moving the object to specified worldgrid position
-    private IEnumerator MoveTo(Vector3Int target, KeyCode keyInput, int animationDirection) {
+    
+    private void SetNewMovePoint(Vector3Int target, int animationDirection) {
         isMoving = true;
         Cell = target;
         PlayerData.Instance.Cell = target;
         
-        Vector2 startPosition = transform.position;
-        Vector2 endPosition = _tileMap.CellToWorld(target) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
+        _movePoint = _tileMap.CellToWorld(target) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
         
-        float elapsedTime = 0;
-        float movementTime = Vector2.Distance(startPosition, endPosition) / _movementSpeed;
-        
-        _animator.SetInteger("Direction", animationDirection);
-        _animator.SetBool("IsWalking", true);
+        if (_animator.GetBool("IsWalking") != true)
+            _animator.SetBool("IsWalking", true);
 
-        while (elapsedTime < movementTime) {
-            transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / movementTime);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        if (keyInput != 0) transform.position = endPosition;
-        isMoving = false;
-        _animator.SetBool("IsWalking", false);
+        if (_animator.GetInteger("Direction") != animationDirection)
+            _animator.SetInteger("Direction", animationDirection);
     }
 }
