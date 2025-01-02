@@ -185,7 +185,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 4
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -260,6 +260,7 @@ GameObject:
   - component: {fileID: 634637020}
   - component: {fileID: 634637019}
   - component: {fileID: 634637021}
+  - component: {fileID: 634637022}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -348,7 +349,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StartCell: {x: 0, y: 0, z: 0}
   _tileMap: {fileID: 1744071630}
-  _movementSpeed: 12
+  _movementSpeed: 10
+--- !u!95 &634637022
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634637018}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d09928a59ba3c6841b1a6c6948d853ef, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &995214070
 GameObject:
   m_ObjectHideFlags: 0
