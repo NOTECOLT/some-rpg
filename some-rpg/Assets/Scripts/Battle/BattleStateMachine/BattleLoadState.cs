@@ -10,18 +10,21 @@ public class BattleLoadState : BattleBaseState {
             GameObject enemyObject = GameObject.Instantiate(battle.enemyObjectPrefab, battle.enemyObjectParent.transform);
             Enemy enemy = new Enemy(enemyType, enemyObject);
             
-            enemyObject.name = enemy.Name + " (Enemy Target)";
+            enemyObject.name = enemy.Name;
             enemyObject.GetComponent<SpriteRenderer>().sprite = enemy.EnemyType.Sprite;
 
             // UnityEvent listener used for selecting enemies
             enemyObject.GetComponent<EnemyObject>().Enemy = enemy;
             enemyObject.GetComponent<EnemyObject>().OnEnemyClicked.AddListener(battle.OnEnemyClicked);
 
+            enemyObject.GetComponent<EntityInfoUI>().Instantiate(enemy);
+            
             battle.enemyObjectList.Add(enemyObject);
             Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemy.EnemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
         }
 
         battle.playerBattleUnit = new BattleUnit(PlayerData.Instance.BaseStats, battle.playerObject, "Player");
+        battle.playerBattleUnit.Object.GetComponent<EntityInfoUI>().Instantiate(battle.playerBattleUnit);
 
         battle.QTEButton.SetActive(false);
 

@@ -59,9 +59,9 @@ public class BattleStateMachine : MonoBehaviour {
     public void OnEnemyClicked(Enemy targetEnemy) {
         if (CurrentState == BattlePlayerTurnState && PlayerSelectedAction != ActionType.NULL) {
             AddBattleAction(new BattleAction(targetEnemy, PlayerSelectedAction, playerBattleUnit));
+        
+            ChangeState(BattleActionSequenceState);
         }
-
-        ChangeState(BattleActionSequenceState);
     }
 
     void Update() {

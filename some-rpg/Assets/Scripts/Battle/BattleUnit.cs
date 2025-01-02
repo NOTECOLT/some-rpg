@@ -38,7 +38,10 @@ public class BattleUnit {
     /// ? Currently, damage formula is calculated in EntityStats class
     /// </summary>
     public void DealDamage(int damage) {
-        CurrentStats.HitPoints -= damage;
-        Object.GetComponent<EntityInfoUI>().SetHPBar((float)CurrentStats.HitPoints/BaseStats.HitPoints, ANIMATION_TIME);
+        int oldHP = CurrentStats.HitPoints;
+        int newHP = CurrentStats.HitPoints - damage;
+        CurrentStats.HitPoints = newHP;
+        Object.GetComponent<EntityInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+
     }
 }

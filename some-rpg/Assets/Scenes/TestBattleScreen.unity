@@ -1026,6 +1026,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hitpointsBar: {fileID: 223306271}
+  _entityName: {fileID: 1490657378}
+  _hitPoints: {fileID: 1490657377}
 --- !u!1 &512050093
 GameObject:
   m_ObjectHideFlags: 0
@@ -1833,6 +1835,28 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8770204473056946942, guid: e7e63f3bf57d15e49bc9448c4b22e339, type: 3}
   m_PrefabInstance: {fileID: 1490657375}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1490657377 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2553180194474004324, guid: e7e63f3bf57d15e49bc9448c4b22e339, type: 3}
+  m_PrefabInstance: {fileID: 1490657375}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1490657378 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6349973443632350267, guid: e7e63f3bf57d15e49bc9448c4b22e339, type: 3}
+  m_PrefabInstance: {fileID: 1490657375}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1684201895
 GameObject:
   m_ObjectHideFlags: 0

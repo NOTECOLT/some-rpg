@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,27 +9,46 @@ using UnityEngine.UI;
 /// </summary>
 public class EntityInfoUI : MonoBehaviour {
     [SerializeField] private Image _hitpointsBar;
+    [SerializeField] private TMP_Text _entityName;
+    [SerializeField] private TMP_Text _hitPoints;
+
+    public void Instantiate(BattleUnit unit) {
+        SetEntityName(unit.Name);
+        SetHPBar(unit.CurrentStats.HitPoints, unit.BaseStats.HitPoints);
+    }
+
+    public void SetEntityName(string name) {
+        _entityName.text = name;
+    }
 
     /// <summary>
     /// Sets the hp bar to a certain percentage without any animation
     /// </summary>
-    public void SetHPBar(float hpPercentage) {
-        _hitpointsBar.fillAmount = hpPercentage;
+    public void SetHPBar(int newHP, int totalHP) {
+        _hitpointsBar.fillAmount = (float)newHP / totalHP;
+        _hitPoints.text = $"{newHP}/{totalHP}";
     }
 
-    public void SetHPBar(float hpPercentage, float time) {
-        StartCoroutine(AnimateHPBar(hpPercentage, time));
+    public void SetHPBar(int oldHP, int newHP, int totalHP, float time) {
+        StartCoroutine(AnimateHPBar(oldHP, newHP, totalHP, time));
     }
 
-    private IEnumerator AnimateHPBar(float newPercentage, float animationTime) {
+    private IEnumerator AnimateHPBar(int oldHP, int newHP, int totalHP, float animationTime) {
         float oldPercentage = _hitpointsBar.fillAmount;
-        float speed = (oldPercentage - newPercentage) / animationTime * Time.deltaTime;
+        float newPercentage = (float)newHP / totalHP;
+        float currentHP = oldHP;
+        float currentTime = animationTime;
 
-        while (Math.Round(_hitpointsBar.fillAmount, 2) != Math.Round(newPercentage, 2)) {
-            _hitpointsBar.fillAmount -= speed;
+        while (currentTime > 0) {
+            _hitpointsBar.fillAmount -= (oldPercentage - newPercentage) / animationTime * Time.deltaTime;
+            currentHP -= (oldHP - newHP) / animationTime * Time.deltaTime;
+            _hitPoints.text = $"{Mathf.CeilToInt(currentHP)}/{totalHP}";
+
+            currentTime -= Time.deltaTime;
             yield return new WaitForSeconds(Time.deltaTime);
         }
 
+        _hitPoints.text = $"{newHP}/{totalHP}";
         _hitpointsBar.fillAmount = newPercentage;
     }
 }
