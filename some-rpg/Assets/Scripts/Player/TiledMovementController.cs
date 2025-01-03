@@ -82,6 +82,9 @@ public class TiledMovementController : MonoBehaviour {
     private void OnWalkInput(InputAction.CallbackContext context) {
         _isMoving = true;
         _context = context;
+
+        Direction dir = SetDirection(_context.ReadValue<Vector2>());
+        _animationDirection = (dir != Direction.NULL) ? dir : _animationDirection;
     }
 
     private void OnWalkRelease(InputAction.CallbackContext context) {
@@ -100,15 +103,8 @@ public class TiledMovementController : MonoBehaviour {
 
         Vector3Int CellAddend = new Vector3Int((int)readValue.x, (int)readValue.y, 0);
         
-        if (CellAddend.Equals(Vector3Int.up)) {
-            _animationDirection = Direction.UP;
-        } else if (CellAddend.Equals(Vector3Int.right)) {
-            _animationDirection = Direction.RIGHT;
-        } else if (CellAddend.Equals(Vector3Int.down)) {
-            _animationDirection = Direction.DOWN;
-        } else if (CellAddend.Equals(Vector3Int.left)) {
-            _animationDirection = Direction.LEFT;
-        }
+        Direction dir = SetDirection(_context.ReadValue<Vector2>());
+        _animationDirection = (dir != Direction.NULL) ? dir : _animationDirection;
 
         Cell += CellAddend;
         PlayerData.Instance.Cell = Cell;
@@ -117,5 +113,21 @@ public class TiledMovementController : MonoBehaviour {
         _movePoint = _tileMap.CellToWorld(Cell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
 
         _mapManager.DoEncounterCheck(transform.position);     
+    }
+
+    private Direction SetDirection(Vector3 readValue) {
+        Vector3Int vector = new Vector3Int((int)readValue.x, (int)readValue.y, 0);
+        
+        if (vector.Equals(Vector3Int.up)) {
+            return Direction.UP;
+        } else if (vector.Equals(Vector3Int.right)) {
+            return Direction.RIGHT;
+        } else if (vector.Equals(Vector3Int.down)) {
+            return Direction.DOWN;
+        } else if (vector.Equals(Vector3Int.left)) {
+            return Direction.LEFT;
+        } else {
+            return Direction.NULL;
+        }
     }
 }
