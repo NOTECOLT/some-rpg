@@ -20,6 +20,11 @@ public class SceneLoader : MonoBehaviour {
     public List<EnemyType> Encounters { get; private set; }
     public static SceneLoader Instance { get; private set; }
 
+    /// <summary>
+    /// Triggers upon Scene Transition into an encounter
+    /// </summary>
+    public event System.Action OnEncounterTransition;
+
     private void Awake()  { 
         // If there is an instance, and it's not me, delete myself.
         if (Instance != null && Instance != this) { 
@@ -42,7 +47,6 @@ public class SceneLoader : MonoBehaviour {
     void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         _camera = Camera.main.gameObject;
         _panelFade = SceneTransitionCanvas.Instance.panelFade.gameObject;
-        Debug.Log($"Found: camera - {_camera.name}, panelfade - {_panelFade.name}");
     }
 
     // Function to load a battle scene with a specific encounter
@@ -52,6 +56,8 @@ public class SceneLoader : MonoBehaviour {
     }
 
     public IEnumerator EncounterTransition() {
+        OnEncounterTransition();
+
         _camera.GetComponent<Animator>().SetTrigger("ZoomIn");
         yield return new WaitForSeconds(_camera.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
         
@@ -64,13 +70,13 @@ public class SceneLoader : MonoBehaviour {
 
     public IEnumerator SceneFadeTransition(int scene) {
         // Panel Fade Out Old Scene
-        _panelFade.GetComponent<Animator>().SetTrigger("Fade");
+        _panelFade.GetComponent<Animator>().SetTrigger("FadeOut");
         yield return new WaitForSeconds(_camera.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
 
         SceneManager.LoadScene(scene);
 
         // Panel Fade In New Scene
-        _panelFade.GetComponent<Animator>().SetTrigger("Fade");
+        _panelFade.GetComponent<Animator>().SetTrigger("FadeIn");
         yield return new WaitForSeconds(_camera.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 }

@@ -8,8 +8,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerData : MonoBehaviour {
     public static PlayerData Instance { get; private set; }
-    // ! I DONT WANT THIS TO BE A SINGLETON, THERE MUST BE A BETTER WAY
-    // ! IN THE FUTURE: LOOK INTO DEPENDENCY INJECTION???
+
     private void Awake()  { 
         // If there is an instance, and it's not me, delete myself.
         if (Instance != null && Instance != this) { 
@@ -26,10 +25,21 @@ public class PlayerData : MonoBehaviour {
 
     // CurrentStats may change through status effects in battle
     public EntityStats CurrentStats = new EntityStats();
-
     public Vector3Int Cell = Vector3Int.zero;
+    public Direction Direction = Direction.DOWN;
 
     void Start() {
         CurrentStats = (EntityStats)BaseStats.Clone();
     }
+}
+
+/// <summary>
+/// Animation Directions integers as defined by the animator controller parameters
+/// Integers follow the order "Never (North, Up) Eat (East, Right) Soggy (South, Down) Waffles (West, Left)"
+/// </summary>
+public enum Direction {
+    UP,
+    RIGHT,
+    DOWN,
+    LEFT
 }
