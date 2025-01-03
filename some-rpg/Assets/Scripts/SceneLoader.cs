@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Properties;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-
+/// <summary>
+/// Manages scene loading & transitions. Note that SceneLoader sghould be a singleton, and there should be one that persists in every scene regardless. 
+/// This object does not get destroyed on load.
+/// </summary>
 public class SceneLoader : MonoBehaviour {
     private static int OVERWORLD_SCENE = 0;
     private static int BATTLE_SCENE = 1; 
 
-    public List<EnemyType> Encounters { get; private set; }
+    [SerializeField] private GameObject _camera;
+    [SerializeField] private GameObject _panelFade;
 
+    public List<EnemyType> Encounters { get; private set; }
     public static SceneLoader Instance { get; private set; }
 
     private void Awake()  { 
@@ -25,13 +31,46 @@ public class SceneLoader : MonoBehaviour {
         DontDestroyOnLoad(this.gameObject);
     }
 
+    void OnEnable() {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable() {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        _camera = Camera.main.gameObject;
+        _panelFade = SceneTransitionCanvas.Instance.panelFade.gameObject;
+        Debug.Log($"Found: camera - {_camera.name}, panelfade - {_panelFade.name}");
+    }
+
     // Function to load a battle scene with a specific encounter
     public void LoadEncounter(List<EnemyType> encounters) {
         Encounters = encounters;
-        SceneManager.LoadScene(BATTLE_SCENE);
+        StartCoroutine(EncounterTransition());
+    }
+
+    public IEnumerator EncounterTransition() {
+        _camera.GetComponent<Animator>().SetTrigger("ZoomIn");
+        yield return new WaitForSeconds(_camera.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        
+        yield return SceneFadeTransition(BATTLE_SCENE);
     }
 
     public void LoadOverworld() {
-        SceneManager.LoadScene(OVERWORLD_SCENE);
+        StartCoroutine(SceneFadeTransition(OVERWORLD_SCENE));
+    }
+
+    public IEnumerator SceneFadeTransition(int scene) {
+        // Panel Fade Out Old Scene
+        _panelFade.GetComponent<Animator>().SetTrigger("Fade");
+        yield return new WaitForSeconds(_camera.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+
+        SceneManager.LoadScene(scene);
+
+        // Panel Fade In New Scene
+        _panelFade.GetComponent<Animator>().SetTrigger("Fade");
+        yield return new WaitForSeconds(_camera.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
     }
 }
