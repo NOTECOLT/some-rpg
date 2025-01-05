@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5cbd078a2e44d0f419a84ed055f852dc, type: 3}
-  m_Name: WallTiles
+  m_Name: FenceTiles
   m_EditorClassIdentifier: 
   Tiles:
   - {fileID: 11400000, guid: b10a01a48844b3b4ebb802308d0c412c, type: 2}

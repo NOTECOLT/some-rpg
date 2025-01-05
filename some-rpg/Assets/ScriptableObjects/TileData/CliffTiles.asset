@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cbd078a2e44d0f419a84ed055f852dc, type: 3}
+  m_Name: CliffTiles
+  m_EditorClassIdentifier: 
+  Tiles:
+  - {fileID: 11400000, guid: c3f40dd995d7efa4792c1b21e98d6d68, type: 2}
+  - {fileID: 11400000, guid: 869253a06141eae4f80851e2892972b1, type: 2}
+  - {fileID: 11400000, guid: 497559dd3ba6e3f4792091674ef8aa12, type: 2}
+  - {fileID: 11400000, guid: 68ee33dac34eccb47938e52d04e19967, type: 2}
+  - {fileID: 11400000, guid: ed0814b1b3b0f6741baf71c26da41f9c, type: 2}
+  - {fileID: 11400000, guid: a8a5eebdd4f737e448dceec3eefb72c2, type: 2}
+  - {fileID: 11400000, guid: d564fa777bcb4f94aa295549a06f89db, type: 2}
+  - {fileID: 11400000, guid: 5748be40d5a01204f919989ccc6969e5, type: 2}
+  - {fileID: 11400000, guid: 97d0bccf891c757408668c64108e6e0e, type: 2}
+  - {fileID: 11400000, guid: 4f20db21de3906f4a855938eb5bb4a5c, type: 2}
+  - {fileID: 11400000, guid: be7ca5e2092e714479d0c84ef632ef40, type: 2}
+  - {fileID: 11400000, guid: 84b285a3fab920e4d9760e4afda55839, type: 2}
+  - {fileID: 11400000, guid: 489ad65b5f30bc9469cdb2fa930400e6, type: 2}
+  - {fileID: 11400000, guid: 5a1906c9b5fe7d543b91e9ee7d71ebf7, type: 2}
+  - {fileID: 11400000, guid: 7d8022d93b4353842a89a5ea81550996, type: 2}
+  - {fileID: 11400000, guid: 63bddd19a54f9c2439361d76a31fe79b, type: 2}
+  - {fileID: 11400000, guid: af78f1f258058f542a9e898b2a62e555, type: 2}
+  - {fileID: 11400000, guid: a29d19668b9dd324fbefdc9b5802dad7, type: 2}
+  - {fileID: 11400000, guid: fa078d80e1665fc4f80bd8895aaaa68b, type: 2}
+  - {fileID: 11400000, guid: 0cf9cf0b384bd8f4383400a809747eda, type: 2}
+  - {fileID: 11400000, guid: 82cc7c8d5d1c7ed4d92885c2d4b19d94, type: 2}
+  IsWalkable: 0
+  HasWildEncounters: 0
