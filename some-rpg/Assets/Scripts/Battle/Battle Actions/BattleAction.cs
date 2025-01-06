@@ -34,22 +34,8 @@ public class BattleAction {
     /// This coroutine performs all the calculations, effects, and animations. Must be overrided by any battle action that inherits from it.
     /// This function is public-facing and redirects to either DoPlayerAction or DoNonPlayerAction depending on the ActorUnit
     /// </summary>
-    public IEnumerator DoAction(BattleStateMachine battle) {
-        if (ActorUnit is not Enemy) {
-            yield return DoPlayerAction(battle);
-        } else {
-            yield return DoNonPlayerAction(battle);
-        }
-        yield return null;
-    }
-
-    protected virtual IEnumerator DoPlayerAction(BattleStateMachine battle) {
+    public virtual IEnumerator DoAction(BattleStateMachine battle) {
         Debug.Log($"Action {ActionName} 'DoPlayerAction' has not been implemented!");
         yield return null;
     }
-
-    protected virtual IEnumerator DoNonPlayerAction(BattleStateMachine battle) {
-        Debug.Log($"Action {ActionName} 'DoNonPlayerAction' has not been implemented!");
-        yield return null;
-    }  
 }

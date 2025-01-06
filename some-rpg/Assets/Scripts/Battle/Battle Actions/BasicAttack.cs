@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,38 +11,52 @@ public class BasicAttack : BattleAction {
     
     }
 
-    protected override IEnumerator DoPlayerAction(BattleStateMachine battle) {
+    public override IEnumerator DoAction(BattleStateMachine battle) {
         int damageDealt = ActorUnit.CurrentStats.CalculateDamage(TargetUnit.CurrentStats);
         string battleText = "";
-
         Vector3 originalActorPosition = ActorUnit.Object.transform.position;
-        Vector3 targetPosition = ActorUnit.Object.transform.position - new Vector3(4, 0, 0);
+
+        Vector3 targetPosition = (ActorUnit is Enemy) ? 
+            ActorUnit.Object.transform.position + new Vector3(4, 0, 0) :
+            ActorUnit.Object.transform.position - new Vector3(4, 0, 0);
 
         // QTE to perform critical hit, Move player towards target to perform animations
         QuickTimeEvent QTE = new QuickTimeEvent(battle.qteButton);
         battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, QTE_ACTIVE_TIME, QTE_LEAD_TIME));
         battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
-        ActorUnit.Object.GetComponent<Animator>()?.SetTrigger("Walk");
+        if (ActorUnit.Object.GetComponent<Animator>() != null)
+            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
 
         yield return new WaitForSeconds(QTE_LEAD_TIME);
 
-        ActorUnit.Object.GetComponent<Animator>()?.SetTrigger("Attack");
+        if (ActorUnit.Object.GetComponent<Animator>() != null)
+            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Attack");
 
         while (QTE.Result is null) yield return new WaitForSeconds(Time.deltaTime);
 
         if ((bool)QTE.Result) {
-            damageDealt *= 2; 
-            battleText += "Critical hit! ";
+            if (ActorUnit is Enemy) {
+                damageDealt = Mathf.CeilToInt(damageDealt * 0.7f); 
+                battleText += "Partial Dodge! ";
+            } else {
+                damageDealt *= 2; 
+                battleText += "Critical hit! ";
+            }
         }
         
-        ActorUnit.Object.GetComponent<Animator>()?.SetTrigger("Walk");
+        if (ActorUnit.Object.GetComponent<Animator>() != null) {
+            yield return new WaitForSeconds(ActorUnit.Object.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length);
+            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
+        }
+            
         battle.StartCoroutine(MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME));
+
         yield return new WaitForSeconds(QTE_LEAD_TIME);
 
-        ActorUnit.Object.GetComponent<Animator>()?.SetTrigger("Idle");
+        if (ActorUnit.Object.GetComponent<Animator>() != null)
+            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Idle");
         battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} for {damageDealt} damage!";
         battle.mainTextbox.text = battleText;
-
         TargetUnit.DealDamage(damageDealt);
 
         yield return null;
@@ -58,25 +73,38 @@ public class BasicAttack : BattleAction {
         }
     }
 
-    protected override IEnumerator DoNonPlayerAction(BattleStateMachine battle) {
-        int damageDealt = ActorUnit.CurrentStats.CalculateDamage(TargetUnit.CurrentStats);
+    // protected override IEnumerator DoNonPlayerAction(BattleStateMachine battle) {
+    //     int damageDealt = ActorUnit.CurrentStats.CalculateDamage(TargetUnit.CurrentStats);
+    //     Vector3 originalActorPosition = ActorUnit.Object.transform.position;
+    //     Vector3 targetPosition = ActorUnit.Object.transform.position + new Vector3(4, 0, 0);
+    //     string battleText = "";
 
-        string battleText = "";
+    //     // QTE to perform partial dodge
+    //     QuickTimeEvent QTE = new QuickTimeEvent(battle.qteButton);
+    //     battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, QTE_ACTIVE_TIME, QTE_LEAD_TIME));
+    //     battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
+    //     if (ActorUnit.Object.GetComponent<Animator>() != null)
+    //         ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
 
-        // QTE to perform partial dodge
-        QuickTimeEvent QTE = new QuickTimeEvent(battle.qteButton);
-        yield return QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, QTE_ACTIVE_TIME, QTE_LEAD_TIME);
+    //     yield return new WaitForSeconds(QTE_LEAD_TIME);
 
-        if ((bool)QTE.Result) {
-            damageDealt = Mathf.CeilToInt(damageDealt * 0.7f); 
-            battleText += "Partial Dodge! ";
-        }
+    //     if (ActorUnit.Object.GetComponent<Animator>() != null)
+    //         ActorUnit.Object.GetComponent<Animator>().SetTrigger("Attack");
 
-        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} for {damageDealt} damage!";
-        battle.mainTextbox.text = battleText;
+    //     while (QTE.Result is null) yield return new WaitForSeconds(Time.deltaTime);
 
-        TargetUnit.DealDamage(damageDealt);
+    //     if (ActorUnit.Object.GetComponent<Animator>() != null)
+    //         ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
+    //     battle.StartCoroutine(MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME));
 
-        yield return null;
-    }
+    //     yield return new WaitForSeconds(QTE_LEAD_TIME);
+
+    //     if (ActorUnit.Object.GetComponent<Animator>() != null)
+    //     ActorUnit.Object.GetComponent<Animator>().SetTrigger("Idle");
+    //     battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} for {damageDealt} damage!";
+    //     battle.mainTextbox.text = battleText;
+    //     TargetUnit.DealDamage(damageDealt);
+
+    //     yield return null;
+    // }
 }
