@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using Unity.VisualScripting.FullSerializer;
+using System;
 
 /// <summary>
 /// Object responsible for creating QTEs and receiving QTE Inputs. <br></br>
@@ -18,17 +19,14 @@ public class QuickTimeEvent {
     private GameObject _qteButton;
     private Animator _animator;
 
-    /// <summary>
-    /// The Result of the QTE.
-    /// Result = -1 if the QTE was a fail,
-    /// Result >=0 if the QTE was a success
-    /// </summary>
-    public float Result;
+    public bool? Result;
 
     public QuickTimeEvent(GameObject qteButton) {
         _qteButton = qteButton;
         _animator = qteButton.GetComponent<Animator>();
         _qteButton.SetActive(false);
+
+        Result = null;
     }
 
     /// <summary>
@@ -40,7 +38,7 @@ public class QuickTimeEvent {
     /// <param name="leadTime">The amount of time before a QTE is active. This can be 0 for no lead time at all.</param>
     /// <returns> Returns the key to be used for the QTE. </returns>
     public IEnumerator GenerateQTE(KeyCode[] keyPool, float activeTime, float leadTime = 0) {
-        QTEKey = keyPool[Random.Range(0, keyPool.Length)];
+        QTEKey = keyPool[UnityEngine.Random.Range(0, keyPool.Length)];
         _qteButton.GetComponentInChildren<TMP_Text>().text = QTEKey.ToString();
         _qteButton.SetActive(true);
         _qteButton.transform.localScale = Vector3.one * 0.7f;
@@ -80,9 +78,10 @@ public class QuickTimeEvent {
             // Check for any input for the QTE
             if (Input.anyKey) {
                 if (Input.GetKey(QTEKey)) {
-                    Result = _currentTime;
+                    Result = true;
                     Debug.Log("[QTE System] QTE Success!");
-                    _qteIsActive = false;          
+                    _qteIsActive = false;     
+                    break;     
                 } else {
                     SetQTEFail();
                     _qteIsActive = false;
@@ -98,8 +97,8 @@ public class QuickTimeEvent {
     }
 
     private void SetQTEFail() {
-        Result = -1;
-        Debug.Log("[QTE System] QTE Fail, wrong input!");
+        Result = false;
+        Debug.Log($"[QTE System] QTE Result: {Result}!");
     }
 
     private void EndQTE() {
