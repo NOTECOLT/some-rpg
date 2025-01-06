@@ -4,7 +4,7 @@ public class BattleLoadState : BattleBaseState {
     public override void EnterState(BattleStateMachine battle) {
         Debug.Log($"[BattleStateMachine: LOAD GAME]");
 
-        battle.SetPlayerAction(ActionType.NULL);
+        battle.SetPlayerAction(null);
 
         foreach (EnemyType enemyType in SceneLoader.Instance.Encounters) {
             GameObject enemyObject = GameObject.Instantiate(battle.enemyObjectPrefab, battle.enemyObjectParent.transform);
@@ -26,9 +26,9 @@ public class BattleLoadState : BattleBaseState {
         battle.playerBattleUnit = new BattleUnit(PlayerData.Instance.BaseStats, battle.playerObject, "Player");
         battle.playerBattleUnit.Object.GetComponent<EntityInfoUI>().Instantiate(battle.playerBattleUnit);
 
-        battle.QTEButton.SetActive(false);
+        battle.qteButton.SetActive(false);
 
-        battle.ChangeState(battle.BattlePlayerTurnState);
+        battle.ChangeState(battle.battlePlayerTurnState);
     }
 
     public override void UpdateState(BattleStateMachine battle) {

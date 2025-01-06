@@ -37,7 +37,7 @@ public class BattleMenuUI : MonoBehaviour {
 
     public void OnAttackButtonClick() {
         _mainTextbox.text = "Who to attack?";
-        FindObjectOfType<BattleStateMachine>().SetPlayerAction(ActionType.ATTACK);
+        FindObjectOfType<BattleStateMachine>().SetPlayerAction(BasicAttack.NULL_ATTACK);
         _attackButton.SetActive(false);
         _cancelButton.SetActive(true);
         _fleeButton.SetActive(true);

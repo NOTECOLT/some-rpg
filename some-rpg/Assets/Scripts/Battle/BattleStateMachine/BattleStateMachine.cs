@@ -12,29 +12,29 @@ public class BattleStateMachine : MonoBehaviour {
     public GameObject enemyObjectParent;
     public GameObject enemyObjectPrefab;
     public TMP_Text mainTextbox;
-    public GameObject QTEButton;
+    public GameObject qteButton;
     // ----------------------------------------
 
     /// <summary> List of enemy objects in the battle </summary>
     public List<GameObject> enemyObjectList = new List<GameObject>();
-    [SerializeField] public ActionType PlayerSelectedAction { get; private set; }
+    public BattleAction playerSelectedAction { get; private set; }
     public BattleUnit playerBattleUnit;
 
     // Battle States --------------------------
-    public BattleLoadState BattleLoadState = new BattleLoadState();
-    public BattlePlayerTurnState BattlePlayerTurnState = new BattlePlayerTurnState();
-    public BattleActionSequenceState BattleActionSequenceState = new BattleActionSequenceState();
+    public BattleLoadState battleLoadState = new BattleLoadState();
+    public BattlePlayerTurnState battlePlayerTurnState = new BattlePlayerTurnState();
+    public BattleActionSequenceState battleActionSequenceState = new BattleActionSequenceState();
     // ----------------------------------------
 
     public UnityEvent OnEnterPlayerTurnState;
     public UnityEvent OnEnterActionSequenceState;
 
-    public BattleBaseState CurrentState;
+    public BattleBaseState currentState;
 
     /// <summary>
     /// List of Battle Actions (attacks, heals, etc.) to be executed in order by the battle manager
     /// </summary>
-    public List<BattleAction> ActionSequence;
+    public List<BattleAction> actionSequence;
 
     void Start() {
         if (SceneLoader.Instance is null) {
@@ -42,8 +42,8 @@ public class BattleStateMachine : MonoBehaviour {
             return;
         }
 
-        CurrentState = BattleLoadState;
-        CurrentState.EnterState(this);
+        currentState = battleLoadState;
+        currentState.EnterState(this);
     }
 
     void OnDestroy() {
@@ -57,15 +57,15 @@ public class BattleStateMachine : MonoBehaviour {
     /// </summary>
     /// <param name="targetEnemy">Passed Target Id of the clicked enemy</param>
     public void OnEnemyClicked(Enemy targetEnemy) {
-        if (CurrentState == BattlePlayerTurnState && PlayerSelectedAction != ActionType.NULL) {
-            AddBattleAction(new BattleAction(targetEnemy, PlayerSelectedAction, playerBattleUnit));
+        if (currentState == battlePlayerTurnState && playerSelectedAction != null) {
+            AddBattleAction(new BasicAttack(targetEnemy, playerBattleUnit));
         
-            ChangeState(BattleActionSequenceState);
+            ChangeState(battleActionSequenceState);
         }
     }
 
     void Update() {
-        CurrentState.UpdateState(this);
+        currentState.UpdateState(this);
     }
 
     /// <summary>
@@ -73,20 +73,20 @@ public class BattleStateMachine : MonoBehaviour {
     /// ? Idea: turn this into coroutine?
     /// </summary>
     public void ChangeState(BattleBaseState newState) {
-        CurrentState = newState;
-        CurrentState.EnterState(this);
+        currentState = newState;
+        currentState.EnterState(this);
     }
 
     public void AddBattleAction(BattleAction action) {
-        Debug.Log($"[BattleStateMachine] Battle Action Added: {action.ActionType} on {action.TargetUnit.Name}" );
-        ActionSequence.Add(action);
+        Debug.Log($"[BattleStateMachine] Battle Action Added: {action.ActionName} on {action.TargetUnit.Name}" );
+        actionSequence.Add(action);
     }
 
-    public void SetPlayerAction(ActionType action) {
-        PlayerSelectedAction = action;
+    public void SetPlayerAction(BattleAction action) {
+        playerSelectedAction = action;
     }
 
     public void SetPlayerActionNull() {
-        PlayerSelectedAction = ActionType.NULL;
+        playerSelectedAction = null;
     }
 }

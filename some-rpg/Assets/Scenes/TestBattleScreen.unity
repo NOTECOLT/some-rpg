@@ -170,7 +170,7 @@ MonoBehaviour:
   enemyObjectParent: {fileID: 92304708}
   enemyObjectPrefab: {fileID: 8500554299142817837, guid: f4446db8c98beeb459015b0802f2147b, type: 3}
   mainTextbox: {fileID: 2069903060}
-  QTEButton: {fileID: 1447746486}
+  qteButton: {fileID: 1447746486}
   enemyObjectList: []
   playerBattleUnit:
     Object: {fileID: 0}
@@ -180,7 +180,7 @@ MonoBehaviour:
   OnEnterActionSequenceState:
     m_PersistentCalls:
       m_Calls: []
-  ActionSequence: []
+  actionSequence: []
 --- !u!1 &92304708
 GameObject:
   m_ObjectHideFlags: 0
