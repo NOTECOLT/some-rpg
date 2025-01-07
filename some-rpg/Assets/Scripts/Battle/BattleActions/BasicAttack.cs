@@ -12,7 +12,7 @@ public class BasicAttack : BattleAction {
     }
 
     public override IEnumerator DoAction(BattleStateMachine battle) {
-        int damageDealt = ActorUnit.CurrentStats.CalculateDamage(TargetUnit.CurrentStats);
+        int damageDealt = EntityStats.CalculateDamage(ActorUnit.CurrentStats, TargetUnit.CurrentStats);
         string battleText = "";
         Vector3 originalActorPosition = ActorUnit.Object.transform.position;
 
@@ -72,39 +72,4 @@ public class BasicAttack : BattleAction {
             currentTime -= Time.deltaTime;
         }
     }
-
-    // protected override IEnumerator DoNonPlayerAction(BattleStateMachine battle) {
-    //     int damageDealt = ActorUnit.CurrentStats.CalculateDamage(TargetUnit.CurrentStats);
-    //     Vector3 originalActorPosition = ActorUnit.Object.transform.position;
-    //     Vector3 targetPosition = ActorUnit.Object.transform.position + new Vector3(4, 0, 0);
-    //     string battleText = "";
-
-    //     // QTE to perform partial dodge
-    //     QuickTimeEvent QTE = new QuickTimeEvent(battle.qteButton);
-    //     battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, QTE_ACTIVE_TIME, QTE_LEAD_TIME));
-    //     battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
-    //     if (ActorUnit.Object.GetComponent<Animator>() != null)
-    //         ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
-
-    //     yield return new WaitForSeconds(QTE_LEAD_TIME);
-
-    //     if (ActorUnit.Object.GetComponent<Animator>() != null)
-    //         ActorUnit.Object.GetComponent<Animator>().SetTrigger("Attack");
-
-    //     while (QTE.Result is null) yield return new WaitForSeconds(Time.deltaTime);
-
-    //     if (ActorUnit.Object.GetComponent<Animator>() != null)
-    //         ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
-    //     battle.StartCoroutine(MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME));
-
-    //     yield return new WaitForSeconds(QTE_LEAD_TIME);
-
-    //     if (ActorUnit.Object.GetComponent<Animator>() != null)
-    //     ActorUnit.Object.GetComponent<Animator>().SetTrigger("Idle");
-    //     battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} for {damageDealt} damage!";
-    //     battle.mainTextbox.text = battleText;
-    //     TargetUnit.DealDamage(damageDealt);
-
-    //     yield return null;
-    // }
 }

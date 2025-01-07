@@ -9,6 +9,7 @@ using UnityEngine;
 [Serializable]
 public class EntityStats : ICloneable {
     public int HitPoints;
+    public int ManaPoints;
     public int Attack;
     public int Defense;
     public int Speed;
@@ -22,7 +23,7 @@ public class EntityStats : ICloneable {
             HitPoints = this.HitPoints,
             Attack = this.Attack,
             Defense = this.Defense,
-            Speed = this.Speed
+            Speed = this.Speed,
         };
     }
 
@@ -31,8 +32,8 @@ public class EntityStats : ICloneable {
     /// </summary>
     /// <param name="defendingStats"></param>
     /// <returns></returns>
-    public int CalculateDamage(EntityStats defendingStats) {
-        float dmg = Mathf.Pow(this.Attack, 2) / (1.5f*defendingStats.Defense);
+    public static int CalculateDamage(EntityStats attackingStats, EntityStats defendingStats) {
+        float dmg = Mathf.Pow(attackingStats.Attack, 2) / (1.5f*defendingStats.Defense);
 
         return Mathf.RoundToInt(dmg);
     }
