@@ -17,7 +17,7 @@ public class BattleStateMachine : MonoBehaviour {
 
     /// <summary> List of enemy objects in the battle </summary>
     public List<GameObject> enemyObjectList = new List<GameObject>();
-    public BattleAction playerSelectedAction { get; private set; }
+    public ActionType playerSelectedAction { get; private set; }
     public BattleUnit playerBattleUnit;
 
     // Battle States --------------------------
@@ -57,10 +57,16 @@ public class BattleStateMachine : MonoBehaviour {
     /// </summary>
     /// <param name="targetEnemy">Passed Target Id of the clicked enemy</param>
     public void OnEnemyClicked(Enemy targetEnemy) {
-        if (currentState == battlePlayerTurnState && playerSelectedAction != null) {
-            AddBattleAction(new BasicAttack(targetEnemy, playerBattleUnit));
-        
-            ChangeState(battleActionSequenceState);
+        switch (playerSelectedAction) {
+            case ActionType.BASIC_ATTACK:
+                if (currentState == battlePlayerTurnState) {
+                    AddBattleAction(new BasicAttack(targetEnemy, playerBattleUnit));
+                
+                    ChangeState(battleActionSequenceState);
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -78,15 +84,32 @@ public class BattleStateMachine : MonoBehaviour {
     }
 
     public void AddBattleAction(BattleAction action) {
-        Debug.Log($"[BattleStateMachine] Battle Action Added: {action.ActionName} on {action.TargetUnit.Name}" );
+        Debug.Log($"[BattleStateMachine] Battle Action Added: {action}" );
         actionSequence.Add(action);
     }
 
-    public void SetPlayerAction(BattleAction action) {
+    public void SetPlayerAction(ActionType action) {
         playerSelectedAction = action;
+
+
+        switch (playerSelectedAction) {
+            case ActionType.HEAL:
+                AddBattleAction(new Heal(playerBattleUnit));
+            
+                ChangeState(battleActionSequenceState);
+                break;
+            default:
+                break;
+        }
     }
 
     public void SetPlayerActionNull() {
-        playerSelectedAction = null;
+        playerSelectedAction = ActionType.NULL;
     }
+}
+
+public enum ActionType {
+    NULL,
+    BASIC_ATTACK,
+    HEAL
 }

@@ -45,15 +45,22 @@ public class BattleActionSequenceState : BattleBaseState {
     /// Concerned with the player/enemy action execution & animation.
     /// <summary>
     public IEnumerator ActionSequence(BattleStateMachine battle) {
-        float gapTime = 2.0f;
+        float gapTime = 1.0f;
 
         foreach (BattleAction action in battle.actionSequence) {
             yield return action.DoAction(battle);
 
             yield return new WaitForSeconds(gapTime);
 
-            if (action.TargetUnit.CurrentStats.HitPoints <= 0)
+            // Check after each action if either the player or all enemies have died
+            if (PlayerData.Instance.CurrentStats.HitPoints <= 0)
                 SceneLoader.Instance.LoadOverworld();
+
+            foreach (GameObject enemy in battle.enemyObjectList) {
+                if (enemy.GetComponent<EnemyObject>().Enemy.CurrentStats.HitPoints > 0)
+                    break;
+                SceneLoader.Instance.LoadOverworld();            
+            }
         }
 
         battle.actionSequence = new List<BattleAction>();

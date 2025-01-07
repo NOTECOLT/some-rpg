@@ -46,12 +46,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseStats:
     HitPoints: 35
+    ManaPoints: 10
     Attack: 10
     Defense: 10
     Speed: 9
   CurrentStats:
     HitPoints: 0
+    ManaPoints: 0
     Attack: 0
     Defense: 0
     Speed: 0
   Cell: {x: 0, y: 0, z: 0}
+  Direction: 2

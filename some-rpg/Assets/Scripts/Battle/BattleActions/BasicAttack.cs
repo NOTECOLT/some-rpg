@@ -6,7 +6,6 @@ using UnityEngine;
 public class BasicAttack : BattleAction {
     private static float QTE_ACTIVE_TIME = 0.2f;
     private static float QTE_LEAD_TIME = 0.3f;
-    public static BasicAttack NULL_ATTACK = new BasicAttack(null, null);
     public BasicAttack(BattleUnit targetUnit, BattleUnit actorUnit) : base("Basic Attack", targetUnit, actorUnit) {
     
     }

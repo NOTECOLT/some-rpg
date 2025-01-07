@@ -25,13 +25,11 @@ public class EntityInfoUI : MonoBehaviour {
     /// Sets the hp bar to a certain percentage without any animation
     /// </summary>
     public void SetHPBar(int newHP, int totalHP) {
-        newHP = (newHP < 0) ? 0 : newHP;
         _hitpointsBar.fillAmount = (float)newHP / totalHP;
         _hitPoints.text = $"{newHP}/{totalHP}";
     }
 
     public void SetHPBar(int oldHP, int newHP, int totalHP, float time) {
-        newHP = (newHP < 0) ? 0 : newHP;
         StartCoroutine(AnimateHPBar(oldHP, newHP, totalHP, time));
     }
 
