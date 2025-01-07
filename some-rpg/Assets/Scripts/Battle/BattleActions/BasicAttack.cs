@@ -12,7 +12,7 @@ public class BasicAttack : BattleAction {
     }
 
     public override IEnumerator DoAction(BattleStateMachine battle) {
-        int damageDealt = EntityStats.CalculateDamage(ActorUnit.CurrentStats, TargetUnit.CurrentStats);
+        float modifier = 1;
         string battleText = "";
         Vector3 originalActorPosition = ActorUnit.Object.transform.position;
 
@@ -20,7 +20,7 @@ public class BasicAttack : BattleAction {
             ActorUnit.Object.transform.position + new Vector3(4, 0, 0) :
             ActorUnit.Object.transform.position - new Vector3(4, 0, 0);
 
-        // QTE to perform critical hit, Move player towards target to perform animations
+        // QTE to perform critical hit, Move unit towards target to perform animations
         QuickTimeEvent QTE = new QuickTimeEvent(battle.qteButton);
         battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, QTE_ACTIVE_TIME, QTE_LEAD_TIME));
         battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
@@ -29,21 +29,24 @@ public class BasicAttack : BattleAction {
 
         yield return new WaitForSeconds(QTE_LEAD_TIME);
 
+        // Perform Attack animation
         if (ActorUnit.Object.GetComponent<Animator>() != null)
             ActorUnit.Object.GetComponent<Animator>().SetTrigger("Attack");
 
         while (QTE.Result is null) yield return new WaitForSeconds(Time.deltaTime);
 
+        // Check QTE
         if ((bool)QTE.Result) {
             if (ActorUnit is Enemy) {
-                damageDealt = Mathf.CeilToInt(damageDealt * 0.7f); 
+                modifier = 0.7f; 
                 battleText += "Partial Dodge! ";
             } else {
-                damageDealt *= 2; 
+                modifier = 2; 
                 battleText += "Critical hit! ";
             }
         }
         
+        // Move unit back
         if (ActorUnit.Object.GetComponent<Animator>() != null) {
             yield return new WaitForSeconds(ActorUnit.Object.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length);
             ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
@@ -53,11 +56,12 @@ public class BasicAttack : BattleAction {
 
         yield return new WaitForSeconds(QTE_LEAD_TIME);
 
+        // Update Text & Entity Info
         if (ActorUnit.Object.GetComponent<Animator>() != null)
             ActorUnit.Object.GetComponent<Animator>().SetTrigger("Idle");
-        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} for {damageDealt} damage!";
+        int damage = TargetUnit.DealDamage(ActorUnit, modifier);
+        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} for {damage} damage!";
         battle.mainTextbox.text = battleText;
-        TargetUnit.DealDamage(damageDealt);
 
         yield return null;
     }

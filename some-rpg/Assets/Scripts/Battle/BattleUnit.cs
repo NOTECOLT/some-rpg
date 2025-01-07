@@ -35,13 +35,17 @@ public class BattleUnit {
 
     /// <summary>
     /// Applies calculated damage onto an enemy's CurrentStats.
-    /// ? Currently, damage formula is calculated in EntityStats class
+    /// Contains Damage Formula.
     /// </summary>
-    public void DealDamage(int damage) {
+    /// <param name="damageModifier">Damage Modifier is multiplied to the calculated damage</param>
+    public int DealDamage(BattleUnit attackingUnit, float damageModifier = 1) {
+        int damage = Mathf.CeilToInt(Mathf.Pow(attackingUnit.CurrentStats.Attack, 2) / (1.5f*CurrentStats.Defense) * damageModifier);
+
         int oldHP = CurrentStats.HitPoints;
         int newHP = CurrentStats.HitPoints - damage;
         CurrentStats.HitPoints = newHP;
         Object.GetComponent<EntityInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
 
+        return damage;
     }
 }
