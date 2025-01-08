@@ -13,7 +13,7 @@ public class Heal : BattleAction {
     public override IEnumerator DoAction(BattleStateMachine battle) {
         string battleText = "";
             
-        int hpHealed = ActorUnit.HealDamage(5, 1);
+        int hpHealed = ActorUnit.HealDamage(5, 2);
         // Update Text & Entity Info
         battleText += $"{ActorUnit.Name} healed {hpHealed} HP!";
         battle.mainTextbox.text = battleText;

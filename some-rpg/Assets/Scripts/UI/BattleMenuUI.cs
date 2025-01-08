@@ -49,10 +49,7 @@ public class BattleMenuUI : MonoBehaviour {
 
     public void OnHealButtonClick() {
         FindObjectOfType<BattleStateMachine>().SetPlayerAction(ActionType.HEAL);
-        _attackButton.SetActive(false);
-        _cancelButton.SetActive(false);
-        _fleeButton.SetActive(true);
-        _healButton.SetActive(false);
+        ClearBattleMenuButtons();
     }
 
     public void OnCancelButtonClick() {
@@ -61,7 +58,7 @@ public class BattleMenuUI : MonoBehaviour {
     }
 
     public void ReturnToOverworldScene() {
-        SceneLoader.Instance.LoadOverworld();
+        FindObjectOfType<BattleStateMachine>().EndBattle();
     }
     // --------------------------------------------------------------
 

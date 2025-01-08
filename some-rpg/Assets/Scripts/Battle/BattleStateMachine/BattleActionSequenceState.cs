@@ -53,13 +53,17 @@ public class BattleActionSequenceState : BattleBaseState {
             yield return new WaitForSeconds(gapTime);
 
             // Check after each action if either the player or all enemies have died
-            if (PlayerData.Instance.CurrentStats.HitPoints <= 0)
-                SceneLoader.Instance.LoadOverworld();
+            if (PlayerData.Instance.CurrentStats.HitPoints <= 0) {
+                battle.EndBattle();
+                yield break;
+            }
+                
 
             foreach (GameObject enemy in battle.enemyObjectList) {
                 if (enemy.GetComponent<EnemyObject>().Enemy.CurrentStats.HitPoints > 0)
                     break;
-                SceneLoader.Instance.LoadOverworld();            
+                battle.EndBattle();
+                yield break;
             }
         }
 

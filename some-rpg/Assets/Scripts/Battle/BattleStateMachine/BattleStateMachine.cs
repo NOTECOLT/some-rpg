@@ -106,7 +106,12 @@ public class BattleStateMachine : MonoBehaviour {
     public void SetPlayerActionNull() {
         playerSelectedAction = ActionType.NULL;
     }
-}
+
+    public void EndBattle() {
+        PlayerData.Instance.CurrentStats = (EntityStats)playerBattleUnit.CurrentStats.Clone();
+        SceneLoader.Instance.LoadOverworld();
+    }
+}   
 
 public enum ActionType {
     NULL,

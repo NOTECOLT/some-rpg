@@ -26,9 +26,9 @@ public class BattleUnit {
     /// </summary>
     public GameObject Object;
 
-    public BattleUnit(EntityStats baseStats, GameObject obj, string name) {
+    public BattleUnit(EntityStats baseStats, EntityStats currentStats, GameObject obj, string name) {
         BaseStats = (EntityStats)baseStats.Clone();
-        CurrentStats = (EntityStats)baseStats.Clone();
+        CurrentStats = (EntityStats)currentStats.Clone();
         Object = obj;
         Name = name;
     }
@@ -56,13 +56,19 @@ public class BattleUnit {
     /// <param name="baseHeal">Amount of HP to heal</param>
     /// <param name="modifier">Modifier multiplied to the base heal</param>
     /// <returns>Returns the amount of HP healed</returns>
-    public int HealDamage(int baseHeal, float modifier) {
+    public int HealDamage(int baseHeal, int manaCost, float modifier = 1) {
         int heal = Mathf.CeilToInt(baseHeal * modifier);
 
         int oldHP = CurrentStats.HitPoints;
         int newHP = (CurrentStats.HitPoints + heal > BaseStats.HitPoints) ? BaseStats.HitPoints : CurrentStats.HitPoints + heal;
-        Object.GetComponent<EntityInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+        CurrentStats.HitPoints = newHP;
 
+        int oldMP = CurrentStats.ManaPoints;
+        int newMP = CurrentStats.ManaPoints - manaCost;
+        CurrentStats.ManaPoints = newMP;
+
+        Object.GetComponent<EntityInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+        Object.GetComponent<EntityInfoUI>().SetMPBar(oldMP, newMP, BaseStats.ManaPoints, ANIMATION_TIME);
         return heal;
     }
 }

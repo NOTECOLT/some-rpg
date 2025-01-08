@@ -6,9 +6,9 @@ using UnityEngine;
 /// </summary>
 [Serializable]
 public class Enemy : BattleUnit {
-    public EnemyType EnemyType;
+    // public EnemyType EnemyType;
     
-    public Enemy(EnemyType enemyType, GameObject obj) : base((EntityStats)enemyType.BaseStats.Clone(), obj, enemyType.EnemyName) {
-        EnemyType = enemyType;
+    public Enemy(EnemyType enemyType, GameObject obj) : base((EntityStats)enemyType.BaseStats.Clone(), (EntityStats)enemyType.BaseStats.Clone(), obj, enemyType.EnemyName) {
+        // EnemyType = enemyType;
     }
 }
