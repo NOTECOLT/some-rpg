@@ -21,6 +21,13 @@ public class EntityInfoUI : MonoBehaviour {
             SetMPBar(unit.CurrentStats.ManaPoints, unit.BaseStats.ManaPoints);
     }
 
+    public void Instantiate(string name, EntityStats currentStats, EntityStats baseStats) {
+        SetEntityName(name);
+        SetHPBar(currentStats.HitPoints, baseStats.HitPoints);
+        if (_manapointsBar != null)
+            SetMPBar(currentStats.ManaPoints, baseStats.ManaPoints);
+    }
+
     public void SetEntityName(string name) {
         _entityName.text = name;
     }

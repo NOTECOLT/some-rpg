@@ -13,9 +13,9 @@ public class BattleLoadState : BattleBaseState {
             enemyObject.name = enemy.Name;
             enemyObject.GetComponent<SpriteRenderer>().sprite = enemyType.Sprite;
 
-            // UnityEvent listener used for selecting enemies
+            // C# Event listener used for selecting enemies
             enemyObject.GetComponent<EnemyObject>().Enemy = enemy;
-            enemyObject.GetComponent<EnemyObject>().OnEnemyClicked.AddListener(battle.OnEnemyClicked);
+            enemyObject.GetComponent<EnemyObject>().OnEnemyClicked += battle.OnEnemyClicked;
 
             enemyObject.GetComponent<EntityInfoUI>().Instantiate(enemy);
             

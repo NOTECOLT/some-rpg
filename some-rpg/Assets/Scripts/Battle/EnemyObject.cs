@@ -12,13 +12,15 @@ using UnityEngine.EventSystems;
 public class EnemyObject : MonoBehaviour, IPointerClickHandler {
     public Enemy Enemy = null;
     
-    public UnityEvent<Enemy> OnEnemyClicked = new UnityEvent<Enemy>();
+    public event System.Action<Enemy> OnEnemyClicked;
     
     public void OnPointerClick(PointerEventData eventData) {
         OnEnemyClicked.Invoke(Enemy);
     }
 
     void OnDestroy() {
-        OnEnemyClicked.RemoveAllListeners();
+        foreach(Delegate d in OnEnemyClicked.GetInvocationList()) {
+            OnEnemyClicked -= (Action<Enemy>)d;
+        }
     }  
 }
