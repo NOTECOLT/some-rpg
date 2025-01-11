@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Responsible for Game Menu input done in the overworld (separate from battle menu ui)
+/// </summary>
 public class GameMenuUI : MonoBehaviour {
     private GameMenuAction _inputActions;
     private bool _isMenuOpen = false;
