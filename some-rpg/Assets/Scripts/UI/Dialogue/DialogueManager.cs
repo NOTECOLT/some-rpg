@@ -11,14 +11,12 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class DialogueManager : MonoBehaviour {
     private DialogueAction _inputActions;
-    [SerializeField] private TextAsset _dialogue;
-    private Story _story;
+    private Story _currentStory = null;
 
+    [SerializeField] private GameObject _dialogueParent;
     [SerializeField] private TMP_Text _dialogueText;
 
     void Awake() {
-        _story = new Story(_dialogue.text);
-
         _inputActions = new DialogueAction();
         _inputActions.Dialogue.Next.performed += OnDialogueNext;
     }
@@ -26,6 +24,7 @@ public class DialogueManager : MonoBehaviour {
     void OnEnable() {
         _inputActions.Enable();
     }
+
     void OnDisable() {
         _inputActions.Disable();
     }
@@ -35,8 +34,10 @@ public class DialogueManager : MonoBehaviour {
     }
 
     void Start() {
+        // Initialize the game by disabling dialogue
+        DisableDialogue();
 
-        
+        // Prototype Code to display choices:
         // if (_story.currentChoices.Count > 0) {
         //     for (int i = 0; i < _story.currentChoices.Count; i++) {
         //         Choice choice = _story.currentChoices[i];
@@ -49,9 +50,35 @@ public class DialogueManager : MonoBehaviour {
 
     }
 
+    private void DisableDialogue() {
+        _dialogueParent.SetActive(false);
+        _inputActions.Disable();
+        _currentStory = null;
+    }
+
+    private void EnableDialogue() {
+        _dialogueParent.SetActive(true);
+        _inputActions.Enable();
+    }
+    
+    public void TriggerDialogue(TextAsset inkJson) {
+        _currentStory = new Story(inkJson.text);
+        EnableDialogue();
+
+        // Display the first line
+        if (_currentStory.canContinue)
+            _dialogueText.text = _currentStory.Continue();
+    }
+
     private void OnDialogueNext(InputAction.CallbackContext context) {
-        if (_story.canContinue) {
-            _dialogueText.text = _story.Continue();
+        if (_currentStory.canContinue) {
+            _dialogueText.text = _currentStory.Continue();
+        } else {
+            DisableDialogue();
         }
+    }
+
+    private IEnumerator DisplayLine() {
+        yield return null;
     }
 }

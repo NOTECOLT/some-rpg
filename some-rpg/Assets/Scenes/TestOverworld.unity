@@ -4798,6 +4798,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 4900000, guid: be31c46663358004eaf7ff236741477e, type: 3}
+  _dialogueText: {fileID: 1874957353}
 --- !u!1 &1674983597
 GameObject:
   m_ObjectHideFlags: 0
