@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 [CreateAssetMenu(fileName="EnemyType", menuName="EnemyType", order=1)] 
 public class EnemyType : ScriptableObject {
-    public string EnemyName;
+    public string enemyName;
     public Sprite Sprite;
 
     // Refers to the base stats of an enemy and remains static in gameplay

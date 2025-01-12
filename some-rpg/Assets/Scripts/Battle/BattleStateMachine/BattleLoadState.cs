@@ -20,7 +20,7 @@ public class BattleLoadState : BattleBaseState {
             enemyObject.GetComponent<EntityInfoUI>().Instantiate(enemy);
             
             battle.enemyObjectList.Add(enemyObject);
-            Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
+            Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.enemyName + "; current HP=" + enemy.CurrentStats.hitPoints + ";");
         }
 
         battle.playerBattleUnit = new BattleUnit(PlayerData.Instance.BaseStats, PlayerData.Instance.CurrentStats, battle.playerObject, "Player");

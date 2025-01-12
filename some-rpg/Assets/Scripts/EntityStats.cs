@@ -8,11 +8,11 @@ using UnityEngine;
 /// </summary>
 [Serializable]
 public class EntityStats : ICloneable {
-    public int HitPoints;
-    public int ManaPoints;
-    public int Attack;
-    public int Defense;
-    public int Speed;
+    public int hitPoints;
+    public int manaPoints;
+    public int attack;
+    public int defense;
+    public int speed;
 
     public EntityStats() {
         
@@ -20,11 +20,11 @@ public class EntityStats : ICloneable {
 
     public object Clone() {
         return new EntityStats() {
-            HitPoints = this.HitPoints,
-            ManaPoints = this.ManaPoints,
-            Attack = this.Attack,
-            Defense = this.Defense,
-            Speed = this.Speed,
+            hitPoints = this.hitPoints,
+            manaPoints = this.manaPoints,
+            attack = this.attack,
+            defense = this.defense,
+            speed = this.speed,
         };
     }
 }

@@ -23,7 +23,7 @@ public class BattleAction {
         TargetUnit = targetUnit;
         ActorUnit = actorUnit;
 
-        priority = (ActorUnit is not null) ? ActorUnit.CurrentStats.Speed : 0;
+        priority = (ActorUnit is not null) ? ActorUnit.CurrentStats.speed : 0;
     }
 
     public override string ToString() {
