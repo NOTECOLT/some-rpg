@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c77816678011744b3fa315adb5e975, type: 3}
+  m_Name: Temp Imp
+  m_EditorClassIdentifier: 
+  enemyName: Imp
+  Sprite: {fileID: 21300000, guid: 8db279cd745abbf47b463f850f9a03e8, type: 3}
+  BaseStats:
+    hitPoints: 40
+    manaPoints: 10
+    attack: 9
+    defense: 9
+    speed: 11

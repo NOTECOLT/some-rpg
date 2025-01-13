@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cbd078a2e44d0f419a84ed055f852dc, type: 3}
+  m_Name: Object Tiles
+  m_EditorClassIdentifier: 
+  Tiles:
+  - {fileID: 11400000, guid: 88a3287238cd149498a6ce45f9722b4e, type: 2}
+  - {fileID: 11400000, guid: 865146c5b1843474f8c0ca29444d6d4c, type: 2}
+  - {fileID: 11400000, guid: fe606cc43cf1b0c409eb7f0b7cb14a5f, type: 2}
+  - {fileID: 11400000, guid: 5e6e1fe474265104f8b6f1597ce4adbe, type: 2}
+  - {fileID: 11400000, guid: cdeda0921692c274e94cbd6fe65a6b77, type: 2}
+  - {fileID: 11400000, guid: 8259b54fb920f9e48b0c22851a65a36b, type: 2}
+  - {fileID: 11400000, guid: 3b084c4196ec93e4cb088b2f008074a2, type: 2}
+  - {fileID: 11400000, guid: d3adc93fc0f58ee46808d91049195df7, type: 2}
+  - {fileID: 11400000, guid: 23656e39a06d92446a338097cbda32d4, type: 2}
+  - {fileID: 11400000, guid: 0ff90bf72ab36c24ca23001f209da9df, type: 2}
+  - {fileID: 11400000, guid: a0162ec124b090f468f85f2bb9e0a260, type: 2}
+  - {fileID: 11400000, guid: 6e6ddf419f07edb459291839d02f39a2, type: 2}
+  - {fileID: 11400000, guid: 0de2a4bd4423bfd4abe384e5da77e1ea, type: 2}
+  - {fileID: 11400000, guid: 3864847df68c9384fb63784498a4c2ae, type: 2}
+  - {fileID: 11400000, guid: cfda3a1ed01243a4a987fdf28aa9ddcd, type: 2}
+  - {fileID: 11400000, guid: 129ee72e9a36ffe499609b1b552d22c4, type: 2}
+  - {fileID: 11400000, guid: 55d21d4bd6ddd4740983420fd27fe552, type: 2}
+  - {fileID: 11400000, guid: 1259a68e4d9a49041b23067a7b9f5c52, type: 2}
+  - {fileID: 11400000, guid: 470eeb6487227384b9545fb0c90225d3, type: 2}
+  - {fileID: 11400000, guid: 9a00bb100ad7b544896c77756f768db0, type: 2}
+  - {fileID: 11400000, guid: 383f4527e698788498f211e5233a4b93, type: 2}
+  IsWalkable: 0
+  HasWildEncounters: 0

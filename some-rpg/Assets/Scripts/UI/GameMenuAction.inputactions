@@ -1,0 +1,34 @@
+{
+    "name": "GameMenuAction",
+    "maps": [
+        {
+            "name": "GameMenu",
+            "id": "63724bb6-eed7-4306-a48e-8eaad9a833f8",
+            "actions": [
+                {
+                    "name": "OpenGameMenu",
+                    "type": "Button",
+                    "id": "bdd0cb8c-3c83-4b0a-814f-f26935356225",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4295d45e-5e9e-496f-8ad5-86d774199043",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenGameMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
