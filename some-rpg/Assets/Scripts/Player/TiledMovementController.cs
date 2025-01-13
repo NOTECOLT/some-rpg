@@ -13,7 +13,7 @@ using UnityEngine.Tilemaps;
 public class TiledMovementController : MonoBehaviour {
     public Vector3Int Cell { get; private set; } = Vector3Int.zero;
     public Vector3Int StartCell = Vector3Int.zero;
-    public Direction facingDirection = Direction.DOWN;
+    public Direction FacingDirection { get; private set; } = Direction.DOWN;
     private MapManager _mapManager;
     private Vector3 _movePoint;
     [SerializeField] private Tilemap _tileMap;
@@ -58,7 +58,7 @@ public class TiledMovementController : MonoBehaviour {
         if (PlayerData.Instance is not null) {
             StartCell = PlayerData.Instance.Cell;
             Cell = PlayerData.Instance.Cell;
-            facingDirection = PlayerData.Instance.Direction;
+            FacingDirection = PlayerData.Instance.Direction;
         }
 
         transform.position = _tileMap.CellToWorld(StartCell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
@@ -68,7 +68,7 @@ public class TiledMovementController : MonoBehaviour {
 
     void Update() {
         _animator.SetBool("IsWalking", _isMoving);
-        _animator.SetInteger("Direction", (int)facingDirection);
+        _animator.SetInteger("Direction", (int)FacingDirection);
 
         if (!transform.position.Equals(_movePoint)) {
             transform.position = Vector3.MoveTowards(transform.position, _movePoint, _movementSpeed * Time.deltaTime);
@@ -83,7 +83,7 @@ public class TiledMovementController : MonoBehaviour {
         _context = context;
 
         Direction dir = SetDirection(_context.ReadValue<Vector2>());
-        facingDirection = (dir != Direction.NULL) ? dir : facingDirection;
+        FacingDirection = (dir != Direction.NULL) ? dir : FacingDirection;
     }
 
     private void OnWalkRelease(InputAction.CallbackContext context) {
@@ -103,11 +103,11 @@ public class TiledMovementController : MonoBehaviour {
         Vector3Int CellAddend = new Vector3Int((int)readValue.x, (int)readValue.y, 0);
         
         Direction dir = SetDirection(_context.ReadValue<Vector2>());
-        facingDirection = (dir != Direction.NULL) ? dir : facingDirection;
+        FacingDirection = (dir != Direction.NULL) ? dir : FacingDirection;
 
         Cell += CellAddend;
         PlayerData.Instance.Cell = Cell;
-        PlayerData.Instance.Direction = facingDirection;
+        PlayerData.Instance.Direction = FacingDirection;
         
         _movePoint = _tileMap.CellToWorld(Cell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
 

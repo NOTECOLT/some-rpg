@@ -924,6 +924,7 @@ GameObject:
   - component: {fileID: 634637019}
   - component: {fileID: 634637021}
   - component: {fileID: 634637022}
+  - component: {fileID: 634637023}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1011,7 +1012,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartCell: {x: 0, y: 0, z: 0}
-  facingDirection: 2
   _tileMap: {fileID: 1744071630}
   _movementSpeed: 10
 --- !u!95 &634637022
@@ -1035,6 +1035,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &634637023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634637018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d5a3269e84164447a2611c425a82656, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tileMap: {fileID: 1744071630}
 --- !u!1001 &819728340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1106,7 +1119,6 @@ GameObject:
   - component: {fileID: 934341155}
   - component: {fileID: 934341156}
   - component: {fileID: 934341157}
-  - component: {fileID: 934341159}
   - component: {fileID: 934341160}
   m_Layer: 0
   m_Name: Signpost
@@ -1124,7 +1136,7 @@ Transform:
   m_GameObject: {fileID: 934341154}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.519, y: 1.486, z: 0}
+  m_LocalPosition: {x: 4.49, y: -5.49, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1196,44 +1208,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tileMap: {fileID: 1744071630}
   _interactDialogue: {fileID: 4900000, guid: be31c46663358004eaf7ff236741477e, type: 3}
---- !u!1839735485 &934341159
-Tilemap:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 934341154}
-  m_Enabled: 1
-  m_Tiles: {}
-  m_AnimatedTiles: {}
-  m_TileAssetArray: []
-  m_TileSpriteArray: []
-  m_TileMatrixArray: []
-  m_TileColorArray: []
-  m_TileObjectToInstantiateArray: []
-  m_AnimationFrameRate: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: 0, y: 0, z: 0}
-  m_Size: {x: 0, y: 0, z: 1}
-  m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
-  m_TileOrientation: 0
-  m_TileOrientationMatrix:
-    e00: 1
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 1
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 1
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 1
 --- !u!61 &934341160
 BoxCollider2D:
   m_ObjectHideFlags: 0
