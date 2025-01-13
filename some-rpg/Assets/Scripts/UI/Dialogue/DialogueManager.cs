@@ -16,6 +16,9 @@ public class DialogueManager : MonoBehaviour {
     [SerializeField] private GameObject _dialogueParent;
     [SerializeField] private TMP_Text _dialogueText;
 
+    public static event System.Action OnDialogueOpen;
+    public static event System.Action OnDialogueClose;
+
     void Awake() {
         _inputActions = new DialogueAction();
         _inputActions.Dialogue.Next.performed += OnDialogueNext;
@@ -64,7 +67,7 @@ public class DialogueManager : MonoBehaviour {
     public void TriggerDialogue(TextAsset inkJson) {
         _currentStory = new Story(inkJson.text);
         EnableDialogue();
-
+        OnDialogueOpen.Invoke();
         // Display the first line
         if (_currentStory.canContinue)
             _dialogueText.text = _currentStory.Continue();
@@ -75,6 +78,7 @@ public class DialogueManager : MonoBehaviour {
             _dialogueText.text = _currentStory.Continue();
         } else {
             DisableDialogue();
+            OnDialogueClose.Invoke();
         }
     }
 

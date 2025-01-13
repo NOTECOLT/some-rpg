@@ -43,6 +43,8 @@ public class TiledMovementController : MonoBehaviour {
         _inputActions.Player.Walk.canceled -= OnWalkRelease;
         GameMenuUI.OnMenuOpen -= DisableInputActions;
         GameMenuUI.OnMenuClose -= EnableInputActions;
+        DialogueManager.OnDialogueOpen -= DisableInputActions;
+        DialogueManager.OnDialogueClose -= EnableInputActions;
 
         SceneLoader.Instance.OnEncounterTransition -= DisableInputActions;
     }
@@ -51,6 +53,8 @@ public class TiledMovementController : MonoBehaviour {
         SceneLoader.Instance.OnEncounterTransition += DisableInputActions;
         GameMenuUI.OnMenuOpen += DisableInputActions;
         GameMenuUI.OnMenuClose += EnableInputActions;
+        DialogueManager.OnDialogueOpen += DisableInputActions;
+        DialogueManager.OnDialogueClose += EnableInputActions;
 
         _mapManager = FindObjectOfType<MapManager>();
         _animator = GetComponent<Animator>();
@@ -141,11 +145,11 @@ public class TiledMovementController : MonoBehaviour {
 
     #region Event Listeners
 
-    void DisableInputActions() {
+    public void DisableInputActions() {
         _inputActions.Disable();
     }
 
-    private void EnableInputActions() {
+    public void EnableInputActions() {
         _inputActions.Enable();
     }
 

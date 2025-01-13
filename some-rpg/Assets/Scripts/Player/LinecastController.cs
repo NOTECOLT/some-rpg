@@ -33,6 +33,8 @@ public class LinecastController : MonoBehaviour {
         _inputActions.Player.Interact.performed -= OnInteractInput;
         GameMenuUI.OnMenuOpen -= DisableInputActions;
         GameMenuUI.OnMenuClose -= EnableInputActions;
+        DialogueManager.OnDialogueOpen -= DisableInputActions;
+        DialogueManager.OnDialogueClose -= EnableInputActions;
 
         SceneLoader.Instance.OnEncounterTransition -= DisableInputActions;
     }
@@ -41,11 +43,26 @@ public class LinecastController : MonoBehaviour {
         SceneLoader.Instance.OnEncounterTransition += DisableInputActions;
         GameMenuUI.OnMenuOpen += DisableInputActions;
         GameMenuUI.OnMenuClose += EnableInputActions;
-
+        DialogueManager.OnDialogueOpen += DisableInputActions;
+        DialogueManager.OnDialogueClose += EnableInputActions;
+        
         _movementController = GetComponent<TiledMovementController>();
+
+
+        // Debug.DrawLine(transform.position, transform.position + (Vector3)(_rayEnd * _tileMap.cellSize.x), Color.red);
     }
 
-    void Update() {
+    public GameObject GetLinecastHit(Vector3 rayEnd) {
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, transform.position + (rayEnd * _tileMap.cellSize.x));
+
+        if (hit.collider != null) {
+            return hit.collider.gameObject;
+        } else {
+            return null;
+        }
+    }
+
+    private void OnInteractInput(InputAction.CallbackContext context) {
         switch (_movementController.FacingDirection) {
             case Direction.UP:
                 _rayEnd = Vector2.up;
@@ -60,28 +77,14 @@ public class LinecastController : MonoBehaviour {
                 _rayEnd = Vector2.left;
                 break;
         }
-            
+
         RaycastHit2D hit = Physics2D.Linecast(transform.position, transform.position + (Vector3)(_rayEnd * _tileMap.cellSize.x));
-        Debug.DrawLine(transform.position, transform.position + (Vector3)(_rayEnd * _tileMap.cellSize.x), Color.red);
-
-        if (hit.collider != null) {
-            Debug.Log("HIT");
-        }
-    }
-
-    public GameObject GetLinecastHit(Vector3 rayEnd) {
-        RaycastHit2D hit = Physics2D.Linecast(transform.position, transform.position + (rayEnd * _tileMap.cellSize.x));
-        Debug.DrawLine(transform.position, transform.position + (rayEnd * _tileMap.cellSize.x), Color.red);
-
-        if (hit.collider != null) {
-            return hit.collider.gameObject;
-        } else {
-            return null;
-        }
-    }
-
-    private void OnInteractInput(InputAction.CallbackContext context) {
         
+        if (hit.collider is null) return;
+        if (hit.collider.gameObject.GetComponent<IInteractable>() is null) return;
+
+        GameObject obj = hit.collider.gameObject;
+        obj.GetComponent<IInteractable>().OnInteract();
     }
 
     #region Event Listeners

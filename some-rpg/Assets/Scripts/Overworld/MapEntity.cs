@@ -15,13 +15,7 @@ public class MapEntity : MonoBehaviour, IInteractable {
         transform.position = _tileMap.CellToWorld(Cell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
     }
 
-    // Update is called once per frame
-    void Update() {
-        
-    }
-
-
     public void OnInteract() {
-        throw new System.NotImplementedException();
+        FindObjectOfType<DialogueManager>().TriggerDialogue(_interactDialogue);
     }
 }
