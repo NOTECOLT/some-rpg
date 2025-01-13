@@ -10,6 +10,7 @@ using UnityEngine.Tilemaps;
 /// </summary>
 [RequireComponent(typeof(TiledMovementController))] 
 public class LinecastController : MonoBehaviour {
+    private Vector2 _rayEnd;
     private TiledMovementController _movementController;
     private PlayerInputActions _inputActions;
     [SerializeField] private Tilemap _tileMap;
@@ -44,29 +45,38 @@ public class LinecastController : MonoBehaviour {
         _movementController = GetComponent<TiledMovementController>();
     }
 
-    void FixedUpdate() {
-        Vector2 rayEnd = Vector2.up;
-
+    void Update() {
         switch (_movementController.FacingDirection) {
             case Direction.UP:
-                rayEnd = Vector2.up;
+                _rayEnd = Vector2.up;
                 break;
             case Direction.RIGHT:
-                rayEnd = Vector2.right;
+                _rayEnd = Vector2.right;
                 break;
             case Direction.DOWN:
-                rayEnd = Vector2.down;
+                _rayEnd = Vector2.down;
                 break;
-            case Direction.LEFT:
-                rayEnd = Vector2.left;
+            default:
+                _rayEnd = Vector2.left;
                 break;
         }
             
-        RaycastHit2D hit = Physics2D.Linecast(transform.position, transform.position + (Vector3)(rayEnd * _tileMap.cellSize.x));
-        Debug.DrawLine(transform.position, transform.position + (Vector3)(rayEnd * _tileMap.cellSize.x), Color.red);
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, transform.position + (Vector3)(_rayEnd * _tileMap.cellSize.x));
+        Debug.DrawLine(transform.position, transform.position + (Vector3)(_rayEnd * _tileMap.cellSize.x), Color.red);
 
         if (hit.collider != null) {
             Debug.Log("HIT");
+        }
+    }
+
+    public GameObject GetLinecastHit(Vector3 rayEnd) {
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, transform.position + (rayEnd * _tileMap.cellSize.x));
+        Debug.DrawLine(transform.position, transform.position + (rayEnd * _tileMap.cellSize.x), Color.red);
+
+        if (hit.collider != null) {
+            return hit.collider.gameObject;
+        } else {
+            return null;
         }
     }
 

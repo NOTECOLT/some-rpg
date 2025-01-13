@@ -90,6 +90,15 @@ public class TiledMovementController : MonoBehaviour {
         _isMoving = false;
     } 
 
+    private bool IsWalkable(Vector3 direction) {
+        if (GetComponent<LinecastController>() is not null) {
+            return _mapManager.GetTileIsWalkable(transform.position + direction) &&
+                GetComponent<LinecastController>().GetLinecastHit(direction) is null;
+        } else {
+            return _mapManager.GetTileIsWalkable(transform.position + direction);
+        }
+    }
+
     /// <summary>
     /// Generates a new Move Point for the player to move to for as long as the input is being held
     /// </summary>
@@ -98,7 +107,7 @@ public class TiledMovementController : MonoBehaviour {
         
         Vector2 readValue = _context.ReadValue<Vector2>();
 
-        if (!_mapManager.GetTileIsWalkable(transform.position + (Vector3)readValue)) return;
+        if (!IsWalkable((Vector3)readValue)) return;
 
         Vector3Int CellAddend = new Vector3Int((int)readValue.x, (int)readValue.y, 0);
         
