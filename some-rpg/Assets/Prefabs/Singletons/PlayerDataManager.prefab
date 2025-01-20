@@ -44,17 +44,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7d2768d5a9ba39449d707193ebb5a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BaseStats:
-    hitPoints: 35
-    manaPoints: 10
-    attack: 10
-    defense: 10
-    speed: 10
-  CurrentStats:
-    hitPoints: 0
-    manaPoints: 0
-    attack: 0
-    defense: 0
-    speed: 0
-  Cell: {x: 0, y: 0, z: 0}
-  Direction: 2
+  DefaultData:
+    BaseStats:
+      hitPoints: 40
+      manaPoints: 10
+      attack: 10
+      defense: 10
+      speed: 10
+    CurrentStats:
+      hitPoints: 0
+      manaPoints: 0
+      attack: 0
+      defense: 0
+      speed: 0
+    Cell: {x: 0, y: 0, z: 0}
+    Direction: 2

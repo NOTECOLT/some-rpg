@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Holds all player stats within the scene. <br></br>
-/// Will hold loaded PlayerData and PlayerData to be saved from.
+/// Singleton Script to hold PlayerData information
+/// Actually exists within the scene.
 /// </summary>
 public class PlayerDataManager : MonoBehaviour {
     public static PlayerDataManager Instance { get; private set; }
@@ -20,16 +20,12 @@ public class PlayerDataManager : MonoBehaviour {
         DontDestroyOnLoad(this.gameObject);
     }
 
-    // BaseStats only change in between battles, through level up or permanent status changes
-    public EntityStats BaseStats = new EntityStats(); 
-
-    // CurrentStats may change through status effects in battle
-    public EntityStats CurrentStats = new EntityStats();
-    public Vector3Int Cell = Vector3Int.zero;
-    public Direction Direction = Direction.DOWN;
+    public PlayerData DefaultData = new PlayerData();
+    public PlayerData Data { get; private set; } = new PlayerData();
 
     void Start() {
-        CurrentStats = (EntityStats)BaseStats.Clone();
+        Data = DefaultData;
+        Data.CurrentStats = (EntityStats)Data.BaseStats.Clone();
 
         DataPersistenceManager dataPersistence = new DataPersistenceManager();
     }

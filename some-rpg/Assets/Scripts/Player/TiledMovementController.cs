@@ -60,9 +60,9 @@ public class TiledMovementController : MonoBehaviour {
         _animator = GetComponent<Animator>();
 
         if (PlayerDataManager.Instance is not null) {
-            StartCell = PlayerDataManager.Instance.Cell;
-            Cell = PlayerDataManager.Instance.Cell;
-            FacingDirection = PlayerDataManager.Instance.Direction;
+            StartCell = PlayerDataManager.Instance.Data.Cell;
+            Cell = PlayerDataManager.Instance.Data.Cell;
+            FacingDirection = PlayerDataManager.Instance.Data.Direction;
         }
 
         transform.position = _tileMap.CellToWorld(StartCell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
@@ -119,8 +119,8 @@ public class TiledMovementController : MonoBehaviour {
         FacingDirection = (dir != Direction.NULL) ? dir : FacingDirection;
 
         Cell += CellAddend;
-        PlayerDataManager.Instance.Cell = Cell;
-        PlayerDataManager.Instance.Direction = FacingDirection;
+        PlayerDataManager.Instance.Data.Cell = Cell;
+        PlayerDataManager.Instance.Data.Direction = FacingDirection;
         
         _movePoint = _tileMap.CellToWorld(Cell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
 
