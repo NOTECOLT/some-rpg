@@ -21,13 +21,22 @@ public class PlayerDataManager : MonoBehaviour {
     }
 
     public PlayerData DefaultData = new PlayerData();
-    public PlayerData Data { get; private set; } = new PlayerData();
+    public PlayerData Data = new PlayerData();
 
     void Start() {
-        Data = DefaultData;
-        Data.CurrentStats = (EntityStats)Data.BaseStats.Clone();
+        DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
+        if (!dataPersistence.Exists("player")) {
+            Data = DefaultData;
+            dataPersistence.NewData("player", Data);
+            Data.CurrentStats = (EntityStats)Data.BaseStats.Clone();
+        } else {
+            dataPersistence.LoadData("player", ref Data);
+        }
+    }
 
-        DataPersistenceManager dataPersistence = new DataPersistenceManager();
+    void OnDestroy() {
+        DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
+        dataPersistence.SaveData("player", Data);
     }
 }
 

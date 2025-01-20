@@ -12,7 +12,7 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class TiledMovementController : MonoBehaviour {
     public Vector3Int Cell { get; private set; } = Vector3Int.zero;
-    public Vector3Int StartCell = Vector3Int.zero;
+    // public Vector3Int StartCell = Vector3Int.zero;
     public Direction FacingDirection { get; private set; } = Direction.DOWN;
     private MapManager _mapManager;
     private Vector3 _movePoint;
@@ -60,12 +60,11 @@ public class TiledMovementController : MonoBehaviour {
         _animator = GetComponent<Animator>();
 
         if (PlayerDataManager.Instance is not null) {
-            StartCell = PlayerDataManager.Instance.Data.Cell;
             Cell = PlayerDataManager.Instance.Data.Cell;
             FacingDirection = PlayerDataManager.Instance.Data.Direction;
         }
 
-        transform.position = _tileMap.CellToWorld(StartCell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
+        transform.position = _tileMap.CellToWorld(Cell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
         
         _movePoint = transform.position;
     }
