@@ -6,8 +6,8 @@ using UnityEngine;
 /// Holds all player stats within the scene. <br></br>
 /// Will hold loaded PlayerData and PlayerData to be saved from.
 /// </summary>
-public class PlayerData : MonoBehaviour {
-    public static PlayerData Instance { get; private set; }
+public class PlayerDataManager : MonoBehaviour {
+    public static PlayerDataManager Instance { get; private set; }
 
     private void Awake()  { 
         // If there is an instance, and it's not me, delete myself.
@@ -30,6 +30,8 @@ public class PlayerData : MonoBehaviour {
 
     void Start() {
         CurrentStats = (EntityStats)BaseStats.Clone();
+
+        DataPersistenceManager dataPersistence = new DataPersistenceManager();
     }
 }
 

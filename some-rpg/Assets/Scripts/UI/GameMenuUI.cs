@@ -59,7 +59,7 @@ public class GameMenuUI : MonoBehaviour {
 
         if (_isMenuOpen) {
             OnMenuOpen.Invoke();
-            _playerInfo.Instantiate(PlayerData.Instance.name, PlayerData.Instance.CurrentStats, PlayerData.Instance.BaseStats);
+            _playerInfo.Instantiate(PlayerDataManager.Instance.name, PlayerDataManager.Instance.CurrentStats, PlayerDataManager.Instance.BaseStats);
         }
         else OnMenuClose.Invoke();
     }

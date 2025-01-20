@@ -108,7 +108,7 @@ public class BattleStateMachine : MonoBehaviour {
     }
 
     public void EndBattle() {
-        PlayerData.Instance.CurrentStats = (EntityStats)playerBattleUnit.CurrentStats.Clone();
+        PlayerDataManager.Instance.CurrentStats = (EntityStats)playerBattleUnit.CurrentStats.Clone();
         SceneLoader.Instance.LoadOverworld();
     }
 }   
