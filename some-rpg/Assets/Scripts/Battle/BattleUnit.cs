@@ -21,7 +21,7 @@ public class BattleUnit {
     /// </summary>
     public EntityStats CurrentStats { get; set; } = new EntityStats();   
 
-    public Weapon EquippedWeapon { get; protected set; }
+    public Weapon Weapon { get; protected set; }
 
     /// <summary>
     /// Backreference to the object that which a BattleUnit pertains to
@@ -31,7 +31,7 @@ public class BattleUnit {
     public BattleUnit(EntityStats baseStats, EntityStats currentStats, GameObject obj, string name, Weapon weapon) {
         BaseStats = (EntityStats)baseStats.Clone();
         CurrentStats = (EntityStats)currentStats.Clone();
-        EquippedWeapon = weapon;
+        Weapon = weapon;
         Object = obj;
         Name = name;
     }
