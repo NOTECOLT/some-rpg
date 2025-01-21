@@ -112,9 +112,3 @@ public class BattleStateMachine : MonoBehaviour {
         SceneLoader.Instance.LoadOverworld();
     }
 }   
-
-public enum ActionType {
-    NULL,
-    BASIC_ATTACK,
-    HEAL
-}

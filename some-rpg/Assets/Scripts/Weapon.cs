@@ -12,10 +12,3 @@ public class Weapon : ScriptableObject {
     public string WeaponName;
     public Sprite Sprite;
 }
-
-public enum WeaponType {
-    BLADE,
-    BLUNT,
-    ROD,
-    RANGED,
-}

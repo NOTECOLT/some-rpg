@@ -40,6 +40,9 @@ public class BasicAttack : BattleAction {
             
         yield return MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME);
 
+        if (ActorUnit.Object.GetComponent<Animator>() != null)
+            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Idle");
+
         // Perform weapon dependent battle effects
         switch (ActorUnit.Weapon.Type) {
             case WeaponType.BLADE:
@@ -47,6 +50,12 @@ public class BasicAttack : BattleAction {
                 break;
             case WeaponType.ROD:
                 RodAttack(battle, (bool)QTE.Result);
+                break;
+            case WeaponType.RANGED:
+                RangedAttack(battle, (bool)QTE.Result);
+                break;
+            case WeaponType.BLUNT:
+                BluntAttack(battle, (bool)QTE.Result);
                 break;
             default:
                 break;
@@ -86,33 +95,40 @@ public class BasicAttack : BattleAction {
         }
 
         // Update Text & Entity Info
-        if (ActorUnit.Object.GetComponent<Animator>() != null)
-            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Idle");
         int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.name} for {damage} damage!";
+        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.WeaponName} for {damage} damage!";
         battle.mainTextbox.text = battleText;
     }
 
     private void RodAttack(BattleStateMachine battle, bool qteResult) {
+        Debug.LogError("RodAttack effect not implemented!");
+    }
+
+    private void RangedAttack(BattleStateMachine battle, bool qteResult) {
         float damageModifier = 1;
         string battleText = "";
         // Check QTE
         if (qteResult) {
             if (ActorUnit is Enemy) {
-                damageModifier = 0.7f;
+                damageModifier = 0f;
                 battleText = "Partial Dodge! ";
             } else {
-                damageModifier = 2;
-                battleText = "Critical hit! ";
+                damageModifier = 2.5f;
+                battleText = "Hit! ";
             }
+
+            // Update Text & Entity Info
+            int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
+            battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.WeaponName} for {damage} damage!";
+        } else {
+            battleText = $"Miss! {ActorUnit.Name} failed to attack {TargetUnit.Name}!";
         }
 
-        // Update Text & Entity Info
-        if (ActorUnit.Object.GetComponent<Animator>() != null)
-            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Idle");
-        int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.name} for {damage} damage!";
         battle.mainTextbox.text = battleText;
+    }
+
+    private void BluntAttack(BattleStateMachine battle, bool qteResult) {
+        Debug.LogError("BluntAttack effect not implemented!");
     }
 
     #endregion
