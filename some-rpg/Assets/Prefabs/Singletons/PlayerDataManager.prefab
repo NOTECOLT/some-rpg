@@ -59,3 +59,20 @@ MonoBehaviour:
       speed: 0
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
+    Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+  Data:
+    BaseStats:
+      hitPoints: 0
+      manaPoints: 0
+      attack: 0
+      defense: 0
+      speed: 0
+    CurrentStats:
+      hitPoints: 0
+      manaPoints: 0
+      attack: 0
+      defense: 0
+      speed: 0
+    Cell: {x: 0, y: 0, z: 0}
+    Direction: 2
+    Weapon: {fileID: 0}

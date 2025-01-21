@@ -20,10 +20,10 @@ public class BattleLoadState : BattleBaseState {
             enemyObject.GetComponent<EntityInfoUI>().Instantiate(enemy);
             
             battle.enemyObjectList.Add(enemyObject);
-            Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.enemyName + "; current HP=" + enemy.CurrentStats.hitPoints + ";");
+            Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.CurrentStats.hitPoints + ";");
         }
 
-        battle.playerBattleUnit = new BattleUnit(PlayerDataManager.Instance.Data.BaseStats, PlayerDataManager.Instance.Data.CurrentStats, battle.playerObject, "Player");
+        battle.playerBattleUnit = new BattleUnit(PlayerDataManager.Instance.Data.BaseStats, PlayerDataManager.Instance.Data.CurrentStats, battle.playerObject, "Player", PlayerDataManager.Instance.Data.Weapon);
         battle.playerBattleUnit.Object.GetComponent<EntityInfoUI>().Instantiate(battle.playerBattleUnit);
 
         battle.qteButton.SetActive(false);

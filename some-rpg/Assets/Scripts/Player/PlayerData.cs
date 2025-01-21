@@ -15,4 +15,5 @@ public class PlayerData {
     public EntityStats CurrentStats = new EntityStats();
     public Vector3Int Cell = Vector3Int.zero;
     public Direction Direction = Direction.DOWN;
+    public Weapon Weapon;
 }

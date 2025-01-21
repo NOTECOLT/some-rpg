@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Abstract Class from which enemies, bosses, and players will inherit from during battles
+/// Class from which enemies, bosses, and players will inherit from during battles
 /// </summary>
 [Serializable]
 public class BattleUnit {
@@ -21,14 +21,17 @@ public class BattleUnit {
     /// </summary>
     public EntityStats CurrentStats { get; set; } = new EntityStats();   
 
+    public Weapon EquippedWeapon { get; protected set; }
+
     /// <summary>
     /// Backreference to the object that which a BattleUnit pertains to
     /// </summary>
     public GameObject Object;
 
-    public BattleUnit(EntityStats baseStats, EntityStats currentStats, GameObject obj, string name) {
+    public BattleUnit(EntityStats baseStats, EntityStats currentStats, GameObject obj, string name, Weapon weapon) {
         BaseStats = (EntityStats)baseStats.Clone();
         CurrentStats = (EntityStats)currentStats.Clone();
+        EquippedWeapon = weapon;
         Object = obj;
         Name = name;
     }
