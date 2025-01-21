@@ -38,6 +38,7 @@ public class DataPersistenceManager<T> {
         }
 
         File.WriteAllText(savefile, JsonUtility.ToJson(obj));
+        Debug.Log($"[DataPersistence] Successfully saved data to {savefile}!");
         return 0;
     }
 
@@ -56,6 +57,7 @@ public class DataPersistenceManager<T> {
 
         try {  
             obj = JsonUtility.FromJson<T>(File.ReadAllText(savefile));
+            Debug.Log($"[DataPersistence] Successfully loaded data from {savefile}!");
             return 0;
         } catch (FormatException) {
             Debug.LogError($"[DataPersistence] Error loading save file. {savefile} is not of type {typeof(T)}!");

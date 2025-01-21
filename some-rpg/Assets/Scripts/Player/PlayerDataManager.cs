@@ -33,11 +33,6 @@ public class PlayerDataManager : MonoBehaviour {
             dataPersistence.LoadData("player", ref Data);
         }
     }
-
-    void OnDestroy() {
-        DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
-        dataPersistence.SaveData("player", Data);
-    }
 }
 
 /// <summary>

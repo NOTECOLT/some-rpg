@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -62,5 +63,15 @@ public class GameMenuUI : MonoBehaviour {
             _playerInfo.Instantiate("Player", PlayerDataManager.Instance.Data.CurrentStats, PlayerDataManager.Instance.Data.BaseStats);
         }
         else OnMenuClose.Invoke();
+    }
+
+    public void SaveGame() {
+        DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
+        dataPersistence.SaveData("player", PlayerDataManager.Instance.Data);
+    }
+
+    public void ReloadGame() {
+        Destroy(FindObjectOfType<PlayerDataManager>().gameObject);
+        SceneLoader.Instance.LoadOverworld();
     }
 }
