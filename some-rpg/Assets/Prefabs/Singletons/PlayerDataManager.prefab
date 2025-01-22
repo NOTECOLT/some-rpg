@@ -46,33 +46,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DefaultData:
     BaseStats:
-      hitPoints: 40
-      manaPoints: 10
-      attack: 10
-      defense: 10
-      speed: 10
+      HitPoints: 40
+      ManaPoints: 10
+      Attack: 10
+      Defense: 10
+      Speed: 10
     CurrentStats:
-      hitPoints: 0
-      manaPoints: 0
-      attack: 0
-      defense: 0
-      speed: 0
+      HitPoints: 0
+      ManaPoints: 0
+      Attack: 0
+      Defense: 0
+      Speed: 0
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
     Weapon: {fileID: 11400000, guid: a0f0aad74d2792b45afb54b11428f5f2, type: 2}
   Data:
     BaseStats:
-      hitPoints: 0
-      manaPoints: 0
-      attack: 0
-      defense: 0
-      speed: 0
+      HitPoints: 0
+      ManaPoints: 0
+      Attack: 0
+      Defense: 0
+      Speed: 0
     CurrentStats:
-      hitPoints: 0
-      manaPoints: 0
-      attack: 0
-      defense: 0
-      speed: 0
+      HitPoints: 0
+      ManaPoints: 0
+      Attack: 0
+      Defense: 0
+      Speed: 0
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
     Weapon: {fileID: 0}

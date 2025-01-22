@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -16,4 +17,14 @@ public class PlayerData {
     public Vector3Int Cell = Vector3Int.zero;
     public Direction Direction = Direction.DOWN;
     public Weapon Weapon;
+
+    public object Clone() {
+        return new PlayerData() {
+            BaseStats = (EntityStats)this.BaseStats.Clone(),
+            CurrentStats = (EntityStats)this.CurrentStats.Clone(),
+            Cell = new Vector3Int(this.Cell.x, this.Cell.y, this.Cell.z),
+            Direction = this.Direction,
+            Weapon = this.Weapon
+        };
+    }
 }

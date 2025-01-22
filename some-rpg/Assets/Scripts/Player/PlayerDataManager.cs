@@ -26,7 +26,7 @@ public class PlayerDataManager : MonoBehaviour {
     void Start() {
         DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
         if (!dataPersistence.Exists("player")) {
-            Data = DefaultData;
+            Data = (PlayerData)DefaultData.Clone();
             dataPersistence.NewData("player", Data);
             Data.CurrentStats = (EntityStats)Data.BaseStats.Clone();
             dataPersistence.SaveData("player", Data);

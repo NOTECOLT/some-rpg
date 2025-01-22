@@ -16,8 +16,8 @@ MonoBehaviour:
   Sprite: {fileID: 21300000, guid: 8db279cd745abbf47b463f850f9a03e8, type: 3}
   Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
   BaseStats:
-    hitPoints: 35
-    manaPoints: 10
-    attack: 10
-    defense: 10
-    speed: 9
+    HitPoints: 20
+    ManaPoints: 11
+    Attack: 11
+    Defense: 11
+    Speed: 11

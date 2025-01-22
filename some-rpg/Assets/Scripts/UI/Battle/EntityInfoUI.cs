@@ -16,16 +16,16 @@ public class EntityInfoUI : MonoBehaviour {
 
     public void Instantiate(BattleUnit unit) {
         SetEntityName(unit.Name);
-        SetHPBar(unit.CurrentStats.hitPoints, unit.BaseStats.hitPoints);
+        SetHPBar(unit.CurrentStats.HitPoints, unit.BaseStats.HitPoints);
         if (_manapointsBar != null)
-            SetMPBar(unit.CurrentStats.manaPoints, unit.BaseStats.manaPoints);
+            SetMPBar(unit.CurrentStats.ManaPoints, unit.BaseStats.ManaPoints);
     }
 
     public void Instantiate(string name, EntityStats currentStats, EntityStats baseStats) {
         SetEntityName(name);
-        SetHPBar(currentStats.hitPoints, baseStats.hitPoints);
+        SetHPBar(currentStats.HitPoints, baseStats.HitPoints);
         if (_manapointsBar != null)
-            SetMPBar(currentStats.manaPoints, baseStats.manaPoints);
+            SetMPBar(currentStats.ManaPoints, baseStats.ManaPoints);
     }
 
     public void SetEntityName(string name) {
