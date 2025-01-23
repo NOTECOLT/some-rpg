@@ -18,7 +18,7 @@ public class BasicAttack : BattleAction {
             ActorUnit.Object.transform.position - new Vector3(4, 0, 0);
 
         // QTE to perform critical hit, Move unit towards target to perform animations
-        QuickTimeEvent QTE = new QuickTimeEvent(battle.qteButton);
+        QuickTimeEvent QTE = new QuickTimeEvent(battle.qteButton, QTEType.SINGLE);
         battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, QTE_ACTIVE_TIME, QTE_LEAD_TIME));
         battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
         if (ActorUnit.Object.GetComponent<Animator>() != null)
@@ -30,7 +30,7 @@ public class BasicAttack : BattleAction {
         if (ActorUnit.Object.GetComponent<Animator>() != null)
             ActorUnit.Object.GetComponent<Animator>().SetTrigger("Attack");
 
-        while (QTE.Result is null) yield return new WaitForSeconds(Time.deltaTime);
+        while (QTE.Result == QuickTimeEvent.QTE_NULL_RESULT) yield return new WaitForSeconds(Time.deltaTime);
         
         // Move unit back
         if (ActorUnit.Object.GetComponent<Animator>() != null) {
@@ -46,16 +46,16 @@ public class BasicAttack : BattleAction {
         // Perform weapon dependent battle effects
         switch (ActorUnit.Weapon.Type) {
             case WeaponType.BLADE:
-                BladeAttack(battle, (bool)QTE.Result);
+                BladeAttack(battle, QTE.Result);
                 break;
             case WeaponType.ROD:
-                RodAttack(battle, (bool)QTE.Result);
+                RodAttack(battle, QTE.Result);
                 break;
             case WeaponType.RANGED:
-                RangedAttack(battle, (bool)QTE.Result);
+                RangedAttack(battle, QTE.Result);
                 break;
             case WeaponType.BLUNT:
-                BluntAttack(battle, (bool)QTE.Result);
+                BluntAttack(battle, QTE.Result);
                 break;
             default:
                 break;
@@ -80,11 +80,11 @@ public class BasicAttack : BattleAction {
     // ?    Look into being able to serialize derived classes in json?
     // ?    I believe the problem lies in not being able to save and load weapon data for both scriptable object enemy types and player savedata
     #region Attacks Logic
-    private void BladeAttack(BattleStateMachine battle, bool qteResult) {
+    private void BladeAttack(BattleStateMachine battle, int qteResult) {
         float damageModifier = 1;
         string battleText = "";
         // Check QTE
-        if (qteResult) {
+        if (qteResult == QuickTimeEvent.QTE_SUCCESS_RESULT) {
             if (ActorUnit is Enemy) {
                 damageModifier = 0.7f;
                 battleText = "Partial Dodge! ";
@@ -100,15 +100,15 @@ public class BasicAttack : BattleAction {
         battle.mainTextbox.text = battleText;
     }
 
-    private void RodAttack(BattleStateMachine battle, bool qteResult) {
+    private void RodAttack(BattleStateMachine battle, int qteResult) {
         Debug.LogError("RodAttack effect not implemented!");
     }
 
-    private void RangedAttack(BattleStateMachine battle, bool qteResult) {
+    private void RangedAttack(BattleStateMachine battle, int qteResult) {
         float damageModifier = 1;
         string battleText = "";
         // Check QTE
-        if (qteResult) {
+        if (qteResult == QuickTimeEvent.QTE_SUCCESS_RESULT) {
             if (ActorUnit is Enemy) {
                 damageModifier = 0f;
                 battleText = "Partial Dodge! ";
@@ -127,7 +127,7 @@ public class BasicAttack : BattleAction {
         battle.mainTextbox.text = battleText;
     }
 
-    private void BluntAttack(BattleStateMachine battle, bool qteResult) {
+    private void BluntAttack(BattleStateMachine battle, int qteResult) {
         Debug.LogError("BluntAttack effect not implemented!");
     }
 

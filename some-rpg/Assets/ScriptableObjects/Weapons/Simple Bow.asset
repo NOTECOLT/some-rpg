@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 3
   WeaponName: Simple Bow
-  Sprite: {fileID: 0}
+  Sprite: {fileID: -423875004, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}

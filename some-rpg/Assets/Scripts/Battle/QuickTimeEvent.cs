@@ -12,21 +12,26 @@ using System;
 /// QTE = Quick Time Event, When the player is prompted to press a button on the keyboard within a limited time.
 /// </summary>
 public class QuickTimeEvent {
-    public KeyCode QTEKey { get; private set; }
+    public static int QTE_NULL_RESULT = -1;
+    public static int QTE_FAIL_RESULT = 0;
+    public static int QTE_SUCCESS_RESULT = 1;
     private float _currentTime;
     private bool _qteIsActive = false;
-
     private GameObject _qteButton;
     private Animator _animator;
 
-    public bool? Result;
+    public KeyCode QTEKey { get; private set; }
+    public int Result;
+    public QTEType Type { get; private set; }
 
-    public QuickTimeEvent(GameObject qteButton) {
+    public QuickTimeEvent(GameObject qteButton, QTEType type) {
         _qteButton = qteButton;
         _animator = qteButton.GetComponent<Animator>();
         _qteButton.SetActive(false);
 
-        Result = null;
+        Type = type;
+
+        Result = QTE_NULL_RESULT;
     }
 
     /// <summary>
@@ -78,7 +83,7 @@ public class QuickTimeEvent {
             // Check for any input for the QTE
             if (Input.anyKey) {
                 if (Input.GetKey(QTEKey)) {
-                    Result = true;
+                    Result = QTE_SUCCESS_RESULT;
                     Debug.Log("[QTE System] QTE Success!");
                     _qteIsActive = false;     
                     break;     
@@ -97,7 +102,7 @@ public class QuickTimeEvent {
     }
 
     private void SetQTEFail() {
-        Result = false;
+        Result = QTE_FAIL_RESULT;
         Debug.Log($"[QTE System] QTE Result: {Result}!");
     }
 
@@ -105,4 +110,9 @@ public class QuickTimeEvent {
         _animator.SetBool("IsActive", false);
         _qteButton.SetActive(false);
     }
+}
+
+public enum QTEType {
+    SINGLE,
+    MASH
 }
