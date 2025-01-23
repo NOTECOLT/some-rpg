@@ -755,6 +755,7 @@ MonoBehaviour:
   _entityName: {fileID: 1045679021}
   _hitPoints: {fileID: 1045679020}
   _manaPoints: {fileID: 1045679023}
+  _weaponSprite: {fileID: 546756486}
 --- !u!95 &422450753
 Animator:
   serializedVersion: 5
@@ -988,6 +989,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 516395238}
   m_CullTransparentMesh: 1
+--- !u!114 &546756486 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3582011293147587514, guid: f1a9dcd4ba4b10143a5866fed26f06ef, type: 3}
+  m_PrefabInstance: {fileID: 1045679018}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &624613339
 GameObject:
   m_ObjectHideFlags: 0
