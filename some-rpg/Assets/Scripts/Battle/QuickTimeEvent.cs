@@ -43,12 +43,24 @@ public class QuickTimeEvent {
     /// <param name="leadTime">The amount of time before a QTE is active. This can be 0 for no lead time at all.</param>
     /// <returns> Returns the key to be used for the QTE. </returns>
     public IEnumerator GenerateQTE(KeyCode[] keyPool, float activeTime, float leadTime = 0) {
+        switch (Type) {
+            case QTEType.REGULAR:
+                yield return RegularQTE(keyPool, activeTime, leadTime);
+                break;
+            case QTEType.MASH:
+                yield return MashQTE(keyPool, activeTime, leadTime);
+                break;
+        }
+    }
+    private IEnumerator RegularQTE(KeyCode[] keyPool, float activeTime, float leadTime) {
+        Result = QTE_NULL_RESULT;
+
         QTEKey = keyPool[UnityEngine.Random.Range(0, keyPool.Length)];
         _qteButton.GetComponentInChildren<TMP_Text>().text = QTEKey.ToString();
         _qteButton.SetActive(true);
         _qteButton.transform.localScale = Vector3.one * 0.7f;
 
-        // Lead Time
+        // LEAD TIME -----------------------------------------
         _currentTime = leadTime;
         _animator.SetBool("IsActive", false);
         while (_currentTime >= 0) {
@@ -67,7 +79,7 @@ public class QuickTimeEvent {
 
         _qteButton.transform.localScale = Vector3.one;
         
-        // Active Time
+        // ACTIVE TIME -----------------------------------------
         _currentTime = activeTime;
         _qteIsActive = true;
         
@@ -100,6 +112,51 @@ public class QuickTimeEvent {
         
         EndQTE();
     }
+    
+    private IEnumerator MashQTE(KeyCode[] keyPool, float activeTime, float leadTime) {
+        Result = QTE_NULL_RESULT;
+        
+        // LEAD TIME -----------------------------------------
+        _currentTime = leadTime;
+        while (_currentTime >= 0) {
+            yield return new WaitForSeconds(Time.deltaTime);
+            _currentTime -= Time.deltaTime;
+        }
+
+        // ACTIVE TIME -----------------------------------------
+        QTEKey = keyPool[UnityEngine.Random.Range(0, keyPool.Length)];
+        _qteButton.GetComponentInChildren<TMP_Text>().text = QTEKey.ToString();
+        _qteButton.transform.localScale = Vector3.one * 0.7f;
+        _qteButton.SetActive(true);
+        _animator.SetBool("IsActive", true);
+        _qteIsActive = true;
+        _currentTime = activeTime;
+        int inputNumber = 0;
+
+        while (_qteIsActive) {
+            // Check if the QTE's active time reached the end
+            if (_currentTime <= 0) {
+                _qteIsActive = false;
+                break;
+            }
+
+            _qteButton.transform.localScale += Vector3.one * ((1f - 0.7f)/activeTime) * Time.deltaTime;
+            
+            // Check for any input for the QTE
+            if (Input.GetKeyUp(QTEKey)) {
+                inputNumber += 1;
+            }
+
+            yield return new WaitForSeconds(Time.deltaTime);
+            _currentTime -= Time.deltaTime;
+        }
+
+        _animator.SetBool("IsActive", false);
+        Debug.Log($"[QTE System] QTE Mashed: {inputNumber}!");
+        _qteButton.transform.localScale = Vector3.one;
+        Result = inputNumber;
+        EndQTE();
+    }
 
     private void SetQTEFail() {
         Result = QTE_FAIL_RESULT;
@@ -113,6 +170,7 @@ public class QuickTimeEvent {
 }
 
 public enum QTEType {
-    SINGLE,
-    MASH
+    REGULAR,
+    MASH,
+    INVERSE
 }

@@ -6,6 +6,9 @@ using UnityEngine;
 public class BasicAttack : BattleAction {
     private static float QTE_ACTIVE_TIME = 0.2f;
     private static float QTE_LEAD_TIME = 0.3f;
+
+    private static float QTE_MASH_ACTIVE_TIME = 1.0f;
+
     public BasicAttack(BattleUnit targetUnit, BattleUnit actorUnit) : base("Basic Attack", targetUnit, actorUnit) {
     
     }
@@ -17,9 +20,26 @@ public class BasicAttack : BattleAction {
             ActorUnit.Object.transform.position + new Vector3(4, 0, 0) :
             ActorUnit.Object.transform.position - new Vector3(4, 0, 0);
 
-        // QTE to perform critical hit, Move unit towards target to perform animations
-        QuickTimeEvent QTE = new QuickTimeEvent(battle.qteButton, QTEType.SINGLE);
-        battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, QTE_ACTIVE_TIME, QTE_LEAD_TIME));
+        // Setup weapon-specific QTEs to perform critical hit, 
+        //  & Move unit towards target to perform animations
+        QuickTimeEvent QTE = null;
+        float activeQTETime = 0;
+        switch (ActorUnit.Weapon.Type) {
+            case WeaponType.ROD:
+                break;
+            case WeaponType.RANGED:
+                break;
+            case WeaponType.BLUNT:
+                QTE = new QuickTimeEvent(battle.qteButton, QTEType.MASH);
+                activeQTETime = QTE_MASH_ACTIVE_TIME;
+                break;
+            default:
+                QTE = new QuickTimeEvent(battle.qteButton, QTEType.REGULAR);
+                activeQTETime = QTE_ACTIVE_TIME;
+                break;
+        }
+
+        battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, activeQTETime, QTE_LEAD_TIME));
         battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
         if (ActorUnit.Object.GetComponent<Animator>() != null)
             ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
@@ -128,7 +148,20 @@ public class BasicAttack : BattleAction {
     }
 
     private void BluntAttack(BattleStateMachine battle, int qteResult) {
-        Debug.LogError("BluntAttack effect not implemented!");
+        float damageModifier;
+        string battleText = "";
+
+        // Check QTE
+        if (ActorUnit is Enemy) {
+            damageModifier = 1 - Math.Clamp(Mathf.Log(qteResult, 4) - 1, 0, 0.5f);
+        } else {
+            damageModifier = 1 + Math.Clamp(Mathf.Log(qteResult, 4) - 1, 0, 0.5f);
+        }
+
+        // Update Text & Entity Info
+        int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
+        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.WeaponName} for {damage} damage!";
+        battle.mainTextbox.text = battleText;
     }
 
     #endregion
