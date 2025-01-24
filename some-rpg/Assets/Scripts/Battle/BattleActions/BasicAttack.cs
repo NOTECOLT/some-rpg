@@ -121,7 +121,23 @@ public class BasicAttack : BattleAction {
     }
 
     private void RodAttack(BattleStateMachine battle, int qteResult) {
-        Debug.LogError("RodAttack effect not implemented!");
+        float damageModifier = 1;
+        string battleText = "";
+        // Check QTE
+        if (qteResult == QuickTimeEvent.QTE_SUCCESS_RESULT) {
+            if (ActorUnit is Enemy) {
+                damageModifier = 0.7f;
+                battleText = "Partial Dodge! ";
+            } else {
+                damageModifier = 2;
+                battleText = "Critical hit! ";
+            }
+        }
+
+        // Update Text & Entity Info
+        int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
+        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.WeaponName} for {damage} damage!";
+        battle.mainTextbox.text = battleText;
     }
 
     private void RangedAttack(BattleStateMachine battle, int qteResult) {
