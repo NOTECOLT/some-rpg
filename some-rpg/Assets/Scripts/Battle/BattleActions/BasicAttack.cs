@@ -22,12 +22,16 @@ public class BasicAttack : BattleAction {
 
         // Setup weapon-specific QTEs to perform critical hit, 
         //  & Move unit towards target to perform animations
-        QuickTimeEvent QTE = null;
-        float activeQTETime = 0;
+        QuickTimeEvent QTE;
+        float activeQTETime;
         switch (ActorUnit.Weapon.Type) {
             case WeaponType.ROD:
+                QTE = new QuickTimeEvent(battle.qteButton, QTEType.REGULAR);
+                activeQTETime = QTE_ACTIVE_TIME;
                 break;
             case WeaponType.RANGED:
+                QTE = new QuickTimeEvent(battle.qteButton, QTEType.REGULAR);
+                activeQTETime = QTE_ACTIVE_TIME;
                 break;
             case WeaponType.BLUNT:
                 QTE = new QuickTimeEvent(battle.qteButton, QTEType.MASH);
@@ -40,28 +44,16 @@ public class BasicAttack : BattleAction {
         }
 
         battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, activeQTETime, QTE_LEAD_TIME));
-        battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
-        if (ActorUnit.Object.GetComponent<Animator>() != null)
-            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
-
-        yield return new WaitForSeconds(QTE_LEAD_TIME);
+        yield return MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME);
 
         // Perform Attack animation
         if (ActorUnit.Object.GetComponent<Animator>() != null)
             ActorUnit.Object.GetComponent<Animator>().SetTrigger("Attack");
 
-        while (QTE.Result == QuickTimeEvent.QTE_NULL_RESULT) yield return new WaitForSeconds(Time.deltaTime);
+        yield return QTE.WaitForQTEFinish();
         
         // Move unit back
-        if (ActorUnit.Object.GetComponent<Animator>() != null) {
-            yield return new WaitForSeconds(ActorUnit.Object.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length);
-            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
-        }
-            
         yield return MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME);
-
-        if (ActorUnit.Object.GetComponent<Animator>() != null)
-            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Idle");
 
         // Perform weapon dependent battle effects
         switch (ActorUnit.Weapon.Type) {
@@ -87,12 +79,18 @@ public class BasicAttack : BattleAction {
     public IEnumerator MoveTo(Vector3 startPosition, Vector3 finalPosition, float moveTime) {
         float currentTime = moveTime;
 
+        if (ActorUnit.Object.GetComponent<Animator>() != null)
+            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Walk");
+
         while (currentTime > 0) {
             ActorUnit.Object.transform.position = Vector3.MoveTowards(ActorUnit.Object.transform.position, finalPosition, Vector3.Distance(startPosition, finalPosition)/moveTime * Time.deltaTime);
 
             yield return new WaitForSeconds(Time.deltaTime);
             currentTime -= Time.deltaTime;
         }
+
+        if (ActorUnit.Object.GetComponent<Animator>() != null)
+            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Idle");
     }
 
     // I don't like the idea that the logic for all basic attack types is held in this class but for now I'll keep it here

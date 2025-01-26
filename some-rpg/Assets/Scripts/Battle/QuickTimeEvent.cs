@@ -52,6 +52,10 @@ public class QuickTimeEvent {
                 break;
         }
     }
+
+    public IEnumerator WaitForQTEFinish() {
+        while (Result == QTE_NULL_RESULT) yield return new WaitForSeconds(Time.deltaTime);
+    }
     private IEnumerator RegularQTE(KeyCode[] keyPool, float activeTime, float leadTime) {
         Result = QTE_NULL_RESULT;
 
