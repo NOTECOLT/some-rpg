@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BasicAttack : BattleAction {
-    private static float QTE_ACTIVE_TIME = 0.2f;
-    private static float QTE_LEAD_TIME = 0.3f;
+    private static float QTE_WINDOW = 0.2f;
+    private static float QTE_MASH_WINDOW = 1.0f;
+    private static float QTE_RELEASE_WINDOW = 0.3f;
 
-    private static float QTE_MASH_ACTIVE_TIME = 1.0f;
+    private static float QTE_LEAD_TIME = 0.3f;
+    
 
     public BasicAttack(BattleUnit targetUnit, BattleUnit actorUnit) : base("Basic Attack", targetUnit, actorUnit) {
     
@@ -23,27 +25,27 @@ public class BasicAttack : BattleAction {
         // Setup weapon-specific QTEs to perform critical hit, 
         //  & Move unit towards target to perform animations
         QuickTimeEvent QTE;
-        float activeQTETime;
+        float qteWindow;
         switch (ActorUnit.Weapon.Type) {
             case WeaponType.ROD:
-                QTE = new QuickTimeEvent(battle.qteButton, QTEType.REGULAR);
-                activeQTETime = QTE_ACTIVE_TIME;
+                QTE = new QuickTimeEvent(battle.qteButton, QTEType.PRESS);
+                qteWindow = QTE_WINDOW;
                 break;
             case WeaponType.RANGED:
-                QTE = new QuickTimeEvent(battle.qteButton, QTEType.REGULAR);
-                activeQTETime = QTE_ACTIVE_TIME;
+                QTE = new QuickTimeEvent(battle.qteButton, QTEType.RELEASE);
+                qteWindow = QTE_RELEASE_WINDOW;
                 break;
             case WeaponType.BLUNT:
                 QTE = new QuickTimeEvent(battle.qteButton, QTEType.MASH);
-                activeQTETime = QTE_MASH_ACTIVE_TIME;
+                qteWindow = QTE_MASH_WINDOW;
                 break;
             default:
-                QTE = new QuickTimeEvent(battle.qteButton, QTEType.REGULAR);
-                activeQTETime = QTE_ACTIVE_TIME;
+                QTE = new QuickTimeEvent(battle.qteButton, QTEType.PRESS);
+                qteWindow = QTE_WINDOW;
                 break;
         }
 
-        battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, activeQTETime, QTE_LEAD_TIME));
+    battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, qteWindow, QTE_LEAD_TIME));
         yield return MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME);
 
         // Perform Attack animation
