@@ -10,18 +10,27 @@ using UnityEngine.InputSystem;
 /// We use Ink as a scripting language for dialogue
 /// </summary>
 public class DialogueManager : MonoBehaviour {
+    /// <summary>
+    /// Expressed in characters per second
+    /// </summary>
+    private static float WRITE_SPEED = 70.0f;
     private DialogueAction _inputActions;
     private Story _currentStory = null;
+    private bool _isWritingLine = false;
+    private bool _isWaitingForChoice = false;
+    private bool _autoFinishLine = false;
 
     [SerializeField] private GameObject _dialogueParent;
+    [SerializeField] private GameObject _dialogueChoiceParent;
     [SerializeField] private TMP_Text _dialogueText;
+    [SerializeField] private GameObject _dialogueChoicePrefab;
 
     public static event System.Action OnDialogueOpen;
     public static event System.Action OnDialogueClose;
 
     void Awake() {
         _inputActions = new DialogueAction();
-        _inputActions.Dialogue.Next.performed += OnDialogueNext;
+        _inputActions.Dialogue.Next.performed += OnNextInput;
     }
 
     void OnEnable() {
@@ -33,20 +42,14 @@ public class DialogueManager : MonoBehaviour {
     }
 
     void OnDestroy() {
-        _inputActions.Dialogue.Next.performed -= OnDialogueNext;
+        _inputActions.Dialogue.Next.performed -= OnNextInput;
     }
 
     void Start() {
         // Initialize the game by disabling dialogue
         DisableDialogue();
 
-        // Prototype Code to display choices:
-        // if (_story.currentChoices.Count > 0) {
-        //     for (int i = 0; i < _story.currentChoices.Count; i++) {
-        //         Choice choice = _story.currentChoices[i];
-        //         Debug.Log("     " + (i + 1) + "." + choice.text);
-        //     }
-        // }        
+        // Prototype Code to display choices:     
     }
 
     void Update() {
@@ -68,21 +71,74 @@ public class DialogueManager : MonoBehaviour {
         _currentStory = new Story(inkJson.text);
         EnableDialogue();
         OnDialogueOpen.Invoke();
+
+        foreach (Transform child in _dialogueChoiceParent.transform) {
+            Destroy(child.gameObject);
+        }
+
         // Display the first line
-        if (_currentStory.canContinue)
-            _dialogueText.text = _currentStory.Continue();
+        ContinueDialogue();
     }
 
-    private void OnDialogueNext(InputAction.CallbackContext context) {
+    private void OnNextInput(InputAction.CallbackContext context) {
+        if (!_isWritingLine && !_isWaitingForChoice) {
+            ContinueDialogue();
+        } else if (_isWritingLine) {
+            _autoFinishLine = true;
+        }
+    }
+
+    private void ContinueDialogue() {
         if (_currentStory.canContinue) {
-            _dialogueText.text = _currentStory.Continue();
+            StartCoroutine(WriteLine(_currentStory.Continue(), WRITE_SPEED));
         } else {
             DisableDialogue();
             OnDialogueClose.Invoke();
         }
     }
 
-    private IEnumerator DisplayLine() {
-        yield return null;
+    /// <summary>
+    /// Writes a line character by character
+    /// </summary>
+    /// <param name="line"></param>
+    /// <param name="writeSpeed">Expressed in characters per second</param>
+    /// <returns></returns>
+    private IEnumerator WriteLine(string line, float writeSpeed) {
+        // LINE WRITING
+        _isWritingLine = true;
+        _dialogueText.text = "";
+        foreach (char c in line) {
+            _dialogueText.text += c;
+            yield return new WaitForSeconds(1/writeSpeed);
+
+            // Auto finish writing the line if the player presses the next key while writing
+            if (_autoFinishLine) {
+                _autoFinishLine = false;
+                _dialogueText.text = line;
+                break;
+            }
+        }
+
+        _isWritingLine = false;
+
+        // DISPLAY CHOICES
+        if (_currentStory.currentChoices.Count > 0) {
+            _isWaitingForChoice = true;
+            List<Choice> choices = _currentStory.currentChoices;
+            
+            foreach (Choice c in choices) {
+                GameObject choiceObject = Instantiate(_dialogueChoicePrefab, _dialogueChoiceParent.transform);
+                choiceObject.GetComponentInChildren<TMP_Text>().text = c.text;
+            }
+        } else {
+            _isWaitingForChoice = false;
+            foreach (Transform child in _dialogueChoiceParent.transform) {
+                Destroy(child.gameObject);
+            }
+        }
+    }
+
+    private void DisplayChoices() {
+
     }
 }
