@@ -1,5 +1,7 @@
 Hello world!
-This is a test of ink dialogue
-English or Spanish?
-*   English
-*   Spanish
+This is a test sign.
+Are you stupid?
+*   [Yes]
+    You stupid.
+*   [No]
+    You're lying.

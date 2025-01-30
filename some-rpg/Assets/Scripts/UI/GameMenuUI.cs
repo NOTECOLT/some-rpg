@@ -45,10 +45,15 @@ public class GameMenuUI : MonoBehaviour {
     void OnDestroy() {
         _inputActions.GameMenu.OpenGameMenu.started -= OnMenuInput;
         SceneLoader.Instance.OnEncounterTransition -= OnSceneTransition;
+
+        DialogueManager.OnDialogueOpen -= DisableInputActions;
+        DialogueManager.OnDialogueClose -= EnableInputActions;
     }
 
     void Start() {
         SceneLoader.Instance.OnEncounterTransition += OnSceneTransition;
+        DialogueManager.OnDialogueOpen += DisableInputActions;
+        DialogueManager.OnDialogueClose += EnableInputActions;
 
         _isMenuOpen = false;
         _menuParent.SetActive(_isMenuOpen);
@@ -74,5 +79,13 @@ public class GameMenuUI : MonoBehaviour {
     public void ReloadGame() {
         Destroy(FindObjectOfType<PlayerDataManager>().gameObject);
         SceneLoader.Instance.LoadOverworld();
+    }
+
+    private void DisableInputActions() {
+        _inputActions.Disable();
+    }
+
+    private void EnableInputActions() {
+        _inputActions.Enable();
     }
 }

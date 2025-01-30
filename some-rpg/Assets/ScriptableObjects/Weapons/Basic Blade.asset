@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 0
   WeaponName: Basic Blade
+  weaponid: basicblade
   Sprite: {fileID: 809283536, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}

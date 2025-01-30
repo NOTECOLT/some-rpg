@@ -4,6 +4,7 @@ using UnityEngine;
 using Ink.Runtime;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// Used to manage the progression of dialogue.
@@ -47,7 +48,7 @@ public class DialogueManager : MonoBehaviour {
 
     void Start() {
         // Initialize the game by disabling dialogue
-        DisableDialogue();
+        DisableDialogueUI();
 
         // Prototype Code to display choices:     
     }
@@ -56,25 +57,41 @@ public class DialogueManager : MonoBehaviour {
 
     }
 
-    private void DisableDialogue() {
+    #region Functions
+
+    private static string FUNC_EQUIP_WEAPON = "equipWeapon";
+    private void EquipWeapon(string weaponid) {
+        PlayerDataManager.Instance.Data.Weapon = FindObjectOfType<ItemDatabase>().Weapons[weaponid];
+        Debug.Log($"[Dialogue Manager] Script Function Executed: {FUNC_EQUIP_WEAPON}({weaponid})");
+    }
+    
+    #endregion
+
+    private void DisableDialogueUI() {
         _dialogueParent.SetActive(false);
         _inputActions.Disable();
-        _currentStory = null;
     }
 
-    private void EnableDialogue() {
+    private void EnableDialogueUI() {
         _dialogueParent.SetActive(true);
         _inputActions.Enable();
+
+        ClearChoicesUI();
+    }
+
+    private void ClearChoicesUI() {
+        foreach (Transform child in _dialogueChoiceParent.transform) {
+            child.gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+            Destroy(child.gameObject);
+        }
     }
     
     public void TriggerDialogue(TextAsset inkJson) {
         _currentStory = new Story(inkJson.text);
-        EnableDialogue();
+        EnableDialogueUI();
         OnDialogueOpen.Invoke();
 
-        foreach (Transform child in _dialogueChoiceParent.transform) {
-            Destroy(child.gameObject);
-        }
+        _currentStory.BindExternalFunction(FUNC_EQUIP_WEAPON, (string weaponid) => EquipWeapon(weaponid));
 
         // Display the first line
         ContinueDialogue();
@@ -92,9 +109,17 @@ public class DialogueManager : MonoBehaviour {
         if (_currentStory.canContinue) {
             StartCoroutine(WriteLine(_currentStory.Continue(), WRITE_SPEED));
         } else {
-            DisableDialogue();
+            DisableDialogueUI();
+            _currentStory.UnbindExternalFunction(FUNC_EQUIP_WEAPON);
+            _currentStory = null;
             OnDialogueClose.Invoke();
         }
+    }
+
+    public void ChooseOption(int choiceIndex) {
+        _isWaitingForChoice = false;
+        _currentStory.ChooseChoiceIndex(choiceIndex);
+        ContinueDialogue();
     }
 
     /// <summary>
@@ -129,16 +154,11 @@ public class DialogueManager : MonoBehaviour {
             foreach (Choice c in choices) {
                 GameObject choiceObject = Instantiate(_dialogueChoicePrefab, _dialogueChoiceParent.transform);
                 choiceObject.GetComponentInChildren<TMP_Text>().text = c.text;
+                choiceObject.GetComponent<Button>().onClick.AddListener(() => { ChooseOption(c.index); });
             }
+
         } else {
-            _isWaitingForChoice = false;
-            foreach (Transform child in _dialogueChoiceParent.transform) {
-                Destroy(child.gameObject);
-            }
+            ClearChoicesUI();
         }
-    }
-
-    private void DisplayChoices() {
-
     }
 }

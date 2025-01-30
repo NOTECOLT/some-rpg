@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 2
   WeaponName: Wooden Staff
+  weaponid: woodenstaff
   Sprite: {fileID: -930868538, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}
