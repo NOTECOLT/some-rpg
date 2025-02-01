@@ -60,10 +60,15 @@ public class QuickTimeEvent {
         while (Result == QTE_NULL_RESULT) yield return new WaitForSeconds(Time.deltaTime);
     }
     private IEnumerator PressQTE(KeyCode[] keyPool, float window, float leadTime) {
+        TMP_Text qteKeyText = _qteButton.GetComponent<QTEPrompt>().QTEText;
+        TMP_Text qteFlashText = _qteButton.GetComponent<QTEPrompt>().QTEFlashText;
+
+        qteFlashText.text = "";
+
         Result = QTE_NULL_RESULT;
 
         QTEKey = keyPool[UnityEngine.Random.Range(0, keyPool.Length)];
-        _qteButton.GetComponentInChildren<TMP_Text>().text = QTEKey.ToString();
+        qteKeyText.text = QTEKey.ToString();
         _qteButton.SetActive(true);
         _qteButton.transform.localScale = Vector3.one * 0.7f;
         _qteIsActive = true;
@@ -90,6 +95,7 @@ public class QuickTimeEvent {
         // WINDOW  -----------------------------------------
         _currentTime = window;
         _animator.SetBool("IsActive", true);
+        qteFlashText.text = "Press!";
 
         while (_qteIsActive) {
             // Check if the QTE's window reached the end
@@ -117,12 +123,17 @@ public class QuickTimeEvent {
             _currentTime -= Time.deltaTime;
         }
         
+        qteFlashText.text = "";
         EndQTE();
     }
     
     private IEnumerator MashQTE(KeyCode[] keyPool, float window, float leadTime) {
+        TMP_Text qteKeyText = _qteButton.GetComponent<QTEPrompt>().QTEText;
+        TMP_Text qteFlashText = _qteButton.GetComponent<QTEPrompt>().QTEFlashText;
+
         Result = QTE_NULL_RESULT;
         _qteIsActive = true;
+        qteFlashText.text = "";
         
         // LEAD TIME -----------------------------------------
         _currentTime = leadTime;
@@ -133,7 +144,8 @@ public class QuickTimeEvent {
 
         // WINDOW -----------------------------------------
         QTEKey = keyPool[UnityEngine.Random.Range(0, keyPool.Length)];
-        _qteButton.GetComponentInChildren<TMP_Text>().text = QTEKey.ToString();
+        qteKeyText.text = QTEKey.ToString();
+        qteFlashText.text = "Mash!";
         _qteButton.transform.localScale = Vector3.one * 0.7f;
         _qteButton.SetActive(true);
         _animator.SetBool("IsActive", true);
@@ -158,6 +170,7 @@ public class QuickTimeEvent {
             _currentTime -= Time.deltaTime;
         }
 
+        qteFlashText.text = "";
         _animator.SetBool("IsActive", false);
         Debug.Log($"[QTE System] QTE Mashed: {inputNumber}!");
         _qteButton.transform.localScale = Vector3.one;
@@ -166,6 +179,9 @@ public class QuickTimeEvent {
     }
 
     private IEnumerator ReleaseQTE(KeyCode[] keyPool, float window, float leadTime) {
+        TMP_Text qteKeyText = _qteButton.GetComponent<QTEPrompt>().QTEText;
+        TMP_Text qteFlashText = _qteButton.GetComponent<QTEPrompt>().QTEFlashText;
+
         Result = QTE_NULL_RESULT;
         
         // LEAD TIME -----------------------------------------
@@ -173,12 +189,14 @@ public class QuickTimeEvent {
         // Wait for the player to start holding the designated key
         QTEKey = keyPool[UnityEngine.Random.Range(0, keyPool.Length)];
         _qteIsActive = true;
-        _qteButton.GetComponentInChildren<TMP_Text>().text = QTEKey.ToString();
+        qteKeyText.text = QTEKey.ToString();
         _qteButton.SetActive(true);
         _animator.SetBool("IsActive", false);
         _qteButton.transform.localScale = Vector3.one * 0.7f;
+        qteFlashText.text = "Hold!";
         while (!Input.GetKeyDown(QTEKey)) yield return new WaitForSeconds(Time.deltaTime);
-
+        qteFlashText.text = "";
+        
         _currentTime = leadTime;
         while (_currentTime >= 0) {
             yield return new WaitForSeconds(Time.deltaTime);
@@ -188,7 +206,8 @@ public class QuickTimeEvent {
         // WINDOW -----------------------------------------
         _animator.SetBool("IsActive", true);
         _currentTime = window;
-        
+        qteFlashText.text = "Release!";
+
         while (_qteIsActive) {
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
@@ -211,6 +230,7 @@ public class QuickTimeEvent {
             _currentTime -= Time.deltaTime;
         }
 
+        qteFlashText.text = "";
         _animator.SetBool("IsActive", false);
         _qteButton.transform.localScale = Vector3.one;
         EndQTE();
