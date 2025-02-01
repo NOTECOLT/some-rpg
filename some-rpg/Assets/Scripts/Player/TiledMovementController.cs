@@ -58,6 +58,10 @@ public class TiledMovementController : MonoBehaviour {
 
         _mapManager = FindObjectOfType<MapManager>();
         _animator = GetComponent<Animator>();
+
+        if (!PlayerDataManager.Instance.isLoading) {
+            SetPosition(PlayerDataManager.Instance.Data.Cell, PlayerDataManager.Instance.Data.Direction);
+        }
     }
 
     // TODO: TEMPORARY FUNCTION FOR NOW-- NEED TO MAKE A SEPARATE LOADING STATE FOR THE GAME

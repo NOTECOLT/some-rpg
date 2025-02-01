@@ -8,6 +8,11 @@ using UnityEngine;
 /// </summary>
 public class PlayerDataManager : MonoBehaviour {
     public static PlayerDataManager Instance { get; private set; }
+    
+    /// <summary>
+    /// Temporary value while we dont have a proper loading state
+    /// </summary>
+    public bool isLoading = true;
 
     private void Awake()  { 
         // If there is an instance, and it's not me, delete myself.
@@ -24,6 +29,7 @@ public class PlayerDataManager : MonoBehaviour {
     public PlayerData Data = new PlayerData();
 
     void Start() {
+        isLoading = true;
         DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
         if (!dataPersistence.Exists("player")) {
             NewSaveData(dataPersistence);
@@ -34,6 +40,7 @@ public class PlayerDataManager : MonoBehaviour {
         }
 
         FindObjectOfType<TiledMovementController>().SetPosition(Data.Cell, Data.Direction);
+        isLoading = false;
     }
 
     private void NewSaveData(DataPersistenceManager<PlayerData> dpm) {
