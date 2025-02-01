@@ -23,7 +23,7 @@ public class BattleAction {
         TargetUnit = targetUnit;
         ActorUnit = actorUnit;
 
-        priority = (ActorUnit is not null) ? ActorUnit.CurrentStats.speed : 0;
+        priority = (ActorUnit is not null) ? ActorUnit.CurrentStats.Speed : 0;
     }
 
     public override string ToString() {
@@ -35,7 +35,7 @@ public class BattleAction {
     /// This function is public-facing and redirects to either DoPlayerAction or DoNonPlayerAction depending on the ActorUnit
     /// </summary>
     public virtual IEnumerator DoAction(BattleStateMachine battle) {
-        Debug.Log($"Action {ActionName} 'DoPlayerAction' has not been implemented!");
+        Debug.LogWarning($"Action {ActionName} 'DoPlayerAction' has not been implemented!");
         yield return null;
     }
 }

@@ -108,13 +108,7 @@ public class BattleStateMachine : MonoBehaviour {
     }
 
     public void EndBattle() {
-        PlayerData.Instance.CurrentStats = (EntityStats)playerBattleUnit.CurrentStats.Clone();
+        PlayerDataManager.Instance.Data.CurrentStats = (EntityStats)playerBattleUnit.CurrentStats.Clone();
         SceneLoader.Instance.LoadOverworld();
     }
 }   
-
-public enum ActionType {
-    NULL,
-    BASIC_ATTACK,
-    HEAL
-}

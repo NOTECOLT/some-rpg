@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -44,10 +45,15 @@ public class GameMenuUI : MonoBehaviour {
     void OnDestroy() {
         _inputActions.GameMenu.OpenGameMenu.started -= OnMenuInput;
         SceneLoader.Instance.OnEncounterTransition -= OnSceneTransition;
+
+        DialogueManager.OnDialogueOpen -= DisableInputActions;
+        DialogueManager.OnDialogueClose -= EnableInputActions;
     }
 
     void Start() {
         SceneLoader.Instance.OnEncounterTransition += OnSceneTransition;
+        DialogueManager.OnDialogueOpen += DisableInputActions;
+        DialogueManager.OnDialogueClose += EnableInputActions;
 
         _isMenuOpen = false;
         _menuParent.SetActive(_isMenuOpen);
@@ -59,8 +65,27 @@ public class GameMenuUI : MonoBehaviour {
 
         if (_isMenuOpen) {
             OnMenuOpen.Invoke();
-            _playerInfo.Instantiate(PlayerData.Instance.name, PlayerData.Instance.CurrentStats, PlayerData.Instance.BaseStats);
+            PlayerData data = PlayerDataManager.Instance.Data;
+            _playerInfo.Instantiate("Player", data.CurrentStats, data.BaseStats, data.Weapon);
         }
         else OnMenuClose.Invoke();
+    }
+
+    public void SaveGame() {
+        DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
+        dataPersistence.SaveData("player", PlayerDataManager.Instance.Data);
+    }
+
+    public void ReloadGame() {
+        Destroy(FindObjectOfType<PlayerDataManager>().gameObject);
+        SceneLoader.Instance.LoadOverworld();
+    }
+
+    private void DisableInputActions() {
+        _inputActions.Disable();
+    }
+
+    private void EnableInputActions() {
+        _inputActions.Enable();
     }
 }

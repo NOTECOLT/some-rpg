@@ -1,25 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
-/// Holds all player stats within the scene. <br></br>
-/// Will hold loaded PlayerData and PlayerData to be saved from.
+/// Object that stores all player data information. Not a Monobehaviour and thus must be loaded using the PlayerDataManager
 /// </summary>
-public class PlayerData : MonoBehaviour {
-    public static PlayerData Instance { get; private set; }
-
-    private void Awake()  { 
-        // If there is an instance, and it's not me, delete myself.
-        if (Instance != null && Instance != this) { 
-            Destroy(this.gameObject); 
-        } else { 
-            Instance = this; 
-        } 
-
-        DontDestroyOnLoad(this.gameObject);
-    }
-
+[Serializable] 
+public class PlayerData {
     // BaseStats only change in between battles, through level up or permanent status changes
     public EntityStats BaseStats = new EntityStats(); 
 
@@ -27,20 +16,15 @@ public class PlayerData : MonoBehaviour {
     public EntityStats CurrentStats = new EntityStats();
     public Vector3Int Cell = Vector3Int.zero;
     public Direction Direction = Direction.DOWN;
+    public Weapon Weapon;
 
-    void Start() {
-        CurrentStats = (EntityStats)BaseStats.Clone();
+    public object Clone() {
+        return new PlayerData() {
+            BaseStats = (EntityStats)this.BaseStats.Clone(),
+            CurrentStats = (EntityStats)this.CurrentStats.Clone(),
+            Cell = new Vector3Int(this.Cell.x, this.Cell.y, this.Cell.z),
+            Direction = this.Direction,
+            Weapon = this.Weapon
+        };
     }
-}
-
-/// <summary>
-/// Animation Directions integers as defined by the animator controller parameters
-/// Integers follow the order "Never (North, Up) Eat (East, Right) Soggy (South, Down) Waffles (West, Left)"
-/// </summary>
-public enum Direction {
-    UP,
-    RIGHT,
-    DOWN,
-    LEFT,
-    NULL
 }

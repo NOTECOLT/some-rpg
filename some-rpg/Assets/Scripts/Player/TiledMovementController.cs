@@ -12,7 +12,7 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class TiledMovementController : MonoBehaviour {
     public Vector3Int Cell { get; private set; } = Vector3Int.zero;
-    public Vector3Int StartCell = Vector3Int.zero;
+    // public Vector3Int StartCell = Vector3Int.zero;
     public Direction FacingDirection { get; private set; } = Direction.DOWN;
     private MapManager _mapManager;
     private Vector3 _movePoint;
@@ -59,14 +59,17 @@ public class TiledMovementController : MonoBehaviour {
         _mapManager = FindObjectOfType<MapManager>();
         _animator = GetComponent<Animator>();
 
-        if (PlayerData.Instance is not null) {
-            StartCell = PlayerData.Instance.Cell;
-            Cell = PlayerData.Instance.Cell;
-            FacingDirection = PlayerData.Instance.Direction;
+        if (!PlayerDataManager.Instance.isLoading) {
+            SetPosition(PlayerDataManager.Instance.Data.Cell, PlayerDataManager.Instance.Data.Direction);
         }
+    }
 
-        transform.position = _tileMap.CellToWorld(StartCell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
-        
+    // TODO: TEMPORARY FUNCTION FOR NOW-- NEED TO MAKE A SEPARATE LOADING STATE FOR THE GAME
+    public void SetPosition(Vector3Int cell, Direction direction) {
+        Cell = cell;
+        FacingDirection = direction;
+
+        transform.position = _tileMap.CellToWorld(Cell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
         _movePoint = transform.position;
     }
 
@@ -119,8 +122,8 @@ public class TiledMovementController : MonoBehaviour {
         FacingDirection = (dir != Direction.NULL) ? dir : FacingDirection;
 
         Cell += CellAddend;
-        PlayerData.Instance.Cell = Cell;
-        PlayerData.Instance.Direction = FacingDirection;
+        PlayerDataManager.Instance.Data.Cell = Cell;
+        PlayerDataManager.Instance.Data.Direction = FacingDirection;
         
         _movePoint = _tileMap.CellToWorld(Cell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
 

@@ -13,23 +13,24 @@ public class EntityInfoUI : MonoBehaviour {
     [SerializeField] private TMP_Text _entityName;
     [SerializeField] private TMP_Text _hitPoints;
     [SerializeField] private TMP_Text _manaPoints;
+    [SerializeField] private Image _weaponSprite;
 
     public void Instantiate(BattleUnit unit) {
-        SetEntityName(unit.Name);
-        SetHPBar(unit.CurrentStats.hitPoints, unit.BaseStats.hitPoints);
+        _entityName.text = unit.Name;
+        SetHPBar(unit.CurrentStats.HitPoints, unit.BaseStats.HitPoints);
         if (_manapointsBar != null)
-            SetMPBar(unit.CurrentStats.manaPoints, unit.BaseStats.manaPoints);
+            SetMPBar(unit.CurrentStats.ManaPoints, unit.BaseStats.ManaPoints);
+        if (_weaponSprite != null)
+            _weaponSprite.sprite = unit.Weapon.Sprite;
     }
 
-    public void Instantiate(string name, EntityStats currentStats, EntityStats baseStats) {
-        SetEntityName(name);
-        SetHPBar(currentStats.hitPoints, baseStats.hitPoints);
-        if (_manapointsBar != null)
-            SetMPBar(currentStats.manaPoints, baseStats.manaPoints);
-    }
-
-    public void SetEntityName(string name) {
+    public void Instantiate(string name, EntityStats currentStats, EntityStats baseStats, Weapon weapon) {
         _entityName.text = name;
+        SetHPBar(currentStats.HitPoints, baseStats.HitPoints);
+        if (_manapointsBar != null)
+            SetMPBar(currentStats.ManaPoints, baseStats.ManaPoints);
+        if (_weaponSprite != null)
+            _weaponSprite.sprite = weapon.Sprite;
     }
 
     /// <summary>
@@ -46,6 +47,8 @@ public class EntityInfoUI : MonoBehaviour {
         if (_manaPoints != null)
             _manaPoints.text = $"{newMP}/{totalMP}";
     }
+
+    #region Bar Animations
 
     public void SetHPBar(int oldHP, int newHP, int totalHP, float time) {
         StartCoroutine(AnimateHPBar(oldHP, newHP, totalHP, time));
@@ -96,4 +99,6 @@ public class EntityInfoUI : MonoBehaviour {
             _manaPoints.text = $"{newMP}/{totalMP}";
         _manapointsBar.fillAmount = newPercentage;
     }
+
+    #endregion
 }
