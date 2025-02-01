@@ -60,8 +60,11 @@ public class DialogueManager : MonoBehaviour {
     #region Functions
 
     private static string FUNC_EQUIP_WEAPON = "equipWeapon";
+
     private void EquipWeapon(string weaponid) {
-        PlayerDataManager.Instance.Data.Weapon = FindObjectOfType<ItemDatabase>().Weapons[weaponid];
+        // Access the ItemDatabase component to be able to reference item ids
+        // ? Not my favorite solution but i'll keep it like this for now 
+        PlayerDataManager.Instance.Data.Weapon = GetComponent<ItemDatabase>().Weapons[weaponid];
         Debug.Log($"[Dialogue Manager] Script Function Executed: {FUNC_EQUIP_WEAPON}({weaponid})");
     }
     

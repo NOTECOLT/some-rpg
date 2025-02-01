@@ -1481,55 +1481,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 642680508}
   m_CullTransparentMesh: 1
---- !u!1 &727633547
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 727633549}
-  - component: {fileID: 727633548}
-  m_Layer: 0
-  m_Name: ItemDatabase
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &727633548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 727633547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05037cdfb33bbf443af1b1d2082c0d5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponsList:
-  - {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
-  - {fileID: 11400000, guid: f6be38e6c295ef54a84908904b47888d, type: 2}
-  - {fileID: 11400000, guid: a0f0aad74d2792b45afb54b11428f5f2, type: 2}
-  - {fileID: 11400000, guid: a069d982ab8a653449a6516ed0f0453c, type: 2}
---- !u!4 &727633549
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 727633547}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 929.13525, y: 371.45416, z: -2.7019064}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &819728340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5416,6 +5367,7 @@ GameObject:
   - component: {fileID: 1500050503}
   - component: {fileID: 1500050502}
   - component: {fileID: 1500050506}
+  - component: {fileID: 1500050507}
   m_Layer: 5
   m_Name: Dialogue UI
   m_TagString: Untagged
@@ -5522,6 +5474,23 @@ MonoBehaviour:
   _dialogueChoiceParent: {fileID: 1573040907}
   _dialogueText: {fileID: 1874957353}
   _dialogueChoicePrefab: {fileID: 353287652741872451, guid: 1ca78a32c16fba84b8eceb8d438919ec, type: 3}
+--- !u!114 &1500050507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500050500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05037cdfb33bbf443af1b1d2082c0d5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponsList:
+  - {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+  - {fileID: 11400000, guid: f6be38e6c295ef54a84908904b47888d, type: 2}
+  - {fileID: 11400000, guid: a0f0aad74d2792b45afb54b11428f5f2, type: 2}
+  - {fileID: 11400000, guid: a069d982ab8a653449a6516ed0f0453c, type: 2}
 --- !u!1 &1573040907
 GameObject:
   m_ObjectHideFlags: 0
@@ -12284,4 +12253,3 @@ SceneRoots:
   - {fileID: 819728340}
   - {fileID: 1427090213}
   - {fileID: 1500050505}
-  - {fileID: 727633549}
