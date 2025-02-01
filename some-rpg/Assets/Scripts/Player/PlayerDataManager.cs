@@ -26,12 +26,20 @@ public class PlayerDataManager : MonoBehaviour {
     void Start() {
         DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
         if (!dataPersistence.Exists("player")) {
-            Data = (PlayerData)DefaultData.Clone();
-            dataPersistence.NewData("player", Data);
-            Data.CurrentStats = (EntityStats)Data.BaseStats.Clone();
-            dataPersistence.SaveData("player", Data);
+            NewSaveData(dataPersistence);
         } else {
-            dataPersistence.LoadData("player", ref Data);
+            if (dataPersistence.LoadData("player", ref Data) == DataPersistenceManager<PlayerData>.RET_SAVE_WRONG_VERSION) {
+                NewSaveData(dataPersistence);
+            }
         }
+
+        FindObjectOfType<TiledMovementController>().SetPosition(Data.Cell, Data.Direction);
+    }
+
+    private void NewSaveData(DataPersistenceManager<PlayerData> dpm) {
+        Data = (PlayerData)DefaultData.Clone();
+        dpm.NewData("player", Data);
+        Data.CurrentStats = (EntityStats)Data.BaseStats.Clone();
+        dpm.SaveData("player", Data);    
     }
 }

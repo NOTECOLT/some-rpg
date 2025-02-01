@@ -59,7 +59,7 @@ MonoBehaviour:
       Speed: 0
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
-    Weapon: {fileID: 11400000, guid: a0f0aad74d2792b45afb54b11428f5f2, type: 2}
+    Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
   Data:
     BaseStats:
       HitPoints: 0
