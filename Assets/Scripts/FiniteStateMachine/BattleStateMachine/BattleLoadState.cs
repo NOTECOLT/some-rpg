@@ -1,12 +1,14 @@
 using UnityEngine;
 
-public class BattleLoadState : GenericState {
-    BattleStateMachine _context;
-    public BattleLoadState(BattleStateMachine context) {
+public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
+    private BattleStateMachine _context;
+    private bool _isDoneLoading;
+    public BattleLoadState(BattleStateMachine context, BattleStateMachine.StateKey key) : base(key) {
         _context = context;
     }
 
     public override void EnterState() {
+        _isDoneLoading = false;
         Debug.Log($"[BattleStateMachine: LOAD GAME]");
 
         _context.SetPlayerActionNull();
@@ -32,11 +34,16 @@ public class BattleLoadState : GenericState {
         _context.playerBattleUnit.Object.GetComponent<EntityInfoUI>().Instantiate(_context.playerBattleUnit);
 
         _context.qteButton.SetActive(false);
-
-        _context.ChangeState(_context.States[BattleStateMachine.StateKey.PLAYER_TURN_STATE]);
+        _isDoneLoading = true;
     }
 
-    public override void UpdateState() {
-    
-    }
+    public override void UpdateState() { } 
+
+    public override BattleStateMachine.StateKey GetNextState() {
+        if (_isDoneLoading) {
+            return BattleStateMachine.StateKey.PLAYER_TURN_STATE;
+        } else {
+            return Key;
+        }
+    }    
 }

@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BattleActionSequenceState : GenericState {
+public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKey> {
     BattleStateMachine _context;
-    public BattleActionSequenceState(BattleStateMachine context) {
+    private bool _isActionSequenceDone;
+    public BattleActionSequenceState(BattleStateMachine context, BattleStateMachine.StateKey key) : base(key) {
         _context = context;
     }
 
     public override void EnterState() {
+        _isActionSequenceDone = false;
         Debug.Log($"[BattleStateMachine: ACTION SEQUENCE]");
 
         _context.OnEnterActionSequenceState.Invoke();
@@ -26,6 +28,14 @@ public class BattleActionSequenceState : GenericState {
 
     public override void UpdateState() { }
 
+    public override BattleStateMachine.StateKey GetNextState() {
+        if (_isActionSequenceDone) {
+            return BattleStateMachine.StateKey.PLAYER_TURN_STATE;
+        } else {
+            return Key;
+        }        
+    }  
+    
     public void BuildEnemyActions() {
         // Create Battle Actions for each enemy on the field
         // ? May move this to elsewhere? idk
@@ -73,6 +83,6 @@ public class BattleActionSequenceState : GenericState {
         }
 
         _context.actionSequence = new List<BattleAction>();
-        _context.ChangeState(_context.States[BattleStateMachine.StateKey.PLAYER_TURN_STATE]);
+        _isActionSequenceDone = true;
     }
 }

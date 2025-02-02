@@ -1,26 +1,33 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Generic State Machine to be inherited from. Provides functionality for Storing & Automatically Updating States.
+/// </summary>
+/// <typeparam name="StateKey">StateKey is a nested Enum. One must exist for every state in the machine</typeparam>
 public class FiniteStateMachine<StateKey> : MonoBehaviour where StateKey : Enum {
-    public Dictionary<StateKey, GenericState> States = new Dictionary<StateKey, GenericState>();
-    public GenericState currentState;
+    protected Dictionary<StateKey, GenericState<StateKey>> States = new Dictionary<StateKey, GenericState<StateKey>>();
+    protected GenericState<StateKey> currentState;
 
     protected virtual void Start() {
         currentState.EnterState();
     }
 
     protected virtual void Update() {
-        currentState.UpdateState();
+        if (currentState.Key.Equals(currentState.GetNextState())) {
+            currentState.UpdateState();
+        } else {
+            ChangeState(currentState.GetNextState());
+        }
     }
 
     /// <summary>
     /// Called in order to change update the BattleState
     /// ? Idea: turn this into coroutine?
     /// </summary>
-    public void ChangeState(GenericState newState) {
-        currentState = newState;
+    public void ChangeState(StateKey newState) {
+        currentState = States[newState];
         currentState.EnterState();
     }
 }

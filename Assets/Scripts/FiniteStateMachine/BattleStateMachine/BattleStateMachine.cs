@@ -23,7 +23,7 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
 
     /// <summary> List of enemy objects in the battle </summary>
     public List<GameObject> enemyObjectList = new List<GameObject>();
-    public ActionType playerSelectedAction { get; private set; }
+    public ActionType playerSelectedAction;
     public BattleUnit playerBattleUnit;
     public UnityEvent OnEnterPlayerTurnState;
     public UnityEvent OnEnterActionSequenceState;
@@ -39,10 +39,10 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
             return;
         }
 
-        States = new Dictionary<StateKey, GenericState>(){
-            {StateKey.LOAD_STATE, new BattleLoadState(this)},
-            {StateKey.PLAYER_TURN_STATE, new BattlePlayerTurnState(this)},
-            {StateKey.ACTION_SEQUENCE_STATE, new BattleActionSequenceState(this)}
+        States = new Dictionary<StateKey, GenericState<StateKey>>(){
+            {StateKey.LOAD_STATE, new BattleLoadState(this, StateKey.LOAD_STATE)},
+            {StateKey.PLAYER_TURN_STATE, new BattlePlayerTurnState(this, StateKey.PLAYER_TURN_STATE)},
+            {StateKey.ACTION_SEQUENCE_STATE, new BattleActionSequenceState(this, StateKey.ACTION_SEQUENCE_STATE)}
         };
 
         currentState = States[StateKey.LOAD_STATE];
@@ -54,42 +54,30 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
         OnEnterActionSequenceState.RemoveAllListeners();
     }
 
-    // Listener Function to be added to every enemy target.
+    public void AddBattleAction(BattleAction action) {
+        Debug.Log($"[BattleStateMachine] Battle Action Added: {action}" );
+        actionSequence.Add(action);
+    }
+    
     /// <summary>
     /// Triggers when an enemy is clicked on during enemy target selection
     /// </summary>
     /// <param name="targetEnemy">Passed Target Id of the clicked enemy</param>
     public void OnEnemyClicked(Enemy targetEnemy) {
-        switch (playerSelectedAction) {
-            case ActionType.BASIC_ATTACK:
-                if (currentState == States[StateKey.PLAYER_TURN_STATE]) {
-                    AddBattleAction(new BasicAttack(targetEnemy, playerBattleUnit));
-                
-                    ChangeState(States[StateKey.ACTION_SEQUENCE_STATE]);
-                }
-                break;
-            default:
-                break;
+        if (currentState is IStateListener) {
+            IStateListener listener = (IStateListener)currentState;
+            listener.OnEnemyClicked(targetEnemy);
         }
     }
 
-    public void AddBattleAction(BattleAction action) {
-        Debug.Log($"[BattleStateMachine] Battle Action Added: {action}" );
-        actionSequence.Add(action);
-    }
-
+    /// <summary>
+    /// Triggers when a player chooses an action.
+    /// </summary>
+    /// <param name="action">The Selected action (i.e. ATTACK, HEAL, etc.)</param> <summary>
     public void SetPlayerAction(ActionType action) {
-        playerSelectedAction = action;
-
-
-        switch (playerSelectedAction) {
-            case ActionType.HEAL:
-                AddBattleAction(new Heal(playerBattleUnit));
-            
-                ChangeState(States[StateKey.ACTION_SEQUENCE_STATE]);
-                break;
-            default:
-                break;
+        if (currentState is IStateListener) {
+            IStateListener listener = (IStateListener)currentState;
+            listener.OnPlayerSetAction(action);
         }
     }
 
