@@ -2,14 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattlePlayerTurnState : BattleBaseState {
-    public override void EnterState(BattleStateMachine battle) {
+public class BattlePlayerTurnState : GenericState {
+    BattleStateMachine _context;
+    public BattlePlayerTurnState(BattleStateMachine context) {
+        _context = context;
+    }
+
+    public override void EnterState() {
         Debug.Log($"[BattleStateMachine: PLAYER TURN]");
 
-        battle.SetPlayerActionNull();
-        battle.OnEnterPlayerTurnState.Invoke();
+        _context.SetPlayerActionNull();
+        _context.OnEnterPlayerTurnState.Invoke();
     }
-    public override void UpdateState(BattleStateMachine battle) {
+    public override void UpdateState() {
     
     }
 }

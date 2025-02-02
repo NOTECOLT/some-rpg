@@ -4,73 +4,75 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BattleActionSequenceState : BattleBaseState {
-    public override void EnterState(BattleStateMachine battle) {
-        Debug.Log($"[BattleStateMachine: ACTION SEQUENCE]");
-
-        battle.OnEnterActionSequenceState.Invoke();
-
-        BuildEnemyActions(battle);
-        SortBattleActions(battle);
-
-        foreach (BattleAction action in battle.actionSequence)
-            Debug.Log($"[BattleStateMachine] {action}");
-
-        battle.StartCoroutine(ActionSequence(battle));
+public class BattleActionSequenceState : GenericState {
+    BattleStateMachine _context;
+    public BattleActionSequenceState(BattleStateMachine context) {
+        _context = context;
     }
 
-    public override void UpdateState(BattleStateMachine battle) { }
+    public override void EnterState() {
+        Debug.Log($"[BattleStateMachine: ACTION SEQUENCE]");
 
-    public void BuildEnemyActions(BattleStateMachine battle) {
+        _context.OnEnterActionSequenceState.Invoke();
+
+        BuildEnemyActions();
+        SortBattleActions();
+
+        foreach (BattleAction action in _context.actionSequence)
+            Debug.Log($"[BattleStateMachine] {action}");
+
+        _context.StartCoroutine(ActionSequence());
+    }
+
+    public override void UpdateState() { }
+
+    public void BuildEnemyActions() {
         // Create Battle Actions for each enemy on the field
         // ? May move this to elsewhere? idk
         // ? Idea: have each enemy facilitate their own battle action?, or maybe just their battle action type
         //      - Would allow for enemy AI
         //      - May be executed with unity events
-        foreach (GameObject obj in battle.enemyObjectList) {
+        foreach (GameObject obj in _context.enemyObjectList) {
             Enemy enemy = obj.GetComponent<EnemyObject>().Enemy;
 
-            battle.AddBattleAction(new BasicAttack(battle.playerBattleUnit, enemy));
+            _context.AddBattleAction(new BasicAttack(_context.playerBattleUnit, enemy));
         }
     }
 
     /// <summary>
     /// Sorts Battle Actions by priority. At the moment, priority is just defined by player speed
     /// </summary>
-    public void SortBattleActions(BattleStateMachine battle) {
-        battle.actionSequence.Sort((x,y) => y.priority.CompareTo(x.priority));
+    public void SortBattleActions() {
+        _context.actionSequence.Sort((x,y) => y.priority.CompareTo(x.priority));
     }
 
     /// </summary>
     /// Concerned with the player/enemy action execution & animation.
     /// <summary>
-    public IEnumerator ActionSequence(BattleStateMachine battle) {
+    public IEnumerator ActionSequence() {
         float gapTime = 1.0f;
 
-        foreach (BattleAction action in battle.actionSequence) {
-            yield return action.DoAction(battle);
+        foreach (BattleAction action in _context.actionSequence) {
+            yield return action.DoAction(_context);
 
             yield return new WaitForSeconds(gapTime);
 
             // Check after each action if either the player or all enemies have died
-            if (battle.playerBattleUnit.CurrentStats.HitPoints <= 0) {
-                battle.EndBattle();
+            if (_context.playerBattleUnit.CurrentStats.HitPoints <= 0) {
+                _context.EndBattle();
                 yield break;
             }
                 
 
-            foreach (GameObject enemy in battle.enemyObjectList) {
+            foreach (GameObject enemy in _context.enemyObjectList) {
                 if (enemy.GetComponent<EnemyObject>().Enemy.CurrentStats.HitPoints > 0)
                     break;
-                battle.EndBattle();
+                _context.EndBattle();
                 yield break;
             }
         }
 
-        battle.actionSequence = new List<BattleAction>();
-        battle.ChangeState(battle.battlePlayerTurnState);
+        _context.actionSequence = new List<BattleAction>();
+        _context.ChangeState(_context.States[BattleStateMachine.StateKey.PLAYER_TURN_STATE]);
     }
-
-    // TODO: QUICK TIME EVENT 
-    // TODO: https://www.youtube.com/watch?v=pzr1f85xeMc
 }

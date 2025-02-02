@@ -6,44 +6,47 @@ using UnityEngine;
 using UnityEngine.Events;
 
 // Class to handle all states in a turn based battle
-public class BattleStateMachine : MonoBehaviour {
-    // Game Object References -----------------
+public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey> {
+    public enum StateKey {
+        LOAD_STATE,
+        PLAYER_TURN_STATE,
+        ACTION_SEQUENCE_STATE
+    }
+
+    #region GameObject References
     public GameObject playerObject;
     public GameObject enemyObjectParent;
     public GameObject enemyObjectPrefab;
     public TMP_Text mainTextbox;
     public GameObject qteButton;
-    // ----------------------------------------
+    #endregion
 
     /// <summary> List of enemy objects in the battle </summary>
     public List<GameObject> enemyObjectList = new List<GameObject>();
     public ActionType playerSelectedAction { get; private set; }
     public BattleUnit playerBattleUnit;
-
-    // Battle States --------------------------
-    public BattleLoadState battleLoadState = new BattleLoadState();
-    public BattlePlayerTurnState battlePlayerTurnState = new BattlePlayerTurnState();
-    public BattleActionSequenceState battleActionSequenceState = new BattleActionSequenceState();
-    // ----------------------------------------
-
     public UnityEvent OnEnterPlayerTurnState;
     public UnityEvent OnEnterActionSequenceState;
-
-    public BattleBaseState currentState;
 
     /// <summary>
     /// List of Battle Actions (attacks, heals, etc.) to be executed in order by the battle manager
     /// </summary>
     public List<BattleAction> actionSequence;
 
-    void Start() {
+    protected override void Start() {
         if (SceneLoader.Instance is null) {
             Debug.LogError("Scene does not have SceneLoader Component! Battle failed to load.");
             return;
         }
 
-        currentState = battleLoadState;
-        currentState.EnterState(this);
+        States = new Dictionary<StateKey, GenericState>(){
+            {StateKey.LOAD_STATE, new BattleLoadState(this)},
+            {StateKey.PLAYER_TURN_STATE, new BattlePlayerTurnState(this)},
+            {StateKey.ACTION_SEQUENCE_STATE, new BattleActionSequenceState(this)}
+        };
+
+        currentState = States[StateKey.LOAD_STATE];
+        base.Start();
     }
 
     void OnDestroy() {
@@ -59,28 +62,15 @@ public class BattleStateMachine : MonoBehaviour {
     public void OnEnemyClicked(Enemy targetEnemy) {
         switch (playerSelectedAction) {
             case ActionType.BASIC_ATTACK:
-                if (currentState == battlePlayerTurnState) {
+                if (currentState == States[StateKey.PLAYER_TURN_STATE]) {
                     AddBattleAction(new BasicAttack(targetEnemy, playerBattleUnit));
                 
-                    ChangeState(battleActionSequenceState);
+                    ChangeState(States[StateKey.ACTION_SEQUENCE_STATE]);
                 }
                 break;
             default:
                 break;
         }
-    }
-
-    void Update() {
-        currentState.UpdateState(this);
-    }
-
-    /// <summary>
-    /// Called in order to change update the BattleState
-    /// ? Idea: turn this into coroutine?
-    /// </summary>
-    public void ChangeState(BattleBaseState newState) {
-        currentState = newState;
-        currentState.EnterState(this);
     }
 
     public void AddBattleAction(BattleAction action) {
@@ -96,7 +86,7 @@ public class BattleStateMachine : MonoBehaviour {
             case ActionType.HEAL:
                 AddBattleAction(new Heal(playerBattleUnit));
             
-                ChangeState(battleActionSequenceState);
+                ChangeState(States[StateKey.ACTION_SEQUENCE_STATE]);
                 break;
             default:
                 break;

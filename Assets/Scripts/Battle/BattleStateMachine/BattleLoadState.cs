@@ -1,13 +1,18 @@
 using UnityEngine;
 
-public class BattleLoadState : BattleBaseState {
-    public override void EnterState(BattleStateMachine battle) {
+public class BattleLoadState : GenericState {
+    BattleStateMachine _context;
+    public BattleLoadState(BattleStateMachine context) {
+        _context = context;
+    }
+
+    public override void EnterState() {
         Debug.Log($"[BattleStateMachine: LOAD GAME]");
 
-        battle.SetPlayerActionNull();
+        _context.SetPlayerActionNull();
 
         foreach (EnemyType enemyType in SceneLoader.Instance.Encounters) {
-            GameObject enemyObject = GameObject.Instantiate(battle.enemyObjectPrefab, battle.enemyObjectParent.transform);
+            GameObject enemyObject = GameObject.Instantiate(_context.enemyObjectPrefab, _context.enemyObjectParent.transform);
             Enemy enemy = new Enemy(enemyType, enemyObject);
             
             enemyObject.name = enemy.Name;
@@ -15,23 +20,23 @@ public class BattleLoadState : BattleBaseState {
 
             // C# Event listener used for selecting enemies
             enemyObject.GetComponent<EnemyObject>().Enemy = enemy;
-            enemyObject.GetComponent<EnemyObject>().OnEnemyClicked += battle.OnEnemyClicked;
+            enemyObject.GetComponent<EnemyObject>().OnEnemyClicked += _context.OnEnemyClicked;
 
             enemyObject.GetComponent<EntityInfoUI>().Instantiate(enemy);
             
-            battle.enemyObjectList.Add(enemyObject);
+            _context.enemyObjectList.Add(enemyObject);
             Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
         }
 
-        battle.playerBattleUnit = new BattleUnit(PlayerDataManager.Instance.Data.BaseStats, PlayerDataManager.Instance.Data.CurrentStats, battle.playerObject, "Player", PlayerDataManager.Instance.Data.Weapon);
-        battle.playerBattleUnit.Object.GetComponent<EntityInfoUI>().Instantiate(battle.playerBattleUnit);
+        _context.playerBattleUnit = new BattleUnit(PlayerDataManager.Instance.Data.BaseStats, PlayerDataManager.Instance.Data.CurrentStats, _context.playerObject, "Player", PlayerDataManager.Instance.Data.Weapon);
+        _context.playerBattleUnit.Object.GetComponent<EntityInfoUI>().Instantiate(_context.playerBattleUnit);
 
-        battle.qteButton.SetActive(false);
+        _context.qteButton.SetActive(false);
 
-        battle.ChangeState(battle.battlePlayerTurnState);
+        _context.ChangeState(_context.States[BattleStateMachine.StateKey.PLAYER_TURN_STATE]);
     }
 
-    public override void UpdateState(BattleStateMachine battle) {
+    public override void UpdateState() {
     
     }
 }
