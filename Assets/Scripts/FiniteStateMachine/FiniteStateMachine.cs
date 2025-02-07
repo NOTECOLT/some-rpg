@@ -14,7 +14,7 @@ public class FiniteStateMachine<StateKey> : MonoBehaviour where StateKey : Enum 
         currentState.EnterState();
     }
 
-    protected virtual void Update() {
+    private void Update() {
         if (currentState.Key.Equals(currentState.GetNextState())) {
             currentState.UpdateState();
         } else {
@@ -26,8 +26,12 @@ public class FiniteStateMachine<StateKey> : MonoBehaviour where StateKey : Enum 
     /// Called in order to change update the BattleState
     /// ? Idea: turn this into coroutine?
     /// </summary>
-    public void ChangeState(StateKey newState) {
+    private void ChangeState(StateKey newState) {
+        Debug.Log($"[{name}] [Exit State: {currentState.ToString().ToUpper()}]");
+        currentState.ExitState();
+        
         currentState = States[newState];
+        Debug.Log($"[{name}] [Enter State: {currentState.ToString().ToUpper()}]");
         currentState.EnterState();
     }
 }

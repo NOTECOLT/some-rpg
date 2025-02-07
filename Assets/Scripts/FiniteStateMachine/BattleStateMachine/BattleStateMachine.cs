@@ -10,7 +10,8 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     public enum StateKey {
         LOAD_STATE,
         PLAYER_TURN_STATE,
-        ACTION_SEQUENCE_STATE
+        ACTION_SEQUENCE_STATE,
+        END_BATTLE_STATE
     }
 
     #region GameObject References
@@ -33,6 +34,8 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     /// </summary>
     public List<BattleAction> actionSequence;
 
+    public GameBattleState gameContext;
+
     protected override void Start() {
         if (SceneLoader.Instance is null) {
             Debug.LogError("Scene does not have SceneLoader Component! Battle failed to load.");
@@ -42,7 +45,8 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
         States = new Dictionary<StateKey, GenericState<StateKey>>(){
             {StateKey.LOAD_STATE, new BattleLoadState(this, StateKey.LOAD_STATE)},
             {StateKey.PLAYER_TURN_STATE, new BattlePlayerTurnState(this, StateKey.PLAYER_TURN_STATE)},
-            {StateKey.ACTION_SEQUENCE_STATE, new BattleActionSequenceState(this, StateKey.ACTION_SEQUENCE_STATE)}
+            {StateKey.ACTION_SEQUENCE_STATE, new BattleActionSequenceState(this, StateKey.ACTION_SEQUENCE_STATE)},
+            {StateKey.END_BATTLE_STATE, new BattleEndState(this, StateKey.END_BATTLE_STATE)}
         };
 
         currentState = States[StateKey.LOAD_STATE];
@@ -58,14 +62,16 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
         Debug.Log($"[BattleStateMachine] Battle Action Added: {action}" );
         actionSequence.Add(action);
     }
+
+    #region IPlayerTurnListener
     
     /// <summary>
     /// Triggers when an enemy is clicked on during enemy target selection
     /// </summary>
     /// <param name="targetEnemy">Passed Target Id of the clicked enemy</param>
     public void OnEnemyClicked(Enemy targetEnemy) {
-        if (currentState is IStateListener) {
-            IStateListener listener = (IStateListener)currentState;
+        if (currentState is IPlayerTurnListener) {
+            IPlayerTurnListener listener = (IPlayerTurnListener)currentState;
             listener.OnEnemyClicked(targetEnemy);
         }
     }
@@ -75,18 +81,19 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     /// </summary>
     /// <param name="action">The Selected action (i.e. ATTACK, HEAL, etc.)</param> <summary>
     public void SetPlayerAction(ActionType action) {
-        if (currentState is IStateListener) {
-            IStateListener listener = (IStateListener)currentState;
+        if (currentState is IPlayerTurnListener) {
+            IPlayerTurnListener listener = (IPlayerTurnListener)currentState;
             listener.OnPlayerSetAction(action);
         }
     }
+
+    #endregion
 
     public void SetPlayerActionNull() {
         playerSelectedAction = ActionType.NULL;
     }
 
     public void EndBattle() {
-        PlayerDataManager.Instance.Data.CurrentStats = (EntityStats)playerBattleUnit.CurrentStats.Clone();
-        SceneLoader.Instance.LoadOverworld();
+        gameContext.EndBattle();
     }
 }   

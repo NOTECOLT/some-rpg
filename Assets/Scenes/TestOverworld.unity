@@ -156,7 +156,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -88.09999, y: -2.899994}
+  m_AnchoredPosition: {x: -88.09999, y: -2.8999634}
   m_SizeDelta: {x: -227.3978, y: -291.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &27685889
@@ -691,6 +691,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 434202501}
   m_CullTransparentMesh: 1
+--- !u!1 &453649420
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 453649422}
+  - component: {fileID: 453649421}
+  m_Layer: 0
+  m_Name: Game State Machine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &453649421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453649420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 655fcd3fd2c57084a84e0fce5004eaca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponsList:
+  - {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+  - {fileID: 11400000, guid: f6be38e6c295ef54a84908904b47888d, type: 2}
+  - {fileID: 11400000, guid: a0f0aad74d2792b45afb54b11428f5f2, type: 2}
+  - {fileID: 11400000, guid: a069d982ab8a653449a6516ed0f0453c, type: 2}
+  encounters: []
+--- !u!4 &453649422
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453649420}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 722.4089, y: 382.12817, z: -4.088382}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &494821421
 GameObject:
   m_ObjectHideFlags: 0
@@ -5621,11 +5671,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05037cdfb33bbf443af1b1d2082c0d5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponsList:
-  - {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
-  - {fileID: 11400000, guid: f6be38e6c295ef54a84908904b47888d, type: 2}
-  - {fileID: 11400000, guid: a0f0aad74d2792b45afb54b11428f5f2, type: 2}
-  - {fileID: 11400000, guid: a069d982ab8a653449a6516ed0f0453c, type: 2}
 --- !u!1 &1573040907
 GameObject:
   m_ObjectHideFlags: 0
@@ -12396,3 +12441,4 @@ SceneRoots:
   - {fileID: 819728340}
   - {fileID: 1427090213}
   - {fileID: 1500050505}
+  - {fileID: 453649422}

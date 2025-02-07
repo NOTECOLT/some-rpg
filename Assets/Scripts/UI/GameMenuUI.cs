@@ -72,8 +72,7 @@ public class GameMenuUI : MonoBehaviour {
     }
 
     public void SaveGame() {
-        DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
-        dataPersistence.SaveData("player", PlayerDataManager.Instance.Data);
+        PlayerDataManager.Instance.SaveData();
     }
 
     public void ReloadGame() {

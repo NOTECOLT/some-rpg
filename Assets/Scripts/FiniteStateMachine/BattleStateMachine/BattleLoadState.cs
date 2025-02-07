@@ -9,7 +9,10 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
 
     public override void EnterState() {
         _isDoneLoading = false;
-        Debug.Log($"[BattleStateMachine: LOAD GAME]");
+        
+        // We assume the GameStateMachine should be in GameBattleState by now
+        _context.gameContext = GameStateMachine.Instance.GetCurrentStateContext<GameBattleState>();
+        _context.gameContext.SetBattleContext(_context);
 
         _context.SetPlayerActionNull();
 
@@ -45,5 +48,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
         } else {
             return Key;
         }
-    }    
+    }
+
+    public override void ExitState() { }
 }

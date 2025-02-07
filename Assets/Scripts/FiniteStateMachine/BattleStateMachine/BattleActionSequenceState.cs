@@ -7,14 +7,14 @@ using UnityEngine;
 public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKey> {
     BattleStateMachine _context;
     private bool _isActionSequenceDone;
+    private bool _isBattleDone;
     public BattleActionSequenceState(BattleStateMachine context, BattleStateMachine.StateKey key) : base(key) {
         _context = context;
     }
 
     public override void EnterState() {
         _isActionSequenceDone = false;
-        Debug.Log($"[BattleStateMachine: ACTION SEQUENCE]");
-
+        _isBattleDone = false;
         _context.OnEnterActionSequenceState.Invoke();
 
         BuildEnemyActions();
@@ -29,11 +29,15 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
     public override void UpdateState() { }
 
     public override BattleStateMachine.StateKey GetNextState() {
-        if (_isActionSequenceDone) {
-            return BattleStateMachine.StateKey.PLAYER_TURN_STATE;
+        if (_isBattleDone) {
+            return BattleStateMachine.StateKey.END_BATTLE_STATE;
         } else {
-            return Key;
-        }        
+            if (_isActionSequenceDone) {
+                return BattleStateMachine.StateKey.PLAYER_TURN_STATE;
+            } else {
+                return Key;
+            }     
+        }
     }  
     
     public void BuildEnemyActions() {
@@ -69,7 +73,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
 
             // Check after each action if either the player or all enemies have died
             if (_context.playerBattleUnit.CurrentStats.HitPoints <= 0) {
-                _context.EndBattle();
+                _isBattleDone = true;
                 yield break;
             }
                 
@@ -77,7 +81,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
             foreach (GameObject enemy in _context.enemyObjectList) {
                 if (enemy.GetComponent<EnemyObject>().Enemy.CurrentStats.HitPoints > 0)
                     break;
-                _context.EndBattle();
+                _isBattleDone = true;
                 yield break;
             }
         }
@@ -85,4 +89,5 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
         _context.actionSequence = new List<BattleAction>();
         _isActionSequenceDone = true;
     }
+    public override void ExitState() { }
 }

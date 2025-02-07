@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, IStateListener {
+public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, IPlayerTurnListener {
     BattleStateMachine _context;
     private bool _isPlayerTurnDone;
     public BattlePlayerTurnState(BattleStateMachine context, BattleStateMachine.StateKey key) : base(key) {
@@ -11,8 +11,6 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
 
     public override void EnterState() {
         _isPlayerTurnDone = false;
-        Debug.Log($"[BattleStateMachine: PLAYER TURN]");
-
         _context.SetPlayerActionNull();
         _context.OnEnterPlayerTurnState.Invoke();
     }
@@ -28,6 +26,10 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
 
     public override void UpdateState() { }
 
+    public override void ExitState() { }
+
+    #region IPlayerTurnListener
+    
     public void OnEnemyClicked(Enemy targetEnemy) {
         switch (_context.playerSelectedAction) {
             case ActionType.BASIC_ATTACK:
@@ -53,4 +55,6 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
                 break;
         }
     }
+
+    #endregion
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IStateListener {
+public interface IPlayerTurnListener {
     /// <summary>
     /// Triggers when an enemy is clicked on during enemy target selection
     /// </summary>

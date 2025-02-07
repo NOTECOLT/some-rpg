@@ -21,6 +21,11 @@ public abstract class GenericState<StateKey> where StateKey : Enum {
     public abstract void UpdateState();
 
     /// <summary>
+    /// Runs once when a state is exited
+    /// </summary>
+    public abstract void ExitState();
+
+    /// <summary>
     /// Returns the next State to be transitioned into.
     /// Returns the State's own key if the state should not be transitioning.
     /// </summary>
