@@ -76,7 +76,7 @@ public class GameMenuUI : MonoBehaviour {
     }
 
     public void ReloadGame() {
-        Destroy(FindObjectOfType<PlayerDataManager>().gameObject);
+        Destroy(FindObjectOfType<GameStateMachine>().gameObject);
         SceneLoader.Instance.LoadOverworld();
     }
 
