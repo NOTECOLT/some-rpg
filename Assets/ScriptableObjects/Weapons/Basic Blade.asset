@@ -16,4 +16,6 @@ MonoBehaviour:
   WeaponName: Basic Blade
   weaponid: basicblade
   Sprite: {fileID: 1575564080, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
+  Attack: 1
   QteType: 0
+  QteInstances: 1

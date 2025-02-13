@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83025fc9e6aea2f4d96fac10cfaeb872, type: 3}
   m_Name: Simple Bow
   m_EditorClassIdentifier: 
-  WeaponType: 0
+  WeaponType: 3
   WeaponName: Simple Bow
   weaponid: simplebow
   Sprite: {fileID: -423875004, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}
+  Attack: 1
   QteType: 2
+  QteInstances: 1

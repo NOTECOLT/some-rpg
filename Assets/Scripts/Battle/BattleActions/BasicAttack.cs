@@ -44,33 +44,39 @@ public class BasicAttack : BattleAction {
                 break;
         }
 
-        battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, qteWindow, QTE_LEAD_TIME));
-        yield return MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME);
+        battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
 
-        // Perform Attack animation
-        if (ActorUnit.Object.GetComponent<Animator>() != null)
-            ActorUnit.Object.GetComponent<Animator>().SetTrigger("Attack");
+        for (int i = 0; i < ActorUnit.Weapon.Hits; i++) {
+            battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, qteWindow, QTE_LEAD_TIME));
+            
 
-        yield return QTE.WaitForQTEFinish();
-        
-        // Move unit back
-        yield return MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME);
+            // Perform Attack animation
+            if (ActorUnit.Object.GetComponent<Animator>() != null)
+                ActorUnit.Object.GetComponent<Animator>().SetTrigger("Attack");
 
-        // Perform weapon dependent battle effects
-        switch (QTE.Type) {
-            case QTEType.PRESS:
-                PressAttack(battle, QTE.Result);
-                break;
-            case QTEType.MASH:
-                MashAttack(battle, QTE.Result);
-                break;
-            case QTEType.RELEASE:
-                ReleaseAttack(battle, QTE.Result);
-                break;
-            default:
-                break;
+            yield return QTE.WaitForQTEFinish();
+
+            // Perform weapon dependent battle effects
+            switch (QTE.Type) {
+                case QTEType.PRESS:
+                    PressAttack(battle, QTE.Result);
+                    break;
+                case QTEType.MASH:
+                    MashAttack(battle, QTE.Result);
+                    break;
+                case QTEType.RELEASE:
+                    ReleaseAttack(battle, QTE.Result);
+                    break;
+                default:
+                    break;
+            }
+            
+            yield return new WaitForSeconds(0.5f);
         }
 
+        // Move unit back
+        yield return MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME);
+        
         yield return null;
     }
 
@@ -105,7 +111,7 @@ public class BasicAttack : BattleAction {
                 damageModifier = 0.7f;
                 battleText = "Partial Dodge! ";
             } else {
-                damageModifier = 2;
+                damageModifier = 1.5f;
                 battleText = "Critical hit! ";
             }
         }
