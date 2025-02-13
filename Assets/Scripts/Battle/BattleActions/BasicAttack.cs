@@ -25,27 +25,26 @@ public class BasicAttack : BattleAction {
         // Setup weapon-specific QTEs to perform critical hit, 
         //  & Move unit towards target to perform animations
         QuickTimeEvent QTE;
+        if (ActorUnit is Enemy) {
+            QTE = new QuickTimeEvent(battle.qteButton, QTEType.PRESS);
+        } else {
+            QTE = new QuickTimeEvent(battle.qteButton, ActorUnit.Weapon.QteType);
+        }
+        
         float qteWindow;
-        switch (ActorUnit.Weapon.Type) {
-            case WeaponType.ROD:
-                QTE = new QuickTimeEvent(battle.qteButton, QTEType.PRESS);
-                qteWindow = QTE_WINDOW;
-                break;
-            case WeaponType.RANGED:
-                QTE = new QuickTimeEvent(battle.qteButton, QTEType.RELEASE);
+        switch (ActorUnit.Weapon.QteType) {
+            case QTEType.RELEASE:
                 qteWindow = QTE_RELEASE_WINDOW;
                 break;
-            case WeaponType.BLUNT:
-                QTE = new QuickTimeEvent(battle.qteButton, QTEType.MASH);
+            case QTEType.MASH:
                 qteWindow = QTE_MASH_WINDOW;
                 break;
             default:
-                QTE = new QuickTimeEvent(battle.qteButton, QTEType.PRESS);
                 qteWindow = QTE_WINDOW;
                 break;
         }
 
-    battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, qteWindow, QTE_LEAD_TIME));
+        battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, qteWindow, QTE_LEAD_TIME));
         yield return MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME);
 
         // Perform Attack animation
@@ -58,18 +57,15 @@ public class BasicAttack : BattleAction {
         yield return MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME);
 
         // Perform weapon dependent battle effects
-        switch (ActorUnit.Weapon.Type) {
-            case WeaponType.BLADE:
-                BladeAttack(battle, QTE.Result);
+        switch (QTE.Type) {
+            case QTEType.PRESS:
+                PressAttack(battle, QTE.Result);
                 break;
-            case WeaponType.ROD:
-                RodAttack(battle, QTE.Result);
+            case QTEType.MASH:
+                MashAttack(battle, QTE.Result);
                 break;
-            case WeaponType.RANGED:
-                RangedAttack(battle, QTE.Result);
-                break;
-            case WeaponType.BLUNT:
-                BluntAttack(battle, QTE.Result);
+            case QTEType.RELEASE:
+                ReleaseAttack(battle, QTE.Result);
                 break;
             default:
                 break;
@@ -100,7 +96,7 @@ public class BasicAttack : BattleAction {
     // ?    Look into being able to serialize derived classes in json?
     // ?    I believe the problem lies in not being able to save and load weapon data for both scriptable object enemy types and player savedata
     #region Attacks Logic
-    private void BladeAttack(BattleStateMachine battle, int qteResult) {
+    private void PressAttack(BattleStateMachine battle, int qteResult) {
         float damageModifier = 1;
         string battleText = "";
         // Check QTE
@@ -119,30 +115,9 @@ public class BasicAttack : BattleAction {
         battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.WeaponName} for {damage} damage!";
         battle.mainTextbox.text = battleText;
     }
-
-    private void RodAttack(BattleStateMachine battle, int qteResult) {
-        float damageModifier = 1;
-        string battleText = "";
-        // Check QTE
-        if (qteResult == QuickTimeEvent.QTE_SUCCESS_RESULT) {
-            if (ActorUnit is Enemy) {
-                damageModifier = 0.7f;
-                battleText = "Partial Dodge! ";
-            } else {
-                damageModifier = 2;
-                battleText = "Critical hit! ";
-            }
-        }
-
-        // Update Text & Entity Info
-        int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.WeaponName} for {damage} damage!";
-        battle.mainTextbox.text = battleText;
-    }
-
-    private void RangedAttack(BattleStateMachine battle, int qteResult) {
-        float damageModifier = 1;
-        string battleText = "";
+    private void ReleaseAttack(BattleStateMachine battle, int qteResult) {
+        float damageModifier;
+        string battleText;
         // Check QTE
         if (qteResult == QuickTimeEvent.QTE_SUCCESS_RESULT) {
             if (ActorUnit is Enemy) {
@@ -163,7 +138,7 @@ public class BasicAttack : BattleAction {
         battle.mainTextbox.text = battleText;
     }
 
-    private void BluntAttack(BattleStateMachine battle, int qteResult) {
+    private void MashAttack(BattleStateMachine battle, int qteResult) {
         float damageModifier;
         string battleText = "";
 

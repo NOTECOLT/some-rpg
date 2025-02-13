@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83025fc9e6aea2f4d96fac10cfaeb872, type: 3}
   m_Name: Mallet
   m_EditorClassIdentifier: 
-  Type: 1
+  WeaponType: 0
   WeaponName: Mallet
   weaponid: mallet
   Sprite: {fileID: -1802418002, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}
+  QteType: 1
