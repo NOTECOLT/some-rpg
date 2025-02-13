@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86c77816678011744b3fa315adb5e975, type: 3}
-  m_Name: Temp Imp
+  m_Name: Tikbalang
   m_EditorClassIdentifier: 
-  EnemyName: Imp 1
-  Sprite: {fileID: 21300000, guid: 8db279cd745abbf47b463f850f9a03e8, type: 3}
-  Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+  EnemyName: Tikbalang
+  Sprite: {fileID: 21300000, guid: 6b6e9216f74062f4fb818f26ebf81721, type: 3}
+  Weapon: {fileID: 11400000, guid: f6be38e6c295ef54a84908904b47888d, type: 2}
   BaseStats:
-    HitPoints: 35
-    ManaPoints: 9
-    Attack: 9
-    Defense: 9
-    Speed: 9
+    HitPoints: 20
+    ManaPoints: 11
+    Attack: 11
+    Defense: 11
+    Speed: 11

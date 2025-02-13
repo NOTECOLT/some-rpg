@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83025fc9e6aea2f4d96fac10cfaeb872, type: 3}
   m_Name: Basic Blade
   m_EditorClassIdentifier: 
-  Type: 0
+  WeaponType: 0
   WeaponName: Basic Blade
   weaponid: basicblade
-  Sprite: {fileID: 809283536, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}
+  Sprite: {fileID: 1575564080, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
+  QteType: 0
