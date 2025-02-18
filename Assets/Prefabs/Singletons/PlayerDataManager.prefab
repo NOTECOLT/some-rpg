@@ -45,34 +45,88 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultData:
-    BaseStats:
-      HitPoints: 40
-      ManaPoints: 10
-      Attack: 10
-      Defense: 10
-      Speed: 10
-    CurrentStats:
-      HitPoints: 0
-      ManaPoints: 0
-      Attack: 0
-      Defense: 0
-      Speed: 0
+    PartyStats:
+    - BaseStats:
+        HitPoints: 20
+        ManaPoints: 10
+        Attack: 10
+        Defense: 10
+        Speed: 10
+      CurrentStats:
+        HitPoints: 0
+        ManaPoints: 0
+        Attack: 0
+        Defense: 0
+        Speed: 0
+      Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+    - BaseStats:
+        HitPoints: 20
+        ManaPoints: 10
+        Attack: 10
+        Defense: 10
+        Speed: 10
+      CurrentStats:
+        HitPoints: 0
+        ManaPoints: 0
+        Attack: 0
+        Defense: 0
+        Speed: 0
+      Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+    - BaseStats:
+        HitPoints: 20
+        ManaPoints: 10
+        Attack: 10
+        Defense: 10
+        Speed: 10
+      CurrentStats:
+        HitPoints: 0
+        ManaPoints: 0
+        Attack: 0
+        Defense: 0
+        Speed: 0
+      Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
-    Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
   Data:
-    BaseStats:
-      HitPoints: 0
-      ManaPoints: 0
-      Attack: 0
-      Defense: 0
-      Speed: 0
-    CurrentStats:
-      HitPoints: 0
-      ManaPoints: 0
-      Attack: 0
-      Defense: 0
-      Speed: 0
+    PartyStats:
+    - BaseStats:
+        HitPoints: 0
+        ManaPoints: 0
+        Attack: 0
+        Defense: 0
+        Speed: 0
+      CurrentStats:
+        HitPoints: 0
+        ManaPoints: 0
+        Attack: 0
+        Defense: 0
+        Speed: 0
+      Weapon: {fileID: 0}
+    - BaseStats:
+        HitPoints: 0
+        ManaPoints: 0
+        Attack: 0
+        Defense: 0
+        Speed: 0
+      CurrentStats:
+        HitPoints: 0
+        ManaPoints: 0
+        Attack: 0
+        Defense: 0
+        Speed: 0
+      Weapon: {fileID: 0}
+    - BaseStats:
+        HitPoints: 0
+        ManaPoints: 0
+        Attack: 0
+        Defense: 0
+        Speed: 0
+      CurrentStats:
+        HitPoints: 0
+        ManaPoints: 0
+        Attack: 0
+        Defense: 0
+        Speed: 0
+      Weapon: {fileID: 0}
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
-    Weapon: {fileID: 0}

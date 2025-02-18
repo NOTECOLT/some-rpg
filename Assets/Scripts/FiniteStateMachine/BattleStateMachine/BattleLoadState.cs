@@ -33,7 +33,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
             Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
         }
 
-        _context.playerBattleUnit = new BattleUnit(PlayerDataManager.Instance.Data.BaseStats, PlayerDataManager.Instance.Data.CurrentStats, _context.playerObject, "Player", PlayerDataManager.Instance.Data.Weapon);
+        _context.playerBattleUnit = new BattleUnit(PlayerDataManager.Instance.Data.PartyStats[0].BaseStats, PlayerDataManager.Instance.Data.PartyStats[0].CurrentStats, _context.playerObject, "Player", PlayerDataManager.Instance.Data.PartyStats[0].Weapon);
         _context.playerBattleUnit.Object.GetComponent<EntityInfoUI>().Instantiate(_context.playerBattleUnit);
 
         _context.qteButton.SetActive(false);

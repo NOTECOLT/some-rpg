@@ -48,7 +48,6 @@ public class BasicAttack : BattleAction {
 
         for (int i = 0; i < ActorUnit.Weapon.Hits; i++) {
             battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, qteWindow, QTE_LEAD_TIME));
-            
 
             // Perform Attack animation
             if (ActorUnit.Object.GetComponent<Animator>() != null)

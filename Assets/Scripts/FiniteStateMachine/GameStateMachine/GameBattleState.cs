@@ -31,7 +31,7 @@ public class GameBattleState : GenericState<GameStateMachine.StateKey> {
     }
 
     public void EndBattle() {
-        PlayerDataManager.Instance.Data.CurrentStats = (EntityStats)_battleContext.playerBattleUnit.CurrentStats.Clone();
+        PlayerDataManager.Instance.Data.PartyStats[0].CurrentStats = (EntityStats)_battleContext.playerBattleUnit.CurrentStats.Clone();
         _isBattleDone = true;
     }
 
