@@ -32,10 +32,16 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
             _context.enemyObjectList.Add(enemyObject);
             Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
         }
-
-        _context.playerBattleUnit = new BattleUnit(PlayerDataManager.Instance.Data.PartyStats[0].BaseStats, PlayerDataManager.Instance.Data.PartyStats[0].CurrentStats, _context.playerObject, "Player", PlayerDataManager.Instance.Data.PartyStats[0].Weapon);
-        _context.playerBattleUnit.Object.GetComponent<EntityInfoUI>().Instantiate(_context.playerBattleUnit);
-
+        
+        // Load all Player Units
+        foreach (PlayerData.MemberStats member in PlayerDataManager.Instance.Data.PartyStats) {
+            GameObject obj = GameObject.Instantiate(_context.playerUnitPrefab, _context.playerSide.transform);
+            BattleUnit memberUnit = new BattleUnit(member.BaseStats, member.CurrentStats, obj, member.Name, member.Weapon);
+            _context.playerBattleUnits.Add(memberUnit);
+            obj.GetComponent<EntityInfoUI>().Instantiate(memberUnit);
+        }
+        
+        _context.playerSide.GetComponent<ArrangeChildren>().Arrange();
         _context.qteButton.SetActive(false);
         _isDoneLoading = true;
     }

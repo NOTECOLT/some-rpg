@@ -49,7 +49,7 @@ public class BattleUnit {
         int newHP = (CurrentStats.HitPoints - damage < 0) ? 0 : CurrentStats.HitPoints - damage;
         CurrentStats.HitPoints = newHP;
         Object.GetComponent<EntityInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
-
+        
         return damage;
     }
     

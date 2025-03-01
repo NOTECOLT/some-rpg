@@ -5,11 +5,15 @@ using System.Linq;
 using UnityEngine;
 
 public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKey> {
+    private System.Random _rnd;
     BattleStateMachine _context;
     private bool _isActionSequenceDone;
     private bool _isBattleDone;
+
+
     public BattleActionSequenceState(BattleStateMachine context, BattleStateMachine.StateKey key) : base(key) {
         _context = context;
+        _rnd = new System.Random();
     }
 
     public override void EnterState() {
@@ -49,7 +53,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
         foreach (GameObject obj in _context.enemyObjectList) {
             Enemy enemy = obj.GetComponent<EnemyObject>().Enemy;
 
-            _context.AddBattleAction(new BasicAttack(_context.playerBattleUnit, enemy));
+            _context.AddBattleAction(new BasicAttack(_context.playerBattleUnits[_rnd.Next(0, _context.playerBattleUnits.Count)], enemy));
         }
     }
 
@@ -71,12 +75,13 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
 
             yield return new WaitForSeconds(gapTime);
 
-            // Check after each action if either the player or all enemies have died
-            if (_context.playerBattleUnit.CurrentStats.HitPoints <= 0) {
+            // Check after each action if either the player or all enemies have died                
+            foreach (BattleUnit player in _context.playerBattleUnits) {
+                if (player.CurrentStats.HitPoints > 0)
+                    break;
                 _isBattleDone = true;
                 yield break;
             }
-                
 
             foreach (GameObject enemy in _context.enemyObjectList) {
                 if (enemy.GetComponent<EnemyObject>().Enemy.CurrentStats.HitPoints > 0)

@@ -94,7 +94,7 @@ public class GameMenuUI : MonoBehaviour {
         if (_isPartyOpen) {
             PlayerData playerData = PlayerDataManager.Instance.Data;
             for (int i = 0; i < PlayerDataManager.Instance.Data.PartyStats.Count; i++) {
-                _playerInfo[i].Instantiate("Player", playerData.PartyStats[i].CurrentStats, playerData.PartyStats[i].BaseStats, playerData.PartyStats[i].Weapon);
+                _playerInfo[i].Instantiate(playerData.PartyStats[i].Name, playerData.PartyStats[i].CurrentStats, playerData.PartyStats[i].BaseStats, playerData.PartyStats[i].Weapon);
             } 
         } 
     }

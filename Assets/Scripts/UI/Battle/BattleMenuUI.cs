@@ -13,6 +13,7 @@ public class BattleMenuUI : MonoBehaviour {
     [SerializeField] GameObject _healButton;
     [SerializeField] GameObject _cancelButton;
     [SerializeField] GameObject _fleeButton;
+    private string _currentPlayerName;
 
     void Start() {
         FindObjectOfType<BattleStateMachine>().OnEnterPlayerTurnState.AddListener(ResetBattleMenuUI);
@@ -21,8 +22,9 @@ public class BattleMenuUI : MonoBehaviour {
     
     // LISTENERS ---------------------------------------------
 
-    public void ResetBattleMenuUI() {
-        _mainTextbox.text = "What will player do?";
+    public void ResetBattleMenuUI(string playerName) {
+        _currentPlayerName = playerName;
+        _mainTextbox.text = $"What will {playerName} do?";
         _attackButton.SetActive(true);
         _cancelButton.SetActive(false);
         _fleeButton.SetActive(true);
@@ -53,7 +55,7 @@ public class BattleMenuUI : MonoBehaviour {
     }
 
     public void OnCancelButtonClick() {
-        ResetBattleMenuUI();
+        ResetBattleMenuUI(_currentPlayerName);
         FindObjectOfType<BattleStateMachine>().SetPlayerActionNull();
     }
 

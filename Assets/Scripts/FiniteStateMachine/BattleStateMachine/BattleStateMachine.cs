@@ -15,18 +15,20 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     }
 
     #region GameObject References
-    public GameObject playerObject;
     public GameObject enemyObjectParent;
     public GameObject enemyObjectPrefab;
     public TMP_Text mainTextbox;
     public GameObject qteButton;
+
+    public GameObject playerUnitPrefab;
+    public GameObject playerSide;
     #endregion
 
     /// <summary> List of enemy objects in the battle </summary>
     public List<GameObject> enemyObjectList = new List<GameObject>();
     public ActionType playerSelectedAction;
-    public BattleUnit playerBattleUnit;
-    public UnityEvent OnEnterPlayerTurnState;
+    public List<BattleUnit> playerBattleUnits = new List<BattleUnit>();
+    public UnityEvent<string> OnEnterPlayerTurnState;
     public UnityEvent OnEnterActionSequenceState;
 
     /// <summary>

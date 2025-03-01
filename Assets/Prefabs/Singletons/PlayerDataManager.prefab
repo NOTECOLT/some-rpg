@@ -58,6 +58,7 @@ MonoBehaviour:
         Attack: 0
         Defense: 0
         Speed: 0
+      Name: Jim
       Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
     - BaseStats:
         HitPoints: 20
@@ -71,6 +72,7 @@ MonoBehaviour:
         Attack: 0
         Defense: 0
         Speed: 0
+      Name: Pam
       Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
     - BaseStats:
         HitPoints: 20
@@ -84,6 +86,7 @@ MonoBehaviour:
         Attack: 0
         Defense: 0
         Speed: 0
+      Name: Roy
       Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
@@ -101,6 +104,7 @@ MonoBehaviour:
         Attack: 0
         Defense: 0
         Speed: 0
+      Name: 
       Weapon: {fileID: 0}
     - BaseStats:
         HitPoints: 0
@@ -114,6 +118,7 @@ MonoBehaviour:
         Attack: 0
         Defense: 0
         Speed: 0
+      Name: 
       Weapon: {fileID: 0}
     - BaseStats:
         HitPoints: 0
@@ -127,6 +132,7 @@ MonoBehaviour:
         Attack: 0
         Defense: 0
         Speed: 0
+      Name: 
       Weapon: {fileID: 0}
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2

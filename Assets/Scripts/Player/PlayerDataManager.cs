@@ -36,6 +36,7 @@ public class PlayerDataManager : MonoBehaviour {
 
             // CurrentStats may change through status effects in battle
             public EntityStats CurrentStats = new EntityStats();
+            public string Name;
 
             /// <summary>
             /// Weapon Keys must be stored instead of scriptable object instances.
@@ -46,7 +47,8 @@ public class PlayerDataManager : MonoBehaviour {
                 return new MemberStats() {
                     BaseStats = (EntityStats)this.BaseStats.Clone(),
                     CurrentStats = (EntityStats)this.CurrentStats.Clone(),
-                    Weapon = this.Weapon
+                    Weapon = this.Weapon,
+                    Name = this.Name
                 };
             }
         } 
@@ -61,6 +63,7 @@ public class PlayerDataManager : MonoBehaviour {
                 MemberStats stats = new MemberStats() {
                     BaseStats = (EntityStats)dsStats.BaseStats.Clone(),
                     CurrentStats = (EntityStats)dsStats.CurrentStats.Clone(),
+                    Name = dsStats.Name
                 };
 
 
@@ -84,7 +87,8 @@ public class PlayerDataManager : MonoBehaviour {
             foreach (MemberStats sStats in PartyStats) {
                 PlayerData.MemberStats stats = new PlayerData.MemberStats() {
                     BaseStats = (EntityStats)sStats.BaseStats.Clone(),
-                    CurrentStats = (EntityStats)sStats.CurrentStats.Clone()
+                    CurrentStats = (EntityStats)sStats.CurrentStats.Clone(),
+                    Name = sStats.Name
                 };
                 
                 if (GameStateMachine.Instance.Weapons.ContainsKey(sStats.Weapon)) {

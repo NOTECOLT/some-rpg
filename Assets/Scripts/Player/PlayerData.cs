@@ -16,13 +16,15 @@ public class PlayerData {
         
         // CurrentStats may change through status effects in battle
         public EntityStats CurrentStats = new EntityStats();
+        public string Name;
         public Weapon Weapon;
 
         public object Clone() {
             return new MemberStats() {
                 BaseStats = (EntityStats)this.BaseStats.Clone(),
                 CurrentStats = (EntityStats)this.CurrentStats.Clone(),
-                Weapon = this.Weapon
+                Weapon = this.Weapon,
+                Name = this.Name
             };
         }
     } 
@@ -32,10 +34,19 @@ public class PlayerData {
     public Direction Direction = Direction.DOWN;
 
     public object Clone() {
-        return new PlayerData() {
-            PartyStats = new List<MemberStats>(this.PartyStats),
+        PlayerData pd = new PlayerData() {
             Cell = new Vector3Int(this.Cell.x, this.Cell.y, this.Cell.z),
             Direction = this.Direction,
         };
+
+        List<MemberStats> ps = new List<MemberStats>();
+
+        foreach (MemberStats member in this.PartyStats) {
+            ps.Add((MemberStats)member.Clone());
+        }
+
+        pd.PartyStats = ps;
+
+        return pd;
     }
 }
