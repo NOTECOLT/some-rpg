@@ -101,4 +101,36 @@ public class EntityInfoUI : MonoBehaviour {
     }
 
     #endregion
+
+    #region View Functions
+
+    public void ViewShowLimited() {
+        _hitpointsBar.gameObject.SetActive(true);
+        if (_manapointsBar != null) _manapointsBar.gameObject.SetActive(true);
+        _entityName.gameObject.SetActive(true);
+
+        _hitPoints.gameObject.SetActive(false);
+        if (_manaPoints != null) _manaPoints.gameObject.SetActive(false);
+        _weaponSprite.gameObject.SetActive(false);
+    }
+
+    public void ViewShowFull() {
+        _hitpointsBar.gameObject.SetActive(true);
+        if (_manapointsBar != null) _manapointsBar.gameObject.SetActive(true);
+        _entityName.gameObject.SetActive(true);
+        _hitPoints.gameObject.SetActive(true);
+        if (_manaPoints != null) _manaPoints.gameObject.SetActive(true);
+        _weaponSprite.gameObject.SetActive(true);
+    }
+
+    public void ViewClear() {
+        _hitpointsBar.gameObject.SetActive(false);
+        if (_manapointsBar != null) _manapointsBar.gameObject.SetActive(false);
+        _entityName.gameObject.SetActive(false);
+        _hitPoints.gameObject.SetActive(false);
+        if (_manaPoints != null) _manaPoints.gameObject.SetActive(false);
+        _weaponSprite.gameObject.SetActive(false);      
+    }
+
+    #endregion
 }
