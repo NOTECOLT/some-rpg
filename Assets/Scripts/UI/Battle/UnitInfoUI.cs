@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Updates the EntityInfo UI Prefab class with information like HP
 /// </summary>
-public class EntityInfoUI : MonoBehaviour {
+public class UnitInfoUI : MonoBehaviour {
     [SerializeField] private Image _hitpointsBar;
     [SerializeField] private Image _manapointsBar;
     [SerializeField] private TMP_Text _entityName;

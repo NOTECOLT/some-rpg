@@ -14,7 +14,7 @@ public class GameMenuUI : MonoBehaviour {
     private bool _isPartyOpen = false;
     [SerializeField] private GameObject _menuParent;
     [SerializeField] private GameObject _partyParent;
-    [SerializeField] private EntityInfoUI[] _playerInfo;
+    [SerializeField] private UnitInfoUI[] _playerInfo;
 
     /// <summary>
     /// Unity Event that gets sent whenever the menu is opened
@@ -67,6 +67,9 @@ public class GameMenuUI : MonoBehaviour {
     void OnMenuInput(InputAction.CallbackContext context) {
         _isMenuOpen = !_isMenuOpen;
         _menuParent.SetActive(_isMenuOpen);
+
+        _isPartyOpen = false;
+        _partyParent.SetActive(_isPartyOpen);
 
         if (_isMenuOpen) OnMenuOpen.Invoke();
         else OnMenuClose.Invoke();

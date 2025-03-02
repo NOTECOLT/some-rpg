@@ -27,7 +27,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
             enemyObject.GetComponent<EnemyObject>().Enemy = enemy;
             enemyObject.GetComponent<EnemyObject>().OnEnemyClicked += _context.OnEnemyClicked;
 
-            enemyObject.GetComponent<EntityInfoUI>().Instantiate(enemy);
+            enemyObject.GetComponent<UnitInfoUI>().Instantiate(enemy);
             
             _context.enemyObjectList.Add(enemyObject);
             Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
@@ -38,7 +38,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
             GameObject obj = GameObject.Instantiate(_context.playerUnitPrefab, _context.playerSide.transform);
             BattleUnit memberUnit = new BattleUnit(member.BaseStats, member.CurrentStats, obj, member.Name, member.Weapon);
             _context.playerBattleUnits.Add(memberUnit);
-            obj.GetComponent<EntityInfoUI>().Instantiate(memberUnit);
+            obj.GetComponent<UnitInfoUI>().Instantiate(memberUnit);
         }
         
         _context.playerSide.GetComponent<ArrangeChildren>().Arrange();

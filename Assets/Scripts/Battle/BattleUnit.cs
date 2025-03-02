@@ -48,7 +48,7 @@ public class BattleUnit {
         int oldHP = CurrentStats.HitPoints;
         int newHP = (CurrentStats.HitPoints - damage < 0) ? 0 : CurrentStats.HitPoints - damage;
         CurrentStats.HitPoints = newHP;
-        Object.GetComponent<EntityInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+        Object.GetComponent<UnitInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
         
         return damage;
     }
@@ -70,8 +70,8 @@ public class BattleUnit {
         int newMP = CurrentStats.ManaPoints - manaCost;
         CurrentStats.ManaPoints = newMP;
 
-        Object.GetComponent<EntityInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
-        Object.GetComponent<EntityInfoUI>().SetMPBar(oldMP, newMP, BaseStats.ManaPoints, ANIMATION_TIME);
+        Object.GetComponent<UnitInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+        Object.GetComponent<UnitInfoUI>().SetMPBar(oldMP, newMP, BaseStats.ManaPoints, ANIMATION_TIME);
         return heal;
     }
 }

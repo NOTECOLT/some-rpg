@@ -166,7 +166,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e857a148f37f741bb84549a502d2dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerObject: {fileID: 0}
   enemyObjectParent: {fileID: 92304708}
   enemyObjectPrefab: {fileID: 8500554299142817837, guid: f4446db8c98beeb459015b0802f2147b, type: 3}
   mainTextbox: {fileID: 2069903060}
@@ -2018,7 +2017,7 @@ GameObject:
   - component: {fileID: 2106043676}
   - component: {fileID: 2106043677}
   m_Layer: 0
-  m_Name: Player Side
+  m_Name: Player Units
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
