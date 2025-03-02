@@ -50,10 +50,16 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
         // ? Idea: have each enemy facilitate their own battle action?, or maybe just their battle action type
         //      - Would allow for enemy AI
         //      - May be executed with unity events
+
+        List<BattleUnit> aliveMembers = new List<BattleUnit>(_context.playerBattleUnits);
+        for (int i = aliveMembers.Count - 1; i >= 0; i--)
+            if (aliveMembers[i].CurrentStats.HitPoints <= 0)
+                aliveMembers.RemoveAt(i);
+
         foreach (GameObject obj in _context.enemyObjectList) {
             Enemy enemy = obj.GetComponent<EnemyObject>().Enemy;
 
-            _context.AddBattleAction(new BasicAttack(_context.playerBattleUnits[_rnd.Next(0, _context.playerBattleUnits.Count)], enemy));
+            _context.AddBattleAction(new BasicAttack(aliveMembers[_rnd.Next(0, aliveMembers.Count)], enemy));
         }
     }
 
@@ -70,25 +76,65 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
     public IEnumerator ActionSequence() {
         float gapTime = 1.0f;
 
-        foreach (BattleAction action in _context.actionSequence) {
+        while (_context.actionSequence.Count > 0) {
+            BattleAction action = _context.actionSequence[0];
             yield return action.DoAction(_context);
+            _context.actionSequence.RemoveAt(0);
 
             yield return new WaitForSeconds(gapTime);
 
-            // Check after each action if either the player or all enemies have died                
-            foreach (BattleUnit player in _context.playerBattleUnits) {
-                if (player.CurrentStats.HitPoints > 0)
-                    break;
+            // TODO: NEEDS REFACTORING, very sloppy lol
+            // On Player Death Sequence
+            for (int i = 0; i < _context.playerBattleUnits.Count; i++) {
+                BattleUnit player = _context.playerBattleUnits[i];
+                if (player.CurrentStats.HitPoints <= 0) {
+                    // Remove All actions with a dead unit
+                    for (int j = _context.actionSequence.Count - 1; j >= 0; j--) {
+                        if (_context.actionSequence[j].ActorUnit.Equals(player)) {
+                            _context.actionSequence.RemoveAt(j);
+                        } else if (_context.actionSequence[j].TargetUnit.Equals(player)) {
+                            // Redirect attacks against dead units
+                            if (_context.playerBattleUnits.All(p => p.CurrentStats.HitPoints <= 0))
+                                _context.actionSequence.RemoveAt(j);
+                            else
+                                _context.actionSequence[j].TargetUnit =_context.playerBattleUnits.First(p => p.CurrentStats.HitPoints <= 0);
+                        }
+                    }
+                }
+            }
+                  
+            if (_context.playerBattleUnits.All(p => p.CurrentStats.HitPoints <= 0)) {
                 _isBattleDone = true;
                 yield break;
             }
 
-            foreach (GameObject enemy in _context.enemyObjectList) {
-                if (enemy.GetComponent<EnemyObject>().Enemy.CurrentStats.HitPoints > 0)
-                    break;
-                _isBattleDone = true;
-                yield break;
+            // On Enemy Death Sequence
+            for (int i = _context.enemyObjectList.Count - 1; i >= 0; i--) {
+                GameObject enemyObj = _context.enemyObjectList[i];
+                if (enemyObj.GetComponent<EnemyObject>().Enemy.CurrentStats.HitPoints <= 0) {
+                    _context.enemyObjectList.RemoveAt(i);
+
+                    // Remove All actions with a dead unit
+                    for (int j = _context.actionSequence.Count - 1; j >= 0; j--) {
+                        if (_context.actionSequence[j].ActorUnit.Equals(enemyObj.GetComponent<EnemyObject>().Enemy)) {
+                            _context.actionSequence.RemoveAt(j);
+                        } else if (_context.actionSequence[j].TargetUnit.Equals(enemyObj.GetComponent<EnemyObject>().Enemy)) {
+                            // Redirect attacks against dead units
+                            if (_context.enemyObjectList.Count > 0)
+                                _context.actionSequence[j].TargetUnit = _context.enemyObjectList[0].GetComponent<EnemyObject>().Enemy;
+                            else
+                                _context.actionSequence.RemoveAt(j);
+                        }
+                    }
+
+                    GameObject.Destroy(enemyObj);
+                }
             }
+        }
+
+        if (_context.enemyObjectList.Count == 0) {
+            _isBattleDone = true;
+            yield break;
         }
 
         _context.actionSequence = new List<BattleAction>();

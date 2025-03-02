@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameOverworldState : GenericState<GameStateMachine.StateKey> {
+    private static float ENCOUNTER_CHANCE = 0.067f;
     private GameStateMachine _context;
     private bool _isBattleTriggered;
     private MapManager _mapManager;
@@ -60,23 +61,30 @@ public class GameOverworldState : GenericState<GameStateMachine.StateKey> {
     }
 
     /// <summary>
-    /// Public function that determines if the player will run into a wild encounter. Does not generate the encounter itself.   
+    /// Public function that determines if the player will run into a wild encounter and how many. 
+    /// Does not generate the encounter itself.   
     /// </summary>
     /// <param name="position"></param>
     public void DoEncounterCheck(Vector3 position) {
         if (!_mapManager.GetTileHasWildEncounters(position)) return;
-        
-        int generatedValue = _rnd.Next(0, 100);
-        float encounterChance = 0.067f;
 
-        if (generatedValue >= Mathf.CeilToInt(encounterChance*100)) return;
+        // Check if player encounters any wild enemy
+        if (_rnd.Next(0, 100) >= Mathf.CeilToInt(ENCOUNTER_CHANCE*100)) return;
         
-        EnemyType encounter = GenerateWildEncounter();
-        if (encounter is null) return;
+        int encounters = _rnd.Next(1, 4);
+        _context.encounters = new List<EnemyType>();
+        string nameList = "{}";
 
-        Debug.Log($"Encounter with {encounter.name}!");    
+        for (int i = 0; i < encounters; i++) {
+            EnemyType encounter = GenerateWildEncounter();
+            if (encounter is null) return;
+    
+            _context.encounters.Add(encounter);
+            nameList += $"{encounter.name} ";
+        }
+        
+        Debug.Log($"Encounter with {nameList}}}!");
         _isBattleTriggered = true;
-        _context.encounters = new List<EnemyType>() {encounter};
     }
 
     public bool GetTileIsWalkable(Vector3 position) {

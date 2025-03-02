@@ -13,7 +13,10 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
 
     public override void EnterState() {
         _isPlayerTurnDone = false;
-        _currentPlayer = 0;
+
+        // Sets the focus to the first party member that is not dead
+        _currentPlayer = -1;
+        SetFocusNextMember();
 
         _context.SetPlayerActionNull();
         _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
@@ -37,14 +40,8 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
     public void OnEnemyClicked(Enemy targetEnemy) {
         switch (_context.playerSelectedAction) {
             case ActionType.BASIC_ATTACK:
-                _context.AddBattleAction(new BasicAttack(targetEnemy, _context.playerBattleUnits[_currentPlayer]));
-                
-                _currentPlayer += 1;
-
-                if (_currentPlayer == _context.playerBattleUnits.Count) {
-                    _isPlayerTurnDone = true;
-                    return;
-                }
+                _context.AddBattleAction(new BasicAttack(targetEnemy, _context.playerBattleUnits[_currentPlayer]));  
+                SetFocusNextMember();
                     
                 _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
                 break;
@@ -58,14 +55,8 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
 
         switch (_context.playerSelectedAction) {
             case ActionType.HEAL:
-                _context.AddBattleAction(new Heal(_context.playerBattleUnits[_currentPlayer]));
-                
-                _currentPlayer += 1;
-
-                if (_currentPlayer == _context.playerBattleUnits.Count) {
-                    _isPlayerTurnDone = true;
-                    return;
-                }
+                _context.AddBattleAction(new Heal(_context.playerBattleUnits[_currentPlayer]));    
+                SetFocusNextMember();
 
                 _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
                 break;
@@ -75,4 +66,21 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
     }
 
     #endregion
+    
+    /// <summary>
+    /// "Focus" here refers to which party member is currently being chosen to do an action
+    /// </summary>
+    private void SetFocusNextMember() {
+        int i;
+        for (i = _currentPlayer + 1; i < _context.playerBattleUnits.Count; i++) {
+            if (_context.playerBattleUnits[i].CurrentStats.HitPoints > 0) break; 
+        }
+
+        _currentPlayer = i;
+
+        if (_currentPlayer == _context.playerBattleUnits.Count) {
+            _isPlayerTurnDone = true;
+            return;
+        }
+    }
 }
