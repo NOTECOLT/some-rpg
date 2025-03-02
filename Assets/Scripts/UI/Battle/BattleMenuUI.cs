@@ -20,7 +20,7 @@ public class BattleMenuUI : MonoBehaviour {
         FindObjectOfType<BattleStateMachine>().OnEnterActionSequenceState.AddListener(ClearBattleMenuButtons);
     }
     
-    // LISTENERS ---------------------------------------------
+    #region Listeners
 
     public void ResetBattleMenuUI(string playerName) {
         _currentPlayerName = playerName;
@@ -38,7 +38,9 @@ public class BattleMenuUI : MonoBehaviour {
         _healButton.SetActive(false);
     }
 
-    // BUTTON FUNCTIONS ---------------------------------------------
+    #endregion
+
+    #region Button Functions
 
     public void OnAttackButtonClick() {
         _mainTextbox.text = "Who to attack?";
@@ -51,7 +53,6 @@ public class BattleMenuUI : MonoBehaviour {
 
     public void OnHealButtonClick() {
         FindObjectOfType<BattleStateMachine>().SetPlayerAction(ActionType.HEAL);
-        ClearBattleMenuButtons();
     }
 
     public void OnCancelButtonClick() {
@@ -62,6 +63,6 @@ public class BattleMenuUI : MonoBehaviour {
     public void ReturnToOverworldScene() {
         FindObjectOfType<BattleStateMachine>().EndBattle();
     }
-    // --------------------------------------------------------------
+    #endregion
 
 }

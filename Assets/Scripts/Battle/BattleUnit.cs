@@ -60,6 +60,7 @@ public class BattleUnit {
     /// <param name="modifier">Modifier multiplied to the base heal</param>
     /// <returns>Returns the amount of HP healed</returns>
     public int HealDamage(int baseHeal, int manaCost, float modifier = 1) {
+        if (CurrentStats.ManaPoints < manaCost) return 0;
         int heal = Mathf.CeilToInt(baseHeal * modifier);
 
         int oldHP = CurrentStats.HitPoints;

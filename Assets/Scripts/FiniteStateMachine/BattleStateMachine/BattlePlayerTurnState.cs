@@ -42,8 +42,9 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
             case ActionType.BASIC_ATTACK:
                 _context.AddBattleAction(new BasicAttack(targetEnemy, _context.playerBattleUnits[_currentPlayer]));  
                 SetFocusNextMember();
-                    
-                _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
+                
+                if (_currentPlayer < _context.playerBattleUnits.Count)
+                    _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
                 break;
             default:
                 break;
@@ -58,7 +59,8 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
                 _context.AddBattleAction(new Heal(_context.playerBattleUnits[_currentPlayer]));    
                 SetFocusNextMember();
 
-                _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
+                if (_currentPlayer < _context.playerBattleUnits.Count)
+                    _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
                 break;
             default:
                 break;

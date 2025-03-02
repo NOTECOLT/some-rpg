@@ -73,7 +73,7 @@ public class GameOverworldState : GenericState<GameStateMachine.StateKey> {
         
         int encounters = _rnd.Next(1, 4);
         _context.encounters = new List<EnemyType>();
-        string nameList = "{}";
+        string nameList = "{";
 
         for (int i = 0; i < encounters; i++) {
             EnemyType encounter = GenerateWildEncounter();

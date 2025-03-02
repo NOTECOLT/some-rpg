@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Heal : BattleAction {    
-    public Heal(BattleUnit actorUnit) : base("Heal", null, actorUnit) {
+    public Heal(BattleUnit actorUnit) : base("Heal", actorUnit, actorUnit) {
     }
 
     public override string ToString() {
@@ -11,12 +11,11 @@ public class Heal : BattleAction {
     }
 
     public override IEnumerator DoAction(BattleStateMachine battle) {
-        string battleText = "";
-            
-        int hpHealed = ActorUnit.HealDamage(5, 2);
+        int hpHealed = ActorUnit.HealDamage(8, 3);
+
         // Update Text & Entity Info
-        battleText += $"{ActorUnit.Name} healed {hpHealed} HP!";
-        battle.mainTextbox.text = battleText;
+        battle.mainTextbox.text = (hpHealed != 0) ? $"{ActorUnit.Name} healed {hpHealed} HP!" : 
+                                                    $"{ActorUnit.Name} could not Heal! Not enough MP.";
 
         yield return null;
     }
