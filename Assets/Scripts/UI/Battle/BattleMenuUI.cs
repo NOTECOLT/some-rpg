@@ -13,16 +13,18 @@ public class BattleMenuUI : MonoBehaviour {
     [SerializeField] GameObject _healButton;
     [SerializeField] GameObject _cancelButton;
     [SerializeField] GameObject _fleeButton;
+    private string _currentPlayerName;
 
     void Start() {
         FindObjectOfType<BattleStateMachine>().OnEnterPlayerTurnState.AddListener(ResetBattleMenuUI);
         FindObjectOfType<BattleStateMachine>().OnEnterActionSequenceState.AddListener(ClearBattleMenuButtons);
     }
     
-    // LISTENERS ---------------------------------------------
+    #region Listeners
 
-    public void ResetBattleMenuUI() {
-        _mainTextbox.text = "What will player do?";
+    public void ResetBattleMenuUI(string playerName) {
+        _currentPlayerName = playerName;
+        _mainTextbox.text = $"What will {playerName} do?";
         _attackButton.SetActive(true);
         _cancelButton.SetActive(false);
         _fleeButton.SetActive(true);
@@ -36,7 +38,9 @@ public class BattleMenuUI : MonoBehaviour {
         _healButton.SetActive(false);
     }
 
-    // BUTTON FUNCTIONS ---------------------------------------------
+    #endregion
+
+    #region Button Functions
 
     public void OnAttackButtonClick() {
         _mainTextbox.text = "Who to attack?";
@@ -49,17 +53,16 @@ public class BattleMenuUI : MonoBehaviour {
 
     public void OnHealButtonClick() {
         FindObjectOfType<BattleStateMachine>().SetPlayerAction(ActionType.HEAL);
-        ClearBattleMenuButtons();
     }
 
     public void OnCancelButtonClick() {
-        ResetBattleMenuUI();
+        ResetBattleMenuUI(_currentPlayerName);
         FindObjectOfType<BattleStateMachine>().SetPlayerActionNull();
     }
 
     public void ReturnToOverworldScene() {
         FindObjectOfType<BattleStateMachine>().EndBattle();
     }
-    // --------------------------------------------------------------
+    #endregion
 
 }

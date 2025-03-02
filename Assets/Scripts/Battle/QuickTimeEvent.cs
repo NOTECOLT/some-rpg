@@ -247,8 +247,11 @@ public class QuickTimeEvent {
     }
 }
 
+#region QTEType
 public enum QTEType {
     PRESS,
     MASH,
     RELEASE
 }
+
+#endregion

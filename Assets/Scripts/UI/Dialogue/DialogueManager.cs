@@ -61,10 +61,10 @@ public class DialogueManager : MonoBehaviour {
 
     private static string FUNC_EQUIP_WEAPON = "equipWeapon";
 
-    private void EquipWeapon(string weaponid) {
+    private void EquipWeapon(string weaponid, int playerid) {
         // Access the ItemDatabase component to be able to reference item ids
         // ? Not my favorite solution but i'll keep it like this for now 
-        PlayerDataManager.Instance.Data.Weapon = GetComponent<ItemDatabase>().Weapons[weaponid];
+        PlayerDataManager.Instance.Data.PartyStats[playerid].Weapon = GameStateMachine.Instance.Weapons[weaponid];
         Debug.Log($"[Dialogue Manager] Script Function Executed: {FUNC_EQUIP_WEAPON}({weaponid})");
     }
     
@@ -94,7 +94,7 @@ public class DialogueManager : MonoBehaviour {
         EnableDialogueUI();
         OnDialogueOpen.Invoke();
 
-        _currentStory.BindExternalFunction(FUNC_EQUIP_WEAPON, (string weaponid) => EquipWeapon(weaponid));
+        _currentStory.BindExternalFunction(FUNC_EQUIP_WEAPON, (string weaponid, int playerid) => EquipWeapon(weaponid, playerid));
 
         // Display the first line
         ContinueDialogue();
@@ -151,6 +151,8 @@ public class DialogueManager : MonoBehaviour {
 
         // DISPLAY CHOICES
         if (_currentStory.currentChoices.Count > 0) {
+            ClearChoicesUI();
+
             _isWaitingForChoice = true;
             List<Choice> choices = _currentStory.currentChoices;
             
@@ -159,7 +161,6 @@ public class DialogueManager : MonoBehaviour {
                 choiceObject.GetComponentInChildren<TMP_Text>().text = c.text;
                 choiceObject.GetComponent<Button>().onClick.AddListener(() => { ChooseOption(c.index); });
             }
-
         } else {
             ClearChoicesUI();
         }

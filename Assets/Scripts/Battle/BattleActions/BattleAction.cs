@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 [Serializable]
 public class BattleAction {
-    public BattleUnit TargetUnit { get; protected set; }
+    public BattleUnit TargetUnit { get; set; }
     public BattleUnit ActorUnit { get; protected set; }
     public string ActionName { get; protected set; }
 

@@ -15,7 +15,6 @@ public class MapManager : MonoBehaviour {
     // This dictionary will be used as a lookup table for the MapManager
     // This is built on Awake()
     private Dictionary<TileBase, TileData> _tileDictionary; 
-    private System.Random _rnd = new System.Random();
     void Awake() {
         // Building the Tile Dictionary
 
@@ -42,6 +41,12 @@ public class MapManager : MonoBehaviour {
         }
     }
 
+    void Start() {
+        StartCoroutine(GameStateMachine.Instance.WaitUntilState<GameOverworldState>(() => {
+            GameStateMachine.Instance.GetCurrentStateContext<GameOverworldState>().InitMapManager(this);
+        }));
+    }
+
     public bool GetTileIsWalkable(Vector3 worldPosition) {
         foreach (Tilemap layer in _tilemapLayers) {
             Vector3Int cellPosition = layer.WorldToCell(worldPosition);
@@ -54,7 +59,7 @@ public class MapManager : MonoBehaviour {
         return true;
     }
 
-    private bool GetTileHasWildEncounters(Vector3 worldPosition) {
+    public bool GetTileHasWildEncounters(Vector3 worldPosition) {
         foreach (Tilemap layer in _tilemapLayers) {
             Vector3Int cellPosition = layer.WorldToCell(worldPosition);
             TileBase tile = layer.GetTile(cellPosition);
@@ -65,35 +70,5 @@ public class MapManager : MonoBehaviour {
         
         return false;     
     }
-
-    // Generates a random encounter based on the internal encounter rate dictionary
-    // Note: Does not determine if the player will even run into a wild encounter at all.
-    private EnemyType GenerateWildEncounter() {
-        int generatedValue = _rnd.Next(0, 100);
-        int threshold = 0;
-
-        foreach (KeyValuePair<EnemyType, float> entry in EncounterRates) {
-            threshold += Mathf.CeilToInt(entry.Value*100);
-
-            if (generatedValue < threshold) return entry.Key;
-        }
-
-        return null;
-    }
-
-    // Public function that determines if the player will run into a wild encounter. Does not generate the encounter itself.
-    public void DoEncounterCheck(Vector3 position) {
-        if (!GetTileHasWildEncounters(position)) return;
-        
-        int generatedValue = _rnd.Next(0, 100);
-        float encounterChance = 0.067f;
-
-        if (generatedValue >= Mathf.CeilToInt(encounterChance*100)) return;
-        
-        EnemyType encounter = GenerateWildEncounter();
-        if (encounter is null) return;
-
-        Debug.Log($"Encounter with {encounter.name}!");    
-        SceneLoader.Instance.LoadEncounter(new List<EnemyType>() {encounter});
-    }
+    
 }

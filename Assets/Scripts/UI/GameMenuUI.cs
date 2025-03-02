@@ -11,8 +11,10 @@ using UnityEngine.InputSystem;
 public class GameMenuUI : MonoBehaviour {
     private GameMenuAction _inputActions;
     private bool _isMenuOpen = false;
+    private bool _isPartyOpen = false;
     [SerializeField] private GameObject _menuParent;
-    [SerializeField] private EntityInfoUI _playerInfo;
+    [SerializeField] private GameObject _partyParent;
+    [SerializeField] private UnitInfoUI[] _playerInfo;
 
     /// <summary>
     /// Unity Event that gets sent whenever the menu is opened
@@ -57,28 +59,47 @@ public class GameMenuUI : MonoBehaviour {
 
         _isMenuOpen = false;
         _menuParent.SetActive(_isMenuOpen);
+
+        _isPartyOpen = false;
+        _partyParent.SetActive(_isPartyOpen);
     }
 
     void OnMenuInput(InputAction.CallbackContext context) {
         _isMenuOpen = !_isMenuOpen;
         _menuParent.SetActive(_isMenuOpen);
 
-        if (_isMenuOpen) {
-            OnMenuOpen.Invoke();
-            PlayerData data = PlayerDataManager.Instance.Data;
-            _playerInfo.Instantiate("Player", data.CurrentStats, data.BaseStats, data.Weapon);
-        }
+        _isPartyOpen = false;
+        _partyParent.SetActive(_isPartyOpen);
+
+        if (_isMenuOpen) OnMenuOpen.Invoke();
         else OnMenuClose.Invoke();
     }
 
     public void SaveGame() {
-        DataPersistenceManager<PlayerData> dataPersistence = new DataPersistenceManager<PlayerData>();
-        dataPersistence.SaveData("player", PlayerDataManager.Instance.Data);
+        PlayerDataManager.Instance.SaveData();
     }
 
     public void ReloadGame() {
-        Destroy(FindObjectOfType<PlayerDataManager>().gameObject);
+        Destroy(FindObjectOfType<GameStateMachine>().gameObject);
         SceneLoader.Instance.LoadOverworld();
+    }
+
+    public void ExitMenu() {
+        _isMenuOpen = false;
+        _menuParent.SetActive(_isMenuOpen);    
+        OnMenuClose.Invoke();    
+    }
+
+    public void PartyMenu() {
+        _isPartyOpen = !_isPartyOpen;
+        _partyParent.SetActive(_isPartyOpen);
+
+        if (_isPartyOpen) {
+            PlayerData playerData = PlayerDataManager.Instance.Data;
+            for (int i = 0; i < PlayerDataManager.Instance.Data.PartyStats.Count; i++) {
+                _playerInfo[i].Instantiate(playerData.PartyStats[i].Name, playerData.PartyStats[i].CurrentStats, playerData.PartyStats[i].BaseStats, playerData.PartyStats[i].Weapon);
+            } 
+        } 
     }
 
     private void DisableInputActions() {

@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 [CreateAssetMenu(fileName="Weapon", menuName="Weapon", order=1)]  
 public class Weapon : ScriptableObject {
-    public WeaponType Type;
+    public WeaponType WeaponType;
     public string WeaponName;
 
     /// <summary>
@@ -18,4 +18,7 @@ public class Weapon : ScriptableObject {
     // ?   having the weaponid be a string may make it prone spelling mistakes but it makes it more readable then integer ids
     public string weaponid;
     public Sprite Sprite;
+    public float Attack = 1;
+    public QTEType QteType;
+    [Min(1)] public int Hits = 1;
 }

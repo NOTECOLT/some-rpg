@@ -43,13 +43,13 @@ public class BattleUnit {
     /// <param name="damageModifier">Damage Modifier is multiplied to the calculated damage</param>
     /// <returns>Returns the damage dealt as integer</returns>
     public int DealDamage(BattleUnit attackingUnit, float damageModifier = 1) {
-        int damage = Mathf.CeilToInt(Mathf.Pow(attackingUnit.CurrentStats.Attack, 2) / (1.5f*CurrentStats.Defense) * damageModifier);
+        int damage = Mathf.CeilToInt(Mathf.Pow(attackingUnit.CurrentStats.Attack, 2) / (1.5f*CurrentStats.Defense) * attackingUnit.Weapon.Attack * damageModifier);
 
         int oldHP = CurrentStats.HitPoints;
         int newHP = (CurrentStats.HitPoints - damage < 0) ? 0 : CurrentStats.HitPoints - damage;
         CurrentStats.HitPoints = newHP;
-        Object.GetComponent<EntityInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
-
+        Object.GetComponent<UnitInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+        
         return damage;
     }
     
@@ -60,6 +60,7 @@ public class BattleUnit {
     /// <param name="modifier">Modifier multiplied to the base heal</param>
     /// <returns>Returns the amount of HP healed</returns>
     public int HealDamage(int baseHeal, int manaCost, float modifier = 1) {
+        if (CurrentStats.ManaPoints < manaCost) return 0;
         int heal = Mathf.CeilToInt(baseHeal * modifier);
 
         int oldHP = CurrentStats.HitPoints;
@@ -70,8 +71,8 @@ public class BattleUnit {
         int newMP = CurrentStats.ManaPoints - manaCost;
         CurrentStats.ManaPoints = newMP;
 
-        Object.GetComponent<EntityInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
-        Object.GetComponent<EntityInfoUI>().SetMPBar(oldMP, newMP, BaseStats.ManaPoints, ANIMATION_TIME);
+        Object.GetComponent<UnitInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+        Object.GetComponent<UnitInfoUI>().SetMPBar(oldMP, newMP, BaseStats.ManaPoints, ANIMATION_TIME);
         return heal;
     }
 }

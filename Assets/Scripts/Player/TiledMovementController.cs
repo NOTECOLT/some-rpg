@@ -14,13 +14,13 @@ public class TiledMovementController : MonoBehaviour {
     public Vector3Int Cell { get; private set; } = Vector3Int.zero;
     // public Vector3Int StartCell = Vector3Int.zero;
     public Direction FacingDirection { get; private set; } = Direction.DOWN;
-    private MapManager _mapManager;
+    private GameOverworldState _worldContext;
     private Vector3 _movePoint;
     [SerializeField] private Tilemap _tileMap;
     private PlayerInputActions _inputActions;
     [SerializeField] private float _movementSpeed = 20f;
     private bool _isMoving = false;
-    private InputAction.CallbackContext _context;
+    private InputAction.CallbackContext _inputContext;
     private Animator _animator = null;
 
     void Awake() {
@@ -56,16 +56,16 @@ public class TiledMovementController : MonoBehaviour {
         DialogueManager.OnDialogueOpen += DisableInputActions;
         DialogueManager.OnDialogueClose += EnableInputActions;
 
-        _mapManager = FindObjectOfType<MapManager>();
         _animator = GetComponent<Animator>();
 
-        if (!PlayerDataManager.Instance.isLoading) {
+        // Object waits for the game to be in the GameOverworldState in order to initialize properly
+        StartCoroutine(GameStateMachine.Instance.WaitUntilState<GameOverworldState>(() => {
+            _worldContext = GameStateMachine.Instance.GetCurrentStateContext<GameOverworldState>();
             SetPosition(PlayerDataManager.Instance.Data.Cell, PlayerDataManager.Instance.Data.Direction);
-        }
+        }));
     }
 
-    // TODO: TEMPORARY FUNCTION FOR NOW-- NEED TO MAKE A SEPARATE LOADING STATE FOR THE GAME
-    public void SetPosition(Vector3Int cell, Direction direction) {
+    private void SetPosition(Vector3Int cell, Direction direction) {
         Cell = cell;
         FacingDirection = direction;
 
@@ -79,6 +79,8 @@ public class TiledMovementController : MonoBehaviour {
 
         if (!transform.position.Equals(_movePoint)) {
             transform.position = Vector3.MoveTowards(transform.position, _movePoint, _movementSpeed * Time.deltaTime);
+            if (transform.position.Equals(_movePoint))
+                _worldContext.DoEncounterCheck(transform.position);
         } else {
             GenerateNewMovePoint();
         }
@@ -87,9 +89,9 @@ public class TiledMovementController : MonoBehaviour {
     /// We're using the new Unity Input System with this one
     private void OnWalkInput(InputAction.CallbackContext context) {
         _isMoving = true;
-        _context = context;
+        _inputContext = context;
 
-        Direction dir = SetDirection(_context.ReadValue<Vector2>());
+        Direction dir = SetDirection(_inputContext.ReadValue<Vector2>());
         FacingDirection = (dir != Direction.NULL) ? dir : FacingDirection;
     }
 
@@ -99,10 +101,10 @@ public class TiledMovementController : MonoBehaviour {
 
     private bool IsWalkable(Vector3 direction) {
         if (GetComponent<LinecastController>() is not null) {
-            return _mapManager.GetTileIsWalkable(transform.position + direction) &&
+            return _worldContext.GetTileIsWalkable(transform.position + direction) &&
                 GetComponent<LinecastController>().GetLinecastHit(direction) is null;
         } else {
-            return _mapManager.GetTileIsWalkable(transform.position + direction);
+            return _worldContext.GetTileIsWalkable(transform.position + direction);
         }
     }
 
@@ -112,13 +114,13 @@ public class TiledMovementController : MonoBehaviour {
     private void GenerateNewMovePoint() {
         if (!_isMoving) return;
         
-        Vector2 readValue = _context.ReadValue<Vector2>();
+        Vector2 readValue = _inputContext.ReadValue<Vector2>();
 
         if (!IsWalkable((Vector3)readValue)) return;
 
         Vector3Int CellAddend = new Vector3Int((int)readValue.x, (int)readValue.y, 0);
         
-        Direction dir = SetDirection(_context.ReadValue<Vector2>());
+        Direction dir = SetDirection(_inputContext.ReadValue<Vector2>());
         FacingDirection = (dir != Direction.NULL) ? dir : FacingDirection;
 
         Cell += CellAddend;
@@ -126,8 +128,6 @@ public class TiledMovementController : MonoBehaviour {
         PlayerDataManager.Instance.Data.Direction = FacingDirection;
         
         _movePoint = _tileMap.CellToWorld(Cell) + new Vector3(_tileMap.cellSize.x / 2, _tileMap.cellSize.y / 2, 0);
-
-        _mapManager.DoEncounterCheck(transform.position);     
     }
 
     private Direction SetDirection(Vector3 readValue) {
