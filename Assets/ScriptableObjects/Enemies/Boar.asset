@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c77816678011744b3fa315adb5e975, type: 3}
+  m_Name: Boar
+  m_EditorClassIdentifier: 
+  EnemyName: Boar
+  Sprite: {fileID: 21300000, guid: 8c890e7f80282f4498812b6f85c8fb63, type: 3}
+  Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+  BaseStats:
+    HitPoints: 35
+    ManaPoints: 9
+    Attack: 9
+    Defense: 9
+    Speed: 9
