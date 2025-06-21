@@ -19,3 +19,7 @@ MonoBehaviour:
   Attack: 0.5
   QteType: 0
   Hits: 3
+  Levels:
+  - Experience: 20
+    AttackModifier: 1
+    Effects: 

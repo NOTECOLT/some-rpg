@@ -36,7 +36,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
         // Load all Player Units
         foreach (PlayerData.MemberStats member in PlayerDataManager.Instance.Data.PartyStats) {
             GameObject obj = GameObject.Instantiate(_context.playerUnitPrefab, _context.playerSide.transform);
-            BattleUnit memberUnit = new BattleUnit(member.BaseStats, member.CurrentStats, obj, member.Name, member.Weapon);
+            BattleUnit memberUnit = new BattleUnit(member.BaseStats, member.CurrentStats, obj, member.Name, member.Weapon.Data);
             _context.playerBattleUnits.Add(memberUnit);
             obj.GetComponent<UnitInfoUI>().Instantiate(memberUnit);
         }

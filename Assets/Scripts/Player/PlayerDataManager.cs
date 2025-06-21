@@ -12,13 +12,13 @@ using UnityEngine;
 public class PlayerDataManager : MonoBehaviour {
     public static PlayerDataManager Instance { get; private set; }
 
-    private void Awake()  { 
+    private void Awake() {
         // If there is an instance, and it's not me, delete myself.
-        if (Instance != null && Instance != this) { 
-            Destroy(this.gameObject); 
-        } else { 
-            Instance = this; 
-        } 
+        if (Instance != null && Instance != this) {
+            Destroy(this.gameObject);
+        } else {
+            Instance = this;
+        }
 
         DontDestroyOnLoad(this.gameObject);
     }
@@ -41,13 +41,15 @@ public class PlayerDataManager : MonoBehaviour {
             /// <summary>
             /// Weapon Keys must be stored instead of scriptable object instances.
             /// </summary>
-            public string Weapon;
+            public SerializedWeaponItem Weapon;
 
-            public object Clone() {
-                return new MemberStats() {
+            public object Clone()
+            {
+                return new MemberStats()
+                {
                     BaseStats = (EntityStats)this.BaseStats.Clone(),
                     CurrentStats = (EntityStats)this.CurrentStats.Clone(),
-                    Weapon = this.Weapon,
+                    Weapon = (SerializedWeaponItem)this.Weapon.Clone(),
                     Name = this.Name
                 };
             }
@@ -67,11 +69,17 @@ public class PlayerDataManager : MonoBehaviour {
                 };
 
 
-                if (GameStateMachine.Instance.Weapons.ContainsValue(dsStats.Weapon)) {
-                    stats.Weapon = GameStateMachine.Instance.Weapons.First(x => x.Value == dsStats.Weapon).Key;
+                if (GameStateMachine.Instance.Weapons.ContainsValue(dsStats.Weapon.Data)) {
+                    stats.Weapon = new SerializedWeaponItem() {
+                        Data = GameStateMachine.Instance.Weapons.First(x => x.Value == dsStats.Weapon.Data).Key,
+                        CurrentStats = (WeaponStats)dsStats.Weapon.CurrentStats.Clone()
+                    };
                 } else {
-                    Debug.LogWarning($"Weapon {dsStats.Weapon.WeaponName} does not exist in Weapons Dictionary! Cannot serialize Weapon data.");
-                    stats.Weapon = "";                
+                    Debug.LogWarning($"Weapon {dsStats.Weapon.Data.WeaponName} does not exist in Weapons Dictionary! Cannot serialize Weapon data.");
+                    stats.Weapon = new SerializedWeaponItem() {
+                        Data = "",
+                        CurrentStats = (WeaponStats)dsStats.Weapon.CurrentStats.Clone()
+                    };             
                 }
 
                 this.PartyStats.Add(stats);
@@ -91,11 +99,17 @@ public class PlayerDataManager : MonoBehaviour {
                     Name = sStats.Name
                 };
                 
-                if (GameStateMachine.Instance.Weapons.ContainsKey(sStats.Weapon)) {
-                    stats.Weapon = GameStateMachine.Instance.Weapons[sStats.Weapon];
+                if (GameStateMachine.Instance.Weapons.ContainsKey(sStats.Weapon.Data)) {
+                    stats.Weapon = new WeaponItem() {
+                        Data = GameStateMachine.Instance.Weapons[sStats.Weapon.Data], 
+                        CurrentStats = (WeaponStats)sStats.Weapon.CurrentStats.Clone()
+                    };
                 } else {
                     Debug.LogWarning($"Weapon {sStats.Weapon} does not exist in Weapons Dictionary! Cannot Deserialize Weapon data.");
-                    stats.Weapon = null;                
+                    stats.Weapon = new WeaponItem() {
+                        Data = null, 
+                        CurrentStats = null
+                    };             
                 } 
 
                 pd.PartyStats.Add(stats);
@@ -108,6 +122,21 @@ public class PlayerDataManager : MonoBehaviour {
         }
     }
 
+    #endregion
+
+    #region Serialized Weapon Item
+    [Serializable]
+    public class SerializedWeaponItem : ICloneable {
+        public string Data;
+        public WeaponStats CurrentStats;
+
+        public object Clone() {
+            return new SerializedWeaponItem() {
+                Data = this.Data,
+                CurrentStats = (WeaponStats)this.CurrentStats.Clone()
+            };
+        }
+    }
     #endregion
 
     public PlayerData DefaultData = new PlayerData();

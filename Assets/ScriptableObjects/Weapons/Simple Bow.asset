@@ -18,4 +18,8 @@ MonoBehaviour:
   Sprite: {fileID: -423875004, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}
   Attack: 1
   QteType: 2
-  QteInstances: 1
+  Hits: 1
+  Levels:
+  - Experience: 20
+    AttackModifier: 1
+    Effects: 

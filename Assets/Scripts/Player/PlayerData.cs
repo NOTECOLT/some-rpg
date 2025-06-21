@@ -17,13 +17,13 @@ public class PlayerData {
         // CurrentStats may change through status effects in battle
         public EntityStats CurrentStats = new EntityStats();
         public string Name;
-        public Weapon Weapon;
+        public WeaponItem Weapon;
 
         public object Clone() {
             return new MemberStats() {
                 BaseStats = (EntityStats)this.BaseStats.Clone(),
                 CurrentStats = (EntityStats)this.CurrentStats.Clone(),
-                Weapon = this.Weapon,
+                Weapon = (WeaponItem)this.Weapon.Clone(),
                 Name = this.Name
             };
         }
@@ -48,5 +48,18 @@ public class PlayerData {
         pd.PartyStats = ps;
 
         return pd;
+    }
+}
+
+[Serializable]
+public class WeaponItem : ICloneable {
+    public Weapon Data;
+    public WeaponStats CurrentStats;
+
+    public object Clone() {
+        return new WeaponItem() {
+            Data = this.Data,
+            CurrentStats = (WeaponStats)this.CurrentStats.Clone()
+        };
     }
 }

@@ -21,4 +21,22 @@ public class Weapon : ScriptableObject {
     public float Attack = 1;
     public QTEType QteType;
     [Min(1)] public int Hits = 1;
+    
+    // TODO: need an elegant way to implement current Level/experience and base experience
+    /// <summary>
+    /// Additional Effects that are applied to a weapon upon attacking. The size of this list determines the maximum number of levels
+    /// </summary>
+    public List<WeaponLevel> Levels = new List<WeaponLevel>();
+}
+
+[Serializable]
+public class WeaponLevel {
+    public int Experience = 20;
+    public float AttackModifier = 1;
+    public List<BattleEffect> Effects = new List<BattleEffect>();
+}
+
+public enum BattleEffect {
+    HEAL,
+    POISON
 }
