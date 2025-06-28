@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// Equippable items that will affect the type of attack the player will perform.
 /// </summary>
-[CreateAssetMenu(fileName="Weapon", menuName="Weapon", order=1)]  
+[CreateAssetMenu(fileName = "Weapon", menuName = "Weapon", order = 1)]
 public class Weapon : ScriptableObject {
     public WeaponType WeaponType;
     public string WeaponName;
@@ -21,22 +21,23 @@ public class Weapon : ScriptableObject {
     public float Attack = 1;
     public QTEType QteType;
     [Min(1)] public int Hits = 1;
-    
+
     // TODO: need an elegant way to implement current Level/experience and base experience
     /// <summary>
-    /// Additional Effects that are applied to a weapon upon attacking. The size of this list determines the maximum number of levels
+    /// Additional Effects that are applied to a weapon upon attacking. The size of this list determines the maximum number of levels a weapon has. <br></br>
+    /// A weapon with level = n means that all weapon effects within the list of index [0, n] are obtained. 
     /// </summary>
     public List<WeaponLevel> Levels = new List<WeaponLevel>();
 }
 
+/// <summary>
+/// More used as a 'tuple class' to hold the amount of experience required to surpass a level and the effects associated with it
+/// </summary>
 [Serializable]
 public class WeaponLevel {
+    /// <summary>
+    /// The amount of experience required to reach that level and obtain all weapon modifiers
+    /// </summary>
     public int Experience = 20;
-    public float AttackModifier = 1;
-    public List<BattleEffect> Effects = new List<BattleEffect>();
-}
-
-public enum BattleEffect {
-    HEAL,
-    POISON
+    public List<WeaponModifier> Modifiers = new List<WeaponModifier>();
 }

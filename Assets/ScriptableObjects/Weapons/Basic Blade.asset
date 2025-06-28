@@ -20,9 +20,11 @@ MonoBehaviour:
   QteType: 0
   Hits: 1
   Levels:
+  - Experience: 0
+    Modifiers: []
   - Experience: 20
-    AttackModifier: 1
-    Effects: 
-  - Experience: 40
-    AttackModifier: 1.2
-    Effects: 00000000
+    Modifiers:
+    - Effect: HEAL
+      Attributes:
+      - name: HP
+        value: 20

@@ -13,7 +13,8 @@ public class BattleEndState : GenericState<BattleStateMachine.StateKey> {
         _context.gameContext.EndBattle();
     }
 
-    public override void ExitState() { 
+    public override void ExitState() {
+        Debug.Log("ENDING");
     }
 
     public override BattleStateMachine.StateKey GetNextState() {
