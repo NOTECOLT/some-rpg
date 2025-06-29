@@ -32,7 +32,9 @@ public class GameStateMachine : FiniteStateMachine<GameStateMachine.StateKey> {
     public Dictionary<string, Weapon> Weapons = null;
 
     /// <summary>
-    /// Holds the encounters when a player runs into a wild enemy. Mainly used for "communication" between the Overworld and Battle States
+    /// Holds the list of encounters when a player runs into a wild enemy. <br></br>
+    /// Data held is here is stored upon encounter in the GameOverworldState, <br></br>
+    /// Then upon scene transition, data is transferred to Encounters property in SceneLoader object. (to be transferred to BattleStateMachine)
     /// </summary>
     public List<EnemyType> encounters = new List<EnemyType>();
 

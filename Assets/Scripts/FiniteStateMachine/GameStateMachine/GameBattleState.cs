@@ -38,8 +38,6 @@ public class GameBattleState : GenericState<GameStateMachine.StateKey> {
             // Transfer all data from battle unit to player data
             PlayerData.MemberStats member = PlayerDataManager.Instance.Data.PartyStats[i];
             member.CurrentStats = (EntityStats)_battleContext.playerBattleUnits[i].CurrentStats.Clone();
-
-            member.Weapon.AddExperience(5);
         }
         _isBattleDone = true;
     }

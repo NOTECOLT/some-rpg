@@ -50,23 +50,3 @@ public class PlayerData {
         return pd;
     }
 }
-
-[Serializable]
-public class WeaponItem : ICloneable {
-    public Weapon Data;
-    public WeaponStats CurrentStats;
-
-    /// <summary>
-    /// Add experience to weapon. Levels up the weapon if experience reaches threshold.
-    /// </summary>
-    public void AddExperience(float amount) {
-        CurrentStats.AddExperience(amount, Data);
-    }
-
-    public object Clone() {
-        return new WeaponItem() {
-            Data = this.Data,
-            CurrentStats = (WeaponStats)this.CurrentStats.Clone()
-        };
-    }
-}

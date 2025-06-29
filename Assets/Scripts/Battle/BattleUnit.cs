@@ -21,17 +21,17 @@ public class BattleUnit {
     /// </summary>
     public EntityStats CurrentStats { get; set; } = new EntityStats();   
 
-    public Weapon Weapon { get; protected set; }
+    public WeaponItem WeaponItem { get; protected set; }
 
     /// <summary>
     /// Backreference to the object that which a BattleUnit pertains to
     /// </summary>
     public GameObject Object;
 
-    public BattleUnit(EntityStats baseStats, EntityStats currentStats, GameObject obj, string name, Weapon weapon) {
+    public BattleUnit(EntityStats baseStats, EntityStats currentStats, GameObject obj, string name, WeaponItem weaponItem) {
         BaseStats = (EntityStats)baseStats.Clone();
         CurrentStats = (EntityStats)currentStats.Clone();
-        Weapon = weapon;
+        WeaponItem = weaponItem;
         Object = obj;
         Name = name;
     }
@@ -43,12 +43,12 @@ public class BattleUnit {
     /// <param name="damageModifier">Damage Modifier is multiplied to the calculated damage</param>
     /// <returns>Returns the damage dealt as integer</returns>
     public int DealDamage(BattleUnit attackingUnit, float damageModifier = 1) {
-        int damage = Mathf.CeilToInt(Mathf.Pow(attackingUnit.CurrentStats.Attack, 2) / (1.5f*CurrentStats.Defense) * attackingUnit.Weapon.Attack * damageModifier);
+        int damage = Mathf.CeilToInt(Mathf.Pow(attackingUnit.CurrentStats.Attack, 2) / (1.5f*CurrentStats.Defense) * attackingUnit.WeaponItem.Data.Attack * damageModifier);
 
         int oldHP = CurrentStats.HitPoints;
         int newHP = (CurrentStats.HitPoints - damage < 0) ? 0 : CurrentStats.HitPoints - damage;
         CurrentStats.HitPoints = newHP;
-        Object.GetComponent<UnitInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+        Object.GetComponent<UnitInfoUI>().SetHPBarValue(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
         
         return damage;
     }
@@ -71,8 +71,8 @@ public class BattleUnit {
         int newMP = CurrentStats.ManaPoints - manaCost;
         CurrentStats.ManaPoints = newMP;
 
-        Object.GetComponent<UnitInfoUI>().SetHPBar(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
-        Object.GetComponent<UnitInfoUI>().SetMPBar(oldMP, newMP, BaseStats.ManaPoints, ANIMATION_TIME);
+        Object.GetComponent<UnitInfoUI>().SetHPBarValue(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+        Object.GetComponent<UnitInfoUI>().SetMPBarValue(oldMP, newMP, BaseStats.ManaPoints, ANIMATION_TIME);
         return heal;
     }
 }

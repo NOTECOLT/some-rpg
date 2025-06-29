@@ -9,25 +9,33 @@ public class WeaponStats : ICloneable {
     public int Level = 1;
 
     /// <summary>
+    /// Amount of XP the weapon has at each level
+    /// </summary>
+    public int LevelXP = 0;
+
+    /// <summary>
     /// Amount of (cumulative) experience a weapon has.
     /// Cumulative -- counting all experience gained in each level together.
     /// </summary>
-    public float Experience = 0;
+    public int CumulativeXP = 0;
 
     public List<WeaponModifier> ActiveModifiers = new List<WeaponModifier>();
 
     /// <summary>
     /// Add experience to weapon. Levels up the weapon if experience reaches threshold.
     /// </summary>
-    public void AddExperience(float amount, Weapon weapon) {
-        Experience += amount;
+    public void AddExperience(int amount, Weapon weapon) {
         if (Level >= weapon.Levels.Count) return;
 
-        if (Experience >= weapon.Levels[Level].Experience) {
+        LevelXP = Mathf.Clamp(LevelXP + amount, 0, weapon.Levels[Level].Experience);
+        CumulativeXP += amount;
+ 
+        if (LevelXP >= weapon.Levels[Level].Experience) {
             foreach (WeaponModifier modifier in weapon.Levels[Level].Modifiers)
                 ActiveModifiers.Add(modifier);
-            
+
             Level += 1;
+            LevelXP = 0;
         }
     }
 
@@ -39,7 +47,8 @@ public class WeaponStats : ICloneable {
 
         return new WeaponStats() {
             Level = this.Level,
-            Experience = this.Experience,
+            LevelXP = this.LevelXP,
+            CumulativeXP = this.CumulativeXP,
             ActiveModifiers = activeModifiers
         };
     }
