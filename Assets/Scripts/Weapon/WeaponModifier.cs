@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -8,7 +9,16 @@ using UnityEngine;
 /// </summary>
 [Serializable]
 public class WeaponModifier : ICloneable {
-    public string Effect = "";
+    public EffectType Effect;
+
+    public WeaponAttribute GetAttribute(string name) {
+        WeaponAttribute ret = Attributes.FirstOrDefault(attr => attr.name == name);
+        if (ret != null)
+            return ret;
+        else
+            throw new Exception($"Weapon Attribute {name} does not exist.");
+    }
+
     public List<WeaponAttribute> Attributes = new List<WeaponAttribute>();
 
     public object Clone() {
@@ -22,6 +32,10 @@ public class WeaponModifier : ICloneable {
             Attributes = attributes
         };
     }
+}
+
+public enum EffectType {
+    HEAL
 }
 
 [Serializable]

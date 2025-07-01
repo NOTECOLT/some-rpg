@@ -40,7 +40,7 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
     public void OnEnemyClicked(Enemy targetEnemy) {
         switch (_context.playerSelectedAction) {
             case ActionType.BASIC_ATTACK:
-                _context.AddBattleAction(new BasicAttack(targetEnemy, _context.playerBattleUnits[_currentPlayer]));  
+                _context.PushBattleAction(new BasicAttack(targetEnemy, _context.playerBattleUnits[_currentPlayer]));  
                 SetFocusNextMember();
                 
                 if (_currentPlayer < _context.playerBattleUnits.Count)
@@ -56,7 +56,7 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
 
         switch (_context.playerSelectedAction) {
             case ActionType.HEAL:
-                _context.AddBattleAction(new Heal(_context.playerBattleUnits[_currentPlayer]));    
+                _context.PushBattleAction(new Heal(_context.playerBattleUnits[_currentPlayer], 8, 3));    
                 SetFocusNextMember();
 
                 if (_currentPlayer < _context.playerBattleUnits.Count)

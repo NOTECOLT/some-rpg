@@ -59,7 +59,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
         foreach (GameObject obj in _context.enemyObjectList) {
             Enemy enemy = obj.GetComponent<EnemyObject>().Enemy;
 
-            _context.AddBattleAction(new BasicAttack(aliveMembers[_rnd.Next(0, aliveMembers.Count)], enemy));
+            _context.PushBattleAction(new BasicAttack(aliveMembers[_rnd.Next(0, aliveMembers.Count)], enemy));
         }
     }
 

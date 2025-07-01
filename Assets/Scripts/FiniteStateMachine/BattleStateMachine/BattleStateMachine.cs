@@ -60,13 +60,18 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
         OnEnterActionSequenceState.RemoveAllListeners();
     }
 
-    public void AddBattleAction(BattleAction action) {
-        Debug.Log($"[BattleStateMachine] Battle Action Added: {action}" );
+    public void PushBattleAction(BattleAction action) {
+        Debug.Log($"[BattleStateMachine] Battle Action Pushed: {action}" );
         actionSequence.Add(action);
+    }
+    
+    public void PushBattleActionToNext(BattleAction action) {
+        Debug.Log($"[BattleStateMachine] Battle Action Inserted to top: {action}" );
+        actionSequence.Insert(1, action);
     }
 
     #region IPlayerTurnListener
-    
+
     /// <summary>
     /// Triggers when an enemy is clicked on during enemy target selection
     /// </summary>

@@ -19,7 +19,7 @@ public class WeaponStats : ICloneable {
     /// </summary>
     public int CumulativeXP = 0;
 
-    public List<WeaponModifier> ActiveModifiers = new List<WeaponModifier>();
+    // public List<WeaponModifier> Modifiers = new List<WeaponModifier>();
 
     /// <summary>
     /// Add experience to weapon. Levels up the weapon if experience reaches threshold.
@@ -29,10 +29,12 @@ public class WeaponStats : ICloneable {
 
         LevelXP = Mathf.Clamp(LevelXP + amount, 0, weapon.Levels[Level].Experience);
         CumulativeXP += amount;
- 
+        
         if (LevelXP >= weapon.Levels[Level].Experience) {
-            foreach (WeaponModifier modifier in weapon.Levels[Level].Modifiers)
-                ActiveModifiers.Add(modifier);
+            // foreach (WeaponModifier modifier in weapon.Levels[Level].Modifiers) {
+            //     Debug.Log($"effect: {modifier.Effect}");
+            //     Modifiers.Add(modifier);
+            // }
 
             Level += 1;
             LevelXP = 0;
@@ -40,16 +42,16 @@ public class WeaponStats : ICloneable {
     }
 
     public object Clone() {
-        List<WeaponModifier> activeModifiers = new List<WeaponModifier>();
-        foreach (WeaponModifier modifier in activeModifiers) {
-            activeModifiers.Add((WeaponModifier)modifier.Clone());
-        }
+        // List<WeaponModifier> modifiers = new List<WeaponModifier>();
+        // foreach (WeaponModifier modifier in modifiers) {
+        //     modifiers.Add((WeaponModifier)modifier.Clone());
+        // }
 
         return new WeaponStats() {
             Level = this.Level,
             LevelXP = this.LevelXP,
             CumulativeXP = this.CumulativeXP,
-            ActiveModifiers = activeModifiers
+            // Modifiers = modifiers
         };
     }
 }

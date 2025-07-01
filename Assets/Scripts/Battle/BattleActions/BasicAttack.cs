@@ -12,7 +12,7 @@ public class BasicAttack : BattleAction {
     
 
     public BasicAttack(BattleUnit targetUnit, BattleUnit actorUnit) : base("Basic Attack", targetUnit, actorUnit) {
-    
+        
     }
 
     public override IEnumerator DoAction(BattleStateMachine battle) {
@@ -47,7 +47,7 @@ public class BasicAttack : BattleAction {
         battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
 
         for (int i = 0; i < ActorUnit.WeaponItem.Data.Hits; i++) {
-            battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, qteWindow, QTE_LEAD_TIME));
+            battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] { KeyCode.A, KeyCode.S }, qteWindow, QTE_LEAD_TIME));
 
             // Perform Attack animation
             if (ActorUnit.Object.GetComponent<Animator>() != null)
@@ -55,7 +55,7 @@ public class BasicAttack : BattleAction {
 
             yield return QTE.WaitForQTEFinish();
 
-            // Perform weapon dependent battle effects
+            // Perform QTE
             switch (QTE.Type) {
                 case QTEType.PRESS:
                     PressAttack(battle, QTE.Result);
@@ -69,7 +69,18 @@ public class BasicAttack : BattleAction {
                 default:
                     break;
             }
-            
+
+            // Perform Weapon Battle Effects
+            foreach (WeaponModifier modifier in ActorUnit.WeaponItem.Data.Levels[ActorUnit.WeaponItem.CurrentStats.Level - 1].Modifiers) {
+                switch (modifier.Effect) {
+                    case EffectType.HEAL:
+                        battle.PushBattleActionToNext(new Heal(ActorUnit, (int)modifier.GetAttribute("HP").value, 0));
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             yield return new WaitForSeconds(0.5f);
         }
 
