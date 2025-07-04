@@ -61,7 +61,7 @@ public class GameStateMachine : FiniteStateMachine<GameStateMachine.StateKey> {
     /// <returns>Throws an exception if the state is incorrectly taken.</returns>
     public T GetCurrentStateContext<T>() where T : GenericState<StateKey> {
         if (currentState is not T) {
-            throw new Exception($"[GameStateMachine] Warning! Current State {currentState} is not of type {typeof(T)}. This may cause errors.");
+            throw new Exception($"[GameStateMachine] Warning! Current State {currentState} is not of type {typeof(T)}, and is of type {currentState.GetType()} This may cause errors.");
         }
         return (T)currentState;
     }

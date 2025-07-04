@@ -15,11 +15,10 @@ public class BattleUnit {
     /// These stats do not change in battle
     /// </summary>
     public EntityStats BaseStats { get; protected set; } = new EntityStats();
-
     /// <summary>
     /// These stats may change in battle through status effects
     /// </summary>
-    public EntityStats CurrentStats { get; set; } = new EntityStats();   
+    public EntityStats CurrentStats { get; set; } = new EntityStats();
 
     public WeaponItem WeaponItem { get; protected set; }
 
@@ -27,6 +26,10 @@ public class BattleUnit {
     /// Backreference to the object that which a BattleUnit pertains to
     /// </summary>
     public GameObject Object;
+
+    public event Action<int, int, int, float> OnHPChange;
+    public event Action<int, int, int, float> OnMPChange;
+    public event Action<int, int, int, float> OnXPChange;
 
     public BattleUnit(EntityStats baseStats, EntityStats currentStats, GameObject obj, string name, WeaponItem weaponItem) {
         BaseStats = (EntityStats)baseStats.Clone();
@@ -43,16 +46,16 @@ public class BattleUnit {
     /// <param name="damageModifier">Damage Modifier is multiplied to the calculated damage</param>
     /// <returns>Returns the damage dealt as integer</returns>
     public int DealDamage(BattleUnit attackingUnit, float damageModifier = 1) {
-        int damage = Mathf.CeilToInt(Mathf.Pow(attackingUnit.CurrentStats.Attack, 2) / (1.5f*CurrentStats.Defense) * attackingUnit.WeaponItem.Data.Attack * damageModifier);
+        int damage = Mathf.CeilToInt(Mathf.Pow(attackingUnit.CurrentStats.Attack, 2) / (1.5f * CurrentStats.Defense) * attackingUnit.WeaponItem.Data.Attack * damageModifier);
 
         int oldHP = CurrentStats.HitPoints;
         int newHP = (CurrentStats.HitPoints - damage < 0) ? 0 : CurrentStats.HitPoints - damage;
         CurrentStats.HitPoints = newHP;
-        Object.GetComponent<UnitInfoUI>().SetHPBarValue(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
-        
+        OnHPChange?.Invoke(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+
         return damage;
     }
-    
+
     /// <summary>
     /// Applies very simple heal formula
     /// </summary>
@@ -71,8 +74,38 @@ public class BattleUnit {
         int newMP = CurrentStats.ManaPoints - manaCost;
         CurrentStats.ManaPoints = newMP;
 
-        Object.GetComponent<UnitInfoUI>().SetHPBarValue(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
-        Object.GetComponent<UnitInfoUI>().SetMPBarValue(oldMP, newMP, BaseStats.ManaPoints, ANIMATION_TIME);
+
+        OnHPChange?.Invoke(oldHP, newHP, BaseStats.HitPoints, ANIMATION_TIME);
+        OnMPChange?.Invoke(oldMP, newMP, BaseStats.ManaPoints, ANIMATION_TIME);
         return heal;
+    }
+
+    /// <summary>
+    /// 'wrapper function' for adding experience, calls the add experience function of the weapon
+    /// </summary>
+    public void AddExperience(int xp) {
+        int oldXP = WeaponItem.CurrentStats.LevelXP;
+        int newXP = WeaponItem.CurrentStats.LevelXP + xp;
+
+        int totalXP;
+        try {
+            totalXP = WeaponItem.Data.Levels[WeaponItem.CurrentStats.Level].Experience;
+        } catch (ArgumentOutOfRangeException) {
+            totalXP = WeaponItem.CurrentStats.LevelXP;
+        }
+        
+        if (totalXP == 0 && newXP == 0) {
+            totalXP = 1;
+            newXP = 1;
+        }
+
+        OnXPChange?.Invoke(oldXP, newXP, totalXP, ANIMATION_TIME);
+        WeaponItem.AddExperience(xp);
+    }
+
+    public void RemoveAllListeners() {
+        OnHPChange = null;
+        OnMPChange = null;
+        OnXPChange = null;
     }
 }

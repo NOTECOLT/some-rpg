@@ -71,8 +71,8 @@ public class GameMenuUI : MonoBehaviour {
         _isPartyOpen = false;
         _partyParent.SetActive(_isPartyOpen);
 
-        if (_isMenuOpen) OnMenuOpen.Invoke();
-        else OnMenuClose.Invoke();
+        if (_isMenuOpen) OnMenuOpen?.Invoke();
+        else OnMenuClose?.Invoke();
     }
 
     public void SaveGame() {
@@ -87,7 +87,7 @@ public class GameMenuUI : MonoBehaviour {
     public void ExitMenu() {
         _isMenuOpen = false;
         _menuParent.SetActive(_isMenuOpen);    
-        OnMenuClose.Invoke();    
+        OnMenuClose?.Invoke();    
     }
 
     public void PartyMenu() {

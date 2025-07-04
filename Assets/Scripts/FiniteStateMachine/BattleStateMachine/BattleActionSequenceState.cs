@@ -19,7 +19,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
     public override void EnterState() {
         _isActionSequenceDone = false;
         _isBattleDone = false;
-        _context.OnEnterActionSequenceState.Invoke();
+        _context.OnEnterActionSequenceState?.Invoke();
 
         BuildEnemyActions();
         SortBattleActions();
@@ -112,6 +112,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
             for (int i = _context.enemyObjectList.Count - 1; i >= 0; i--) {
                 GameObject enemyObj = _context.enemyObjectList[i];
                 if (enemyObj.GetComponent<EnemyObject>().Enemy.CurrentStats.HitPoints <= 0) {
+                    enemyObj.GetComponent<EnemyObject>().Enemy.RemoveAllListeners();
                     _context.enemyObjectList.RemoveAt(i);
 
                     // Remove All actions with a dead unit

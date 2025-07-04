@@ -19,7 +19,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
         foreach (EnemyType enemyType in SceneLoader.Instance.Encounters) {
             GameObject enemyObject = GameObject.Instantiate(_context.enemyObjectPrefab, _context.enemyObjectParent.transform);
             Enemy enemy = new Enemy(enemyType, enemyObject);
-            
+
             enemyObject.name = enemy.Name;
             enemyObject.GetComponent<SpriteRenderer>().sprite = enemyType.Sprite;
 
@@ -28,7 +28,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
             enemyObject.GetComponent<EnemyObject>().OnEnemyClicked += _context.OnEnemyClicked;
 
             enemyObject.GetComponent<UnitInfoUI>().Instantiate(enemy);
-            
+
             _context.enemyObjectList.Add(enemyObject);
             Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.CurrentStats.HitPoints + ";");
         }
@@ -43,6 +43,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
         
         _context.playerSide.GetComponent<ArrangeChildren>().Arrange();
         _context.qteButton.SetActive(false);
+        _context.endBattleScreen.SetActive(false);
         _isDoneLoading = true;
     }
 

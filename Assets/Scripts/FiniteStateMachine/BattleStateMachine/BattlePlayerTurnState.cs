@@ -19,7 +19,7 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
         SetFocusNextMember();
 
         _context.SetPlayerActionNull();
-        _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
+        _context.OnEnterPlayerTurnState?.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
     }
 
     public override BattleStateMachine.StateKey GetNextState() {
@@ -44,7 +44,7 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
                 SetFocusNextMember();
                 
                 if (_currentPlayer < _context.playerBattleUnits.Count)
-                    _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
+                    _context.OnEnterPlayerTurnState?.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
                 break;
             default:
                 break;
@@ -60,7 +60,7 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
                 SetFocusNextMember();
 
                 if (_currentPlayer < _context.playerBattleUnits.Count)
-                    _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
+                    _context.OnEnterPlayerTurnState?.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
                 break;
             default:
                 break;

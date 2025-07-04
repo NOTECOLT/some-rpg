@@ -19,9 +19,10 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     public GameObject enemyObjectPrefab;
     public TMP_Text mainTextbox;
     public GameObject qteButton;
-
+    public GameObject endBattleScreen;
     public GameObject playerUnitPrefab;
     public GameObject playerSide;
+    public UnitInfoUI[] endBattlePlayerInfoPanels;
     #endregion
 
     /// <summary> List of enemy objects in the battle </summary>
@@ -101,6 +102,6 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     }
 
     public void EndBattle() {
-        gameContext.EndBattle();
+        gameContext.SavePartyData();
     }
 }   

@@ -10,17 +10,30 @@ public class BattleEndState : GenericState<BattleStateMachine.StateKey> {
     }
 
     public override void EnterState() {
+        _context.StartCoroutine(DoEndBattleSequence());        
+    }
+
+    public override void ExitState() {
+    }
+
+    private IEnumerator DoEndBattleSequence() {
+        _context.endBattleScreen.SetActive(true);
+
+        for (int i = 0; i < _context.playerBattleUnits.Count; i++) {
+            _context.endBattlePlayerInfoPanels[i].Instantiate(_context.playerBattleUnits[i]);
+        }
+
         // Add experience for remaining party members if all enemies are dead
         if (_context.enemyObjectList.Count == 0)
             foreach (BattleUnit member in _context.playerBattleUnits) {
                 if (member.CurrentStats.HitPoints <= 0) continue;
 
-                member.WeaponItem.AddExperience(5);
+                member.AddExperience(5);
             }
-        _context.gameContext.EndBattle();
-    }
 
-    public override void ExitState() {
+        yield return new WaitForSeconds(5.0f);
+
+        _context.gameContext.SavePartyData();
     }
 
     public override BattleStateMachine.StateKey GetNextState() {

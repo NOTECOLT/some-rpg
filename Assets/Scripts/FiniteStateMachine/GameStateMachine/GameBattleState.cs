@@ -31,11 +31,10 @@ public class GameBattleState : GenericState<GameStateMachine.StateKey> {
     }
 
     /// <summary>
-    /// Handles all end battle logic. Mainly experience & levelup
+    /// Transfer all data from battle unit to player data
     /// </summary>
-    public void EndBattle() {
+    public void SavePartyData() {
         for (int i = 0; i < PlayerDataManager.Instance.Data.PartyStats.Count; i++) {
-            // Transfer all data from battle unit to player data
             PlayerData.MemberStats member = PlayerDataManager.Instance.Data.PartyStats[i];
             member.CurrentStats = (EntityStats)_battleContext.playerBattleUnits[i].CurrentStats.Clone();
         }

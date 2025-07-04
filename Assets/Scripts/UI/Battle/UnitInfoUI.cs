@@ -24,10 +24,33 @@ public class UnitInfoUI : MonoBehaviour {
         SetBarValue(_hitpointsBar, _hitPoints, unit.CurrentStats.HitPoints, unit.BaseStats.HitPoints);
         SetBarValue(_manapointsBar, _manaPoints, unit.CurrentStats.ManaPoints, unit.BaseStats.ManaPoints);
 
+        if (unit.WeaponItem != null) {
+            int currentXP = unit.WeaponItem.CurrentStats.LevelXP;
+            int maxXP;
+            try {
+                maxXP = unit.WeaponItem.Data.Levels[unit.WeaponItem.CurrentStats.Level].Experience;
+            } catch (ArgumentOutOfRangeException) {
+                maxXP = unit.WeaponItem.CurrentStats.LevelXP;
+            }
+            
+            if (maxXP == 0 && currentXP == 0) {
+                maxXP = 1;
+                currentXP = 1;
+            }
+
+            SetBarValue(_xpBar, null, currentXP, maxXP);
+        }
+
         if (_weaponSprite != null)
             _weaponSprite.sprite = unit.WeaponItem.Data.Sprite;
         if (_weaponName != null)
             _weaponName.text = unit.WeaponItem.Data.WeaponName;
+        if (_levelText != null)
+            _levelText.text = $"Lv. {unit.WeaponItem.CurrentStats.Level}";
+
+        unit.OnHPChange += SetHPBarValue;
+        unit.OnMPChange += SetMPBarValue;
+        unit.OnXPChange += SetXPBarValue;
     }
 
     public void Instantiate(string name, EntityStats currentStats, EntityStats baseStats, WeaponItem weaponItem) {
@@ -69,6 +92,10 @@ public class UnitInfoUI : MonoBehaviour {
 
     public void SetMPBarValue(int oldMP, int newMP, int totalMP, float time) {
         SetBarValue(_manapointsBar, _manaPoints, oldMP, newMP, totalMP, time);
+    }
+
+    public void SetXPBarValue(int oldXP, int newXP, int totalXP, float time) {
+        SetBarValue(_xpBar, null, oldXP, newXP, totalXP, time);
     }
 
     /// <summary>

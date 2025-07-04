@@ -92,7 +92,7 @@ public class DialogueManager : MonoBehaviour {
     public void TriggerDialogue(TextAsset inkJson) {
         _currentStory = new Story(inkJson.text);
         EnableDialogueUI();
-        OnDialogueOpen.Invoke();
+        OnDialogueOpen?.Invoke();
 
         _currentStory.BindExternalFunction(FUNC_EQUIP_WEAPON, (string weaponid, int playerid) => EquipWeapon(weaponid, playerid));
 
@@ -115,7 +115,7 @@ public class DialogueManager : MonoBehaviour {
             DisableDialogueUI();
             _currentStory.UnbindExternalFunction(FUNC_EQUIP_WEAPON);
             _currentStory = null;
-            OnDialogueClose.Invoke();
+            OnDialogueClose?.Invoke();
         }
     }
 
