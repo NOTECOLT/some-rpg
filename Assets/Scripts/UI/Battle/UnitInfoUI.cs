@@ -20,54 +20,28 @@ public class UnitInfoUI : MonoBehaviour {
     [SerializeField] private Image _xpBar;
 
     public void Instantiate(BattleUnit unit) {
-        _entityName.text = unit.Name;
-        SetBarValue(_hitpointsBar, _hitPoints, unit.CurrentStats.HitPoints, unit.BaseStats.HitPoints);
-        SetBarValue(_manapointsBar, _manaPoints, unit.CurrentStats.ManaPoints, unit.BaseStats.ManaPoints);
-
-        if (unit.WeaponItem != null) {
-            int currentXP = unit.WeaponItem.CurrentStats.LevelXP;
-            int maxXP;
-            try {
-                maxXP = unit.WeaponItem.Data.Levels[unit.WeaponItem.CurrentStats.Level].Experience;
-            } catch (ArgumentOutOfRangeException) {
-                maxXP = unit.WeaponItem.CurrentStats.LevelXP;
-            }
-            
-            if (maxXP == 0 && currentXP == 0) {
-                maxXP = 1;
-                currentXP = 1;
-            }
-
-            SetBarValue(_xpBar, null, currentXP, maxXP);
-        }
-
-        if (_weaponSprite != null)
-            _weaponSprite.sprite = unit.WeaponItem.Data.Sprite;
-        if (_weaponName != null)
-            _weaponName.text = unit.WeaponItem.Data.WeaponName;
-        if (_levelText != null)
-            _levelText.text = $"Lv. {unit.WeaponItem.CurrentStats.Level}";
-
+        Instantiate(unit.MemberData);
+        
         unit.OnHPChange += SetHPBarValue;
         unit.OnMPChange += SetMPBarValue;
         unit.OnXPChange += SetXPBarValue;
     }
 
-    public void Instantiate(string name, EntityStats currentStats, EntityStats baseStats, WeaponItem weaponItem) {
-        _entityName.text = name;
-        SetBarValue(_hitpointsBar, _hitPoints, currentStats.HitPoints, baseStats.HitPoints);
-        SetBarValue(_manapointsBar, _manaPoints, currentStats.ManaPoints, baseStats.ManaPoints);
+    public void Instantiate(PartyMember member) {
+        _entityName.text = member.Name;
+        SetBarValue(_hitpointsBar, _hitPoints, member.CurrentStats.HitPoints, member.BaseStats.HitPoints);
+        SetBarValue(_manapointsBar, _manaPoints, member.CurrentStats.ManaPoints, member.BaseStats.ManaPoints);
 
         // TODO: Fix this lol so shit
 
-        int currentXP = weaponItem.CurrentStats.LevelXP;
+        int currentXP = member.Weapon.CurrentStats.LevelXP;
         int maxXP;
         try {
-            maxXP = weaponItem.Data.Levels[weaponItem.CurrentStats.Level].Experience;
+            maxXP = member.Weapon.Data.Levels[member.Weapon.CurrentStats.Level].Experience;
         } catch (ArgumentOutOfRangeException) {
-            maxXP = weaponItem.CurrentStats.LevelXP;
+            maxXP = member.Weapon.CurrentStats.LevelXP;
         }
-        
+
         if (maxXP == 0 && currentXP == 0) {
             maxXP = 1;
             currentXP = 1;
@@ -76,11 +50,11 @@ public class UnitInfoUI : MonoBehaviour {
         SetBarValue(_xpBar, null, currentXP, maxXP);
 
         if (_weaponSprite != null)
-            _weaponSprite.sprite = weaponItem.Data.Sprite;
+            _weaponSprite.sprite = member.Weapon.Data.Sprite;
         if (_weaponName != null)
-            _weaponName.text = weaponItem.Data.WeaponName;
+            _weaponName.text = member.Weapon.Data.WeaponName;
         if (_levelText != null)
-            _levelText.text = $"Lv. {weaponItem.CurrentStats.Level}";
+            _levelText.text = $"Lv. {member.Weapon.CurrentStats.Level}";
     }
 
 

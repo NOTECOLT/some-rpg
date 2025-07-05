@@ -10,21 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83025fc9e6aea2f4d96fac10cfaeb872, type: 3}
-  m_Name: Basic Blade
+  m_Name: Old Bow
   m_EditorClassIdentifier: 
-  WeaponType: 0
-  WeaponName: Basic Blade
-  weaponid: basicblade
-  Sprite: {fileID: 1575564080, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
+  WeaponType: 3
+  WeaponName: Old Bow
+  weaponid: oldbow
+  Sprite: {fileID: -423875004, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}
   Attack: 1
-  QteType: 0
+  QteType: 2
   Hits: 1
   Levels:
   - Experience: 0
     Modifiers: []
   - Experience: 20
-    Modifiers:
-    - Effect: HEAL
-      Attributes:
-      - name: HP
-        value: 20
+    Modifiers: []

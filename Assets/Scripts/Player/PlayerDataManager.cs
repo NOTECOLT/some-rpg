@@ -30,7 +30,7 @@ public class PlayerDataManager : MonoBehaviour {
     [Serializable] 
     private class SerializedPlayerData {
         [Serializable]
-        public class MemberStats {
+        public class SerializedPartyMember {
             // BaseStats only change in between battles, through level up or permanent status changes
             public EntityStats BaseStats = new EntityStats();
 
@@ -45,7 +45,7 @@ public class PlayerDataManager : MonoBehaviour {
 
             public object Clone()
             {
-                return new MemberStats()
+                return new SerializedPartyMember()
                 {
                     BaseStats = (EntityStats)this.BaseStats.Clone(),
                     CurrentStats = (EntityStats)this.CurrentStats.Clone(),
@@ -54,15 +54,15 @@ public class PlayerDataManager : MonoBehaviour {
                 };
             }
         } 
-        public List<MemberStats> PartyStats = new List<MemberStats>();
+        public List<SerializedPartyMember> PartyStats = new List<SerializedPartyMember>();
         public Vector3Int Cell = Vector3Int.zero;
         public Direction Direction = Direction.DOWN;
 
         public SerializedPlayerData(PlayerData pd) {
-            this.PartyStats = new List<MemberStats>();
+            this.PartyStats = new List<SerializedPartyMember>();
 
-            foreach (PlayerData.MemberStats dsStats in pd.PartyStats) {
-                MemberStats stats = new MemberStats() {
+            foreach (PartyMember dsStats in pd.PartyStats) {
+                SerializedPartyMember stats = new SerializedPartyMember() {
                     BaseStats = (EntityStats)dsStats.BaseStats.Clone(),
                     CurrentStats = (EntityStats)dsStats.CurrentStats.Clone(),
                     Name = dsStats.Name
@@ -92,8 +92,8 @@ public class PlayerDataManager : MonoBehaviour {
         public PlayerData DeserializePlayerData() {
             PlayerData pd = new PlayerData();
             
-            foreach (MemberStats sStats in PartyStats) {
-                PlayerData.MemberStats stats = new PlayerData.MemberStats() {
+            foreach (SerializedPartyMember sStats in PartyStats) {
+                PartyMember stats = new PartyMember() {
                     BaseStats = (EntityStats)sStats.BaseStats.Clone(),
                     CurrentStats = (EntityStats)sStats.CurrentStats.Clone(),
                     Name = sStats.Name
@@ -162,7 +162,7 @@ public class PlayerDataManager : MonoBehaviour {
 
         Data = (PlayerData)DefaultData.Clone();
 
-        foreach (PlayerData.MemberStats player in Data.PartyStats) {
+        foreach (PartyMember player in Data.PartyStats) {
             player.CurrentStats = (EntityStats)player.BaseStats.Clone();
         }
 

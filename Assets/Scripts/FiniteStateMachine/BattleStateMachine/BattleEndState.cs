@@ -26,14 +26,18 @@ public class BattleEndState : GenericState<BattleStateMachine.StateKey> {
         // Add experience for remaining party members if all enemies are dead
         if (_context.enemyObjectList.Count == 0)
             foreach (BattleUnit member in _context.playerBattleUnits) {
-                if (member.CurrentStats.HitPoints <= 0) continue;
+                if (member.MemberData.CurrentStats.HitPoints <= 0) continue;
 
                 member.AddExperience(5);
             }
 
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(3.5f);
 
         _context.gameContext.SavePartyData();
+
+        foreach (BattleUnit member in _context.playerBattleUnits) {
+            member.RemoveAllListeners();
+        }
     }
 
     public override BattleStateMachine.StateKey GetNextState() {

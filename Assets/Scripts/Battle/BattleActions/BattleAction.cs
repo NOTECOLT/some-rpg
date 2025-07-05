@@ -23,11 +23,11 @@ public class BattleAction {
         TargetUnit = targetUnit;
         ActorUnit = actorUnit;
 
-        priority = (ActorUnit is not null) ? ActorUnit.CurrentStats.Speed : 0;
+        priority = (ActorUnit is not null) ? ActorUnit.MemberData.CurrentStats.Speed : 0;
     }
 
     public override string ToString() {
-        return $"{ActorUnit.Name} {ActionName} on {TargetUnit.Name}; Priority: {priority}";
+        return $"{ActorUnit.MemberData.Name} {ActionName} on {TargetUnit.MemberData.Name}; Priority: {priority}";
     }
 
     /// <summary>
