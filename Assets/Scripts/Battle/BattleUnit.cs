@@ -25,6 +25,7 @@ public class BattleUnit {
     public event Action<int, int, int, float> OnHPChange;
     public event Action<int, int, int, float> OnMPChange;
     public event Action<int, int, int, float> OnXPChange;
+    public event Action<int> OnLevelChange;
 
     public BattleUnit(EntityStats baseStats, EntityStats currentStats, GameObject obj, string name, WeaponItem weaponItem) {
         MemberData = new PartyMember() {
@@ -88,29 +89,44 @@ public class BattleUnit {
     /// <summary>
     /// 'wrapper function' for adding experience, calls the add experience function of the weapon
     /// </summary>
-    public void AddExperience(int xp) {
-        int oldXP = MemberData.Weapon.CurrentStats.LevelXP;
-        int newXP = MemberData.Weapon.CurrentStats.LevelXP + xp;
+    public IEnumerator AddExperience(int xp) {
+        int remainingXP = xp;
 
-        int totalXP;
-        try {
-            totalXP = MemberData.Weapon.Data.Levels[MemberData.Weapon.CurrentStats.Level].Experience;
-        } catch (ArgumentOutOfRangeException) {
-            totalXP = MemberData.Weapon.CurrentStats.LevelXP;
+        // ? Kind of not really an elegant solution
+        // Implementation takes into account gaining XP through multiple levels
+        while (remainingXP > 0) {
+            if (MemberData.Weapon.CurrentStats.Level >= MemberData.Weapon.Data.Levels.Count)
+                yield break;
+
+            int XPToLevelUp = MemberData.Weapon.Data.Levels[MemberData.Weapon.CurrentStats.Level].Experience - MemberData.Weapon.CurrentStats.LevelXP;
+
+            if (XPToLevelUp > remainingXP) XPToLevelUp = remainingXP;
+            remainingXP -= XPToLevelUp;
+
+            int oldXP = MemberData.Weapon.CurrentStats.LevelXP;
+            int newXP = MemberData.Weapon.CurrentStats.LevelXP + XPToLevelUp;
+            int totalXP = MemberData.Weapon.Data.Levels[MemberData.Weapon.CurrentStats.Level].Experience;
+
+            // Debug.Log($"{MemberData.Weapon.Data.name} {oldXP} {newXP} {totalXP}");
+
+            OnXPChange?.Invoke(oldXP, newXP, totalXP, ANIMATION_TIME * ((float)XPToLevelUp / xp));
+            MemberData.Weapon.AddExperience(XPToLevelUp);
+
+            // Wait for animation to finish before snapping the XP bar to final fill ammount
+            yield return new WaitForSeconds(ANIMATION_TIME * ((float)XPToLevelUp / xp) + 0.6f);
+            OnLevelChange?.Invoke(MemberData.Weapon.CurrentStats.Level);
+
+            if (MemberData.Weapon.CurrentStats.Level < MemberData.Weapon.Data.Levels.Count) {
+                OnXPChange?.Invoke(0, MemberData.Weapon.CurrentStats.LevelXP, MemberData.Weapon.Data.Levels[MemberData.Weapon.CurrentStats.Level].Experience, 0);
+
+            }
         }
-        
-        if (totalXP == 0 && newXP == 0) {
-            totalXP = 1;
-            newXP = 1;
-        }
-        
-        OnXPChange?.Invoke(oldXP, newXP, totalXP, ANIMATION_TIME);
-        MemberData.Weapon.AddExperience(xp);
     }
 
     public void RemoveAllListeners() {
         OnHPChange = null;
         OnMPChange = null;
         OnXPChange = null;
+        OnLevelChange = null;
     }
 }

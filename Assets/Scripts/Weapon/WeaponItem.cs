@@ -11,6 +11,13 @@ public class WeaponItem : ICloneable {
     public Weapon Data;
     public WeaponStats CurrentStats;
 
+    public WeaponItem() { }
+    public WeaponItem(Weapon weapon) {
+        Data = weapon;
+        int level = 1;
+        CurrentStats = new WeaponStats(level, 0, 0);
+    }
+
     /// <summary>
     /// Add experience to weapon. Levels up the weapon if experience reaches threshold.
     /// </summary>

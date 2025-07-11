@@ -21,16 +21,17 @@ public class UnitInfoUI : MonoBehaviour {
 
     public void Instantiate(BattleUnit unit) {
         Instantiate(unit.MemberData);
-        
+
         unit.OnHPChange += SetHPBarValue;
         unit.OnMPChange += SetMPBarValue;
         unit.OnXPChange += SetXPBarValue;
+        unit.OnLevelChange += SetLevel;
     }
 
     public void Instantiate(PartyMember member) {
         _entityName.text = member.Name;
-        SetBarValue(_hitpointsBar, _hitPoints, member.CurrentStats.HitPoints, member.BaseStats.HitPoints);
-        SetBarValue(_manapointsBar, _manaPoints, member.CurrentStats.ManaPoints, member.BaseStats.ManaPoints);
+        SetBarValue(_hitpointsBar, _hitPoints, 0, member.CurrentStats.HitPoints, member.BaseStats.HitPoints);
+        SetBarValue(_manapointsBar, _manaPoints, 0, member.CurrentStats.ManaPoints, member.BaseStats.ManaPoints);
 
         // TODO: Fix this lol so shit
 
@@ -47,7 +48,7 @@ public class UnitInfoUI : MonoBehaviour {
             currentXP = 1;
         }
 
-        SetBarValue(_xpBar, null, currentXP, maxXP);
+        SetBarValue(_xpBar, null, 0, currentXP, maxXP);
 
         if (_weaponSprite != null)
             _weaponSprite.sprite = member.Weapon.Data.Sprite;
@@ -72,23 +73,23 @@ public class UnitInfoUI : MonoBehaviour {
         SetBarValue(_xpBar, null, oldXP, newXP, totalXP, time);
     }
 
-    /// <summary>
-    /// Sets the hp/mp/xp bar to a certain percentage without any animation
-    /// </summary>
-    private void SetBarValue(Image barObj, TMP_Text textObj, int newValue, int totalValue) {
-        if (barObj == null) return;
-
-        barObj.fillAmount = Mathf.Clamp((float)newValue / totalValue, 0, 1);
-        if (textObj != null)
-            textObj.text = $"{newValue}/{totalValue}";
+    public void SetLevel(int level) {
+        if (_levelText != null)
+            _levelText.text = $"Lv. {level}";
     }
 
     /// <summary>
-    /// Sets the hp/mp/xp bar to a certain percentage WITH animation
+    /// Sets the hp/mp/xp bar to a certain percentage
     /// </summary>
-    private void SetBarValue(Image barObj, TMP_Text textObj, int oldValue, int newValue, int totalValue, float time) {
+    private void SetBarValue(Image barObj, TMP_Text textObj, int oldValue, int newValue, int totalValue, float time = 0) {
         if (barObj == null) return;
-        StartCoroutine(AnimateBar(barObj, textObj, oldValue, newValue, totalValue, time));
+
+        if (time == 0) {
+            barObj.fillAmount = Mathf.Clamp((float)newValue / totalValue, 0, 1);
+            if (textObj != null)
+                textObj.text = $"{newValue}/{totalValue}";
+        } else
+            StartCoroutine(AnimateBar(barObj, textObj, oldValue, newValue, totalValue, time));
     }
 
     private IEnumerator AnimateBar(Image barObj, TMP_Text textObj, int oldValue, int newValue, int totalValue, float animationTime) {

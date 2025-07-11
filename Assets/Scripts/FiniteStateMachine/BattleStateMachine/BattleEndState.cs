@@ -28,10 +28,10 @@ public class BattleEndState : GenericState<BattleStateMachine.StateKey> {
             foreach (BattleUnit member in _context.playerBattleUnits) {
                 if (member.MemberData.CurrentStats.HitPoints <= 0) continue;
 
-                member.AddExperience(5);
+                yield return _context.StartCoroutine(member.AddExperience(10));
             }
 
-        yield return new WaitForSeconds(3.5f);
+        yield return new WaitForSeconds(2.0f);
 
         _context.gameContext.SavePartyData();
 

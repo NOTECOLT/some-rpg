@@ -35,7 +35,8 @@ public class WeaponModifier : ICloneable {
 }
 
 public enum EffectType {
-    HEAL
+    HEAL,
+    QTE
 }
 
 [Serializable]
