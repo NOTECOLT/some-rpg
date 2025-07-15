@@ -21,10 +21,9 @@ MonoBehaviour:
   Hits: 1
   Levels:
   - Experience: 0
-    Modifiers: []
+    Attributes: []
   - Experience: 20
-    Modifiers:
-    - Effect: 0
-      Attributes:
-      - name: HP
-        value: 20
+    Attributes: []
+  references:
+    version: 2
+    RefIds: []

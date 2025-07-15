@@ -21,6 +21,9 @@ MonoBehaviour:
   Hits: 1
   Levels:
   - Experience: 0
-    Modifiers: []
+    Attributes: []
   - Experience: 20
-    Modifiers: []
+    Attributes: []
+  references:
+    version: 2
+    RefIds: []

@@ -21,6 +21,14 @@ MonoBehaviour:
   Hits: 1
   Levels:
   - Experience: 0
-    Modifiers: []
+    Attributes: []
   - Experience: 20
-    Modifiers: []
+    Attributes:
+    - rid: 2942160333536231432
+  references:
+    version: 2
+    RefIds:
+    - rid: 2942160333536231432
+      type: {class: QTEModifier, ns: , asm: Assembly-CSharp}
+      data:
+        qteWindow: 0.5

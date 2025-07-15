@@ -78,6 +78,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
 
         while (_context.actionSequence.Count > 0) {
             BattleAction action = _context.actionSequence[0];
+            Debug.Log($"[Action Sequence] Action to Excecute: {action}");
             yield return action.DoAction(_context);
             _context.actionSequence.RemoveAt(0);
 

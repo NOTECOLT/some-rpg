@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BasicAttack : BattleAction {
-    private static float QTE_WINDOW = 0.2f;
+    private static float QTE_PRESS_WINDOW = 0.2f;
     private static float QTE_MASH_WINDOW = 1.0f;
     private static float QTE_RELEASE_WINDOW = 0.3f;
 
@@ -40,9 +41,21 @@ public class BasicAttack : BattleAction {
                 qteWindow = QTE_MASH_WINDOW;
                 break;
             default:
-                qteWindow = QTE_WINDOW;
+                qteWindow = QTE_PRESS_WINDOW;
                 break;
         }
+
+        {
+            // WEAPON ATTRIBUTE THAT MODIFIES QTE WINDOW
+            WeaponAttribute attr = ActorUnit.MemberData.Weapon.GetCurrentWeaponLevel().Attributes.FirstOrDefault(attr => attr is QTEModifier);
+            if (attr != null) {
+                QTEModifier qteAttr = (QTEModifier)attr;
+                if (qteAttr.qteWindow != -1) {
+                    qteWindow = qteAttr.qteWindow;
+                }
+            }
+        }
+
 
         battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
 
@@ -70,14 +83,13 @@ public class BasicAttack : BattleAction {
                     break;
             }
 
-            // Perform Weapon Battle Effects
-            foreach (WeaponModifier modifier in ActorUnit.MemberData.Weapon.Data.Levels[ActorUnit.MemberData.Weapon.CurrentStats.Level - 1].Modifiers) {
-                switch (modifier.Effect) {
-                    case EffectType.HEAL:
-                        battle.PushBattleActionToNext(new Heal(ActorUnit, (int)modifier.GetAttribute("HP").value, 0));
-                        break;
-                    default:
-                        break;
+            // Perform Weapon Battle Effects (Done by adding actions to the queue)
+            foreach (WeaponAttribute attr in ActorUnit.MemberData.Weapon.GetWeaponLevel(ActorUnit.MemberData.Weapon.CurrentStats.Level).Attributes) {
+                if (attr.Type != AttrType.ACTIVE) continue;
+
+                if (attr is HealAttr) {
+                    HealAttr healAttr = (HealAttr)attr;
+                    battle.PushBattleActionToNext(new Heal(ActorUnit, healAttr.HP, 0));
                 }
             }
 

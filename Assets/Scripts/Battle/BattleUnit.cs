@@ -98,14 +98,14 @@ public class BattleUnit {
             if (MemberData.Weapon.CurrentStats.Level >= MemberData.Weapon.Data.Levels.Count)
                 yield break;
 
-            int XPToLevelUp = MemberData.Weapon.Data.Levels[MemberData.Weapon.CurrentStats.Level].Experience - MemberData.Weapon.CurrentStats.LevelXP;
+            int XPToLevelUp = MemberData.Weapon.GetNextWeaponLevel().Experience - MemberData.Weapon.CurrentStats.LevelXP;
 
             if (XPToLevelUp > remainingXP) XPToLevelUp = remainingXP;
             remainingXP -= XPToLevelUp;
 
             int oldXP = MemberData.Weapon.CurrentStats.LevelXP;
             int newXP = MemberData.Weapon.CurrentStats.LevelXP + XPToLevelUp;
-            int totalXP = MemberData.Weapon.Data.Levels[MemberData.Weapon.CurrentStats.Level].Experience;
+            int totalXP = MemberData.Weapon.GetNextWeaponLevel().Experience;
 
             // Debug.Log($"{MemberData.Weapon.Data.name} {oldXP} {newXP} {totalXP}");
 
@@ -117,7 +117,7 @@ public class BattleUnit {
             OnLevelChange?.Invoke(MemberData.Weapon.CurrentStats.Level);
 
             if (MemberData.Weapon.CurrentStats.Level < MemberData.Weapon.Data.Levels.Count) {
-                OnXPChange?.Invoke(0, MemberData.Weapon.CurrentStats.LevelXP, MemberData.Weapon.Data.Levels[MemberData.Weapon.CurrentStats.Level].Experience, 0);
+                OnXPChange?.Invoke(0, MemberData.Weapon.CurrentStats.LevelXP, MemberData.Weapon.GetNextWeaponLevel().Experience, 0);
 
             }
         }

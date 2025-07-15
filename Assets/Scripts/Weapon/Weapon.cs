@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -39,5 +40,15 @@ public class WeaponLevel {
     /// The amount of experience required to reach that level and obtain all weapon modifiers
     /// </summary>
     public int Experience = 20;
-    public List<WeaponModifier> Modifiers = new List<WeaponModifier>();
+
+    // public WeaponAttribute GetModifier(string name) {
+    //     WeaponAttribute ret = Attributes.FirstOrDefault(attr => attr.Name == name);
+    //     if (ret != null)
+    //         return ret;
+    //     else
+    //         throw new Exception($"Weapon Attribute {name} does not exist.");
+    // }
+    
+    [SerializeReference, SubclassSelector]
+    public List<WeaponAttribute> Attributes = new List<WeaponAttribute>();
 }
