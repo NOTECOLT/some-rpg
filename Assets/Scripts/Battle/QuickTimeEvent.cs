@@ -22,9 +22,9 @@ public class QuickTimeEvent {
 
     public KeyCode QTEKey { get; private set; }
     public int Result;
-    public QTEType Type { get; private set; }
+    public WeaponQTE Type { get; private set; }
 
-    public QuickTimeEvent(GameObject qteButton, QTEType type) {
+    public QuickTimeEvent(GameObject qteButton, WeaponQTE type) {
         _qteButton = qteButton;
         _animator = qteButton.GetComponent<Animator>();
         _qteButton.SetActive(false);
@@ -43,16 +43,12 @@ public class QuickTimeEvent {
     /// <param name="leadTime">The amount of time before a QTE is active. This can be 0 for no lead time at all.</param>
     /// <returns> Returns the key to be used for the QTE. </returns>
     public IEnumerator GenerateQTE(KeyCode[] keyPool, float activeTime, float leadTime = 0) {
-        switch (Type) {
-            case QTEType.PRESS:
-                yield return PressQTE(keyPool, activeTime, leadTime);
-                break;
-            case QTEType.MASH:
-                yield return MashQTE(keyPool, activeTime, leadTime);
-                break;
-            case QTEType.RELEASE:
-                yield return ReleaseQTE(keyPool, activeTime, leadTime);
-                break;
+        if (Type is PressQTE) {
+            yield return PressQTE(keyPool, activeTime, leadTime);
+        } else if (Type is MashQTE) {
+            yield return MashQTE(keyPool, activeTime, leadTime);
+        } else if (Type is ReleaseQTE) {
+            yield return ReleaseQTE(keyPool, activeTime, leadTime);
         }
     }
 
@@ -98,6 +94,7 @@ public class QuickTimeEvent {
         qteFlashText.text = "Press!";
 
         while (_qteIsActive) {
+            // Debug.Log($"[QTE System] Time left: {_currentTime}");
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
                 SetQTEFail();
@@ -153,6 +150,8 @@ public class QuickTimeEvent {
         int inputNumber = 0;
 
         while (_qteIsActive) {
+            // Debug.Log($"[QTE System] Time left: {_currentTime}");
+
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
                 _qteIsActive = false;
@@ -209,6 +208,7 @@ public class QuickTimeEvent {
         qteFlashText.text = "Release!";
 
         while (_qteIsActive) {
+            // Debug.Log($"[QTE System] Time left: {_currentTime}");
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
                 SetQTEFail();

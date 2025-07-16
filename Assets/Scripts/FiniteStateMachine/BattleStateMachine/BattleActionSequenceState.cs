@@ -19,7 +19,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
     public override void EnterState() {
         _isActionSequenceDone = false;
         _isBattleDone = false;
-        _context.OnEnterActionSequenceState.Invoke();
+        _context.OnEnterActionSequenceState?.Invoke();
 
         BuildEnemyActions();
         SortBattleActions();
@@ -53,13 +53,13 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
 
         List<BattleUnit> aliveMembers = new List<BattleUnit>(_context.playerBattleUnits);
         for (int i = aliveMembers.Count - 1; i >= 0; i--)
-            if (aliveMembers[i].CurrentStats.HitPoints <= 0)
+            if (aliveMembers[i].MemberData.CurrentStats.HitPoints <= 0)
                 aliveMembers.RemoveAt(i);
 
         foreach (GameObject obj in _context.enemyObjectList) {
             Enemy enemy = obj.GetComponent<EnemyObject>().Enemy;
 
-            _context.AddBattleAction(new BasicAttack(aliveMembers[_rnd.Next(0, aliveMembers.Count)], enemy));
+            _context.PushBattleAction(new BasicAttack(aliveMembers[_rnd.Next(0, aliveMembers.Count)], enemy));
         }
     }
 
@@ -78,6 +78,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
 
         while (_context.actionSequence.Count > 0) {
             BattleAction action = _context.actionSequence[0];
+            Debug.Log($"[Action Sequence] Action to Excecute: {action}");
             yield return action.DoAction(_context);
             _context.actionSequence.RemoveAt(0);
 
@@ -87,23 +88,23 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
             // On Player Death Sequence
             for (int i = 0; i < _context.playerBattleUnits.Count; i++) {
                 BattleUnit player = _context.playerBattleUnits[i];
-                if (player.CurrentStats.HitPoints <= 0) {
+                if (player.MemberData.CurrentStats.HitPoints <= 0) {
                     // Remove All actions with a dead unit
                     for (int j = _context.actionSequence.Count - 1; j >= 0; j--) {
                         if (_context.actionSequence[j].ActorUnit.Equals(player)) {
                             _context.actionSequence.RemoveAt(j);
                         } else if (_context.actionSequence[j].TargetUnit.Equals(player)) {
                             // Redirect attacks against dead units
-                            if (_context.playerBattleUnits.All(p => p.CurrentStats.HitPoints <= 0))
+                            if (_context.playerBattleUnits.All(p => p.MemberData.CurrentStats.HitPoints <= 0))
                                 _context.actionSequence.RemoveAt(j);
                             else
-                                _context.actionSequence[j].TargetUnit =_context.playerBattleUnits.First(p => p.CurrentStats.HitPoints <= 0);
+                                _context.actionSequence[j].TargetUnit =_context.playerBattleUnits.First(p => p.MemberData.CurrentStats.HitPoints <= 0);
                         }
                     }
                 }
             }
                   
-            if (_context.playerBattleUnits.All(p => p.CurrentStats.HitPoints <= 0)) {
+            if (_context.playerBattleUnits.All(p => p.MemberData.CurrentStats.HitPoints <= 0)) {
                 _isBattleDone = true;
                 yield break;
             }
@@ -111,7 +112,8 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
             // On Enemy Death Sequence
             for (int i = _context.enemyObjectList.Count - 1; i >= 0; i--) {
                 GameObject enemyObj = _context.enemyObjectList[i];
-                if (enemyObj.GetComponent<EnemyObject>().Enemy.CurrentStats.HitPoints <= 0) {
+                if (enemyObj.GetComponent<EnemyObject>().Enemy.MemberData.CurrentStats.HitPoints <= 0) {
+                    enemyObj.GetComponent<EnemyObject>().Enemy.RemoveAllListeners();
                     _context.enemyObjectList.RemoveAt(i);
 
                     // Remove All actions with a dead unit

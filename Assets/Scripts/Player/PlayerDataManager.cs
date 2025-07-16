@@ -12,13 +12,13 @@ using UnityEngine;
 public class PlayerDataManager : MonoBehaviour {
     public static PlayerDataManager Instance { get; private set; }
 
-    private void Awake()  { 
+    private void Awake() {
         // If there is an instance, and it's not me, delete myself.
-        if (Instance != null && Instance != this) { 
-            Destroy(this.gameObject); 
-        } else { 
-            Instance = this; 
-        } 
+        if (Instance != null && Instance != this) {
+            Destroy(this.gameObject);
+        } else {
+            Instance = this;
+        }
 
         DontDestroyOnLoad(this.gameObject);
     }
@@ -30,7 +30,7 @@ public class PlayerDataManager : MonoBehaviour {
     [Serializable] 
     private class SerializedPlayerData {
         [Serializable]
-        public class MemberStats {
+        public class SerializedPartyMember {
             // BaseStats only change in between battles, through level up or permanent status changes
             public EntityStats BaseStats = new EntityStats();
 
@@ -41,37 +41,45 @@ public class PlayerDataManager : MonoBehaviour {
             /// <summary>
             /// Weapon Keys must be stored instead of scriptable object instances.
             /// </summary>
-            public string Weapon;
+            public SerializedWeaponItem Weapon;
 
-            public object Clone() {
-                return new MemberStats() {
+            public object Clone()
+            {
+                return new SerializedPartyMember()
+                {
                     BaseStats = (EntityStats)this.BaseStats.Clone(),
                     CurrentStats = (EntityStats)this.CurrentStats.Clone(),
-                    Weapon = this.Weapon,
+                    Weapon = (SerializedWeaponItem)this.Weapon.Clone(),
                     Name = this.Name
                 };
             }
         } 
-        public List<MemberStats> PartyStats = new List<MemberStats>();
+        public List<SerializedPartyMember> PartyStats = new List<SerializedPartyMember>();
         public Vector3Int Cell = Vector3Int.zero;
         public Direction Direction = Direction.DOWN;
 
         public SerializedPlayerData(PlayerData pd) {
-            this.PartyStats = new List<MemberStats>();
+            this.PartyStats = new List<SerializedPartyMember>();
 
-            foreach (PlayerData.MemberStats dsStats in pd.PartyStats) {
-                MemberStats stats = new MemberStats() {
+            foreach (PartyMember dsStats in pd.PartyStats) {
+                SerializedPartyMember stats = new SerializedPartyMember() {
                     BaseStats = (EntityStats)dsStats.BaseStats.Clone(),
                     CurrentStats = (EntityStats)dsStats.CurrentStats.Clone(),
                     Name = dsStats.Name
                 };
 
 
-                if (GameStateMachine.Instance.Weapons.ContainsValue(dsStats.Weapon)) {
-                    stats.Weapon = GameStateMachine.Instance.Weapons.First(x => x.Value == dsStats.Weapon).Key;
+                if (GameStateMachine.Instance.Weapons.ContainsValue(dsStats.Weapon.Data)) {
+                    stats.Weapon = new SerializedWeaponItem() {
+                        Data = GameStateMachine.Instance.Weapons.First(x => x.Value == dsStats.Weapon.Data).Key,
+                        CurrentStats = (WeaponStats)dsStats.Weapon.CurrentStats.Clone()
+                    };
                 } else {
-                    Debug.LogWarning($"Weapon {dsStats.Weapon.WeaponName} does not exist in Weapons Dictionary! Cannot serialize Weapon data.");
-                    stats.Weapon = "";                
+                    Debug.LogWarning($"Weapon {dsStats.Weapon.Data.WeaponName} does not exist in Weapons Dictionary! Cannot serialize Weapon data.");
+                    stats.Weapon = new SerializedWeaponItem() {
+                        Data = "",
+                        CurrentStats = (WeaponStats)dsStats.Weapon.CurrentStats.Clone()
+                    };             
                 }
 
                 this.PartyStats.Add(stats);
@@ -84,18 +92,24 @@ public class PlayerDataManager : MonoBehaviour {
         public PlayerData DeserializePlayerData() {
             PlayerData pd = new PlayerData();
             
-            foreach (MemberStats sStats in PartyStats) {
-                PlayerData.MemberStats stats = new PlayerData.MemberStats() {
+            foreach (SerializedPartyMember sStats in PartyStats) {
+                PartyMember stats = new PartyMember() {
                     BaseStats = (EntityStats)sStats.BaseStats.Clone(),
                     CurrentStats = (EntityStats)sStats.CurrentStats.Clone(),
                     Name = sStats.Name
                 };
                 
-                if (GameStateMachine.Instance.Weapons.ContainsKey(sStats.Weapon)) {
-                    stats.Weapon = GameStateMachine.Instance.Weapons[sStats.Weapon];
+                if (GameStateMachine.Instance.Weapons.ContainsKey(sStats.Weapon.Data)) {
+                    stats.Weapon = new WeaponItem() {
+                        Data = GameStateMachine.Instance.Weapons[sStats.Weapon.Data], 
+                        CurrentStats = (WeaponStats)sStats.Weapon.CurrentStats.Clone()
+                    };
                 } else {
                     Debug.LogWarning($"Weapon {sStats.Weapon} does not exist in Weapons Dictionary! Cannot Deserialize Weapon data.");
-                    stats.Weapon = null;                
+                    stats.Weapon = new WeaponItem() {
+                        Data = null, 
+                        CurrentStats = null
+                    };             
                 } 
 
                 pd.PartyStats.Add(stats);
@@ -108,6 +122,21 @@ public class PlayerDataManager : MonoBehaviour {
         }
     }
 
+    #endregion
+
+    #region Serialized Weapon Item
+    [Serializable]
+    public class SerializedWeaponItem : ICloneable {
+        public string Data;
+        public WeaponStats CurrentStats;
+
+        public object Clone() {
+            return new SerializedWeaponItem() {
+                Data = this.Data,
+                CurrentStats = (WeaponStats)this.CurrentStats.Clone()
+            };
+        }
+    }
     #endregion
 
     public PlayerData DefaultData = new PlayerData();
@@ -133,7 +162,7 @@ public class PlayerDataManager : MonoBehaviour {
 
         Data = (PlayerData)DefaultData.Clone();
 
-        foreach (PlayerData.MemberStats player in Data.PartyStats) {
+        foreach (PartyMember player in Data.PartyStats) {
             player.CurrentStats = (EntityStats)player.BaseStats.Clone();
         }
 

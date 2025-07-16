@@ -19,7 +19,7 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
         SetFocusNextMember();
 
         _context.SetPlayerActionNull();
-        _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
+        _context.OnEnterPlayerTurnState?.Invoke(_context.playerBattleUnits[_currentPlayer].MemberData.Name);
     }
 
     public override BattleStateMachine.StateKey GetNextState() {
@@ -40,11 +40,11 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
     public void OnEnemyClicked(Enemy targetEnemy) {
         switch (_context.playerSelectedAction) {
             case ActionType.BASIC_ATTACK:
-                _context.AddBattleAction(new BasicAttack(targetEnemy, _context.playerBattleUnits[_currentPlayer]));  
+                _context.PushBattleAction(new BasicAttack(targetEnemy, _context.playerBattleUnits[_currentPlayer]));  
                 SetFocusNextMember();
                 
                 if (_currentPlayer < _context.playerBattleUnits.Count)
-                    _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
+                    _context.OnEnterPlayerTurnState?.Invoke(_context.playerBattleUnits[_currentPlayer].MemberData.Name);
                 break;
             default:
                 break;
@@ -56,11 +56,11 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
 
         switch (_context.playerSelectedAction) {
             case ActionType.HEAL:
-                _context.AddBattleAction(new Heal(_context.playerBattleUnits[_currentPlayer]));    
+                _context.PushBattleAction(new Heal(_context.playerBattleUnits[_currentPlayer], 8, 3));    
                 SetFocusNextMember();
 
                 if (_currentPlayer < _context.playerBattleUnits.Count)
-                    _context.OnEnterPlayerTurnState.Invoke(_context.playerBattleUnits[_currentPlayer].Name);
+                    _context.OnEnterPlayerTurnState?.Invoke(_context.playerBattleUnits[_currentPlayer].MemberData.Name);
                 break;
             default:
                 break;
@@ -75,7 +75,7 @@ public class BattlePlayerTurnState : GenericState<BattleStateMachine.StateKey>, 
     private void SetFocusNextMember() {
         int i;
         for (i = _currentPlayer + 1; i < _context.playerBattleUnits.Count; i++) {
-            if (_context.playerBattleUnits[i].CurrentStats.HitPoints > 0) break; 
+            if (_context.playerBattleUnits[i].MemberData.CurrentStats.HitPoints > 0) break; 
         }
 
         _currentPlayer = i;

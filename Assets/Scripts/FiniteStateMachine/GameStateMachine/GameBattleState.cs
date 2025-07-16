@@ -30,10 +30,12 @@ public class GameBattleState : GenericState<GameStateMachine.StateKey> {
         SceneLoader.Instance.LoadOverworld();
     }
 
-    public void EndBattle() {
+    /// <summary>
+    /// Transfer all data from battle unit to player data
+    /// </summary>
+    public void SavePartyData() {
         for (int i = 0; i < PlayerDataManager.Instance.Data.PartyStats.Count; i++) {
-            PlayerData.MemberStats member = PlayerDataManager.Instance.Data.PartyStats[i];
-            member.CurrentStats = (EntityStats)_battleContext.playerBattleUnits[i].CurrentStats.Clone(); 
+            PlayerDataManager.Instance.Data.PartyStats[i] = (PartyMember)_battleContext.playerBattleUnits[i].MemberData.Clone();
         }
         _isBattleDone = true;
     }

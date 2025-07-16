@@ -32,7 +32,9 @@ public class GameStateMachine : FiniteStateMachine<GameStateMachine.StateKey> {
     public Dictionary<string, Weapon> Weapons = null;
 
     /// <summary>
-    /// Holds the encounters when a player runs into a wild enemy. Mainly used for "communication" between the Overworld and Battle States
+    /// Holds the list of encounters when a player runs into a wild enemy. <br></br>
+    /// Data held is here is stored upon encounter in the GameOverworldState, <br></br>
+    /// Then upon scene transition, data is transferred to Encounters property in SceneLoader object. (to be transferred to BattleStateMachine)
     /// </summary>
     public List<EnemyType> encounters = new List<EnemyType>();
 
@@ -59,7 +61,7 @@ public class GameStateMachine : FiniteStateMachine<GameStateMachine.StateKey> {
     /// <returns>Throws an exception if the state is incorrectly taken.</returns>
     public T GetCurrentStateContext<T>() where T : GenericState<StateKey> {
         if (currentState is not T) {
-            throw new Exception($"[GameStateMachine] Warning! Current State {currentState} is not of type {typeof(T)}. This may cause errors.");
+            throw new Exception($"[GameStateMachine] Warning! Current State {currentState} is not of type {typeof(T)}, and is of type {currentState.GetType()} This may cause errors.");
         }
         return (T)currentState;
     }

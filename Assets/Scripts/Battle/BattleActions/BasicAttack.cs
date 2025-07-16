@@ -1,18 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BasicAttack : BattleAction {
-    private static float QTE_WINDOW = 0.2f;
-    private static float QTE_MASH_WINDOW = 1.0f;
-    private static float QTE_RELEASE_WINDOW = 0.3f;
-
-    private static float QTE_LEAD_TIME = 0.3f;
-    
-
     public BasicAttack(BattleUnit targetUnit, BattleUnit actorUnit) : base("Basic Attack", targetUnit, actorUnit) {
-    
+        
     }
 
     public override IEnumerator DoAction(BattleStateMachine battle) {
@@ -26,28 +20,22 @@ public class BasicAttack : BattleAction {
         //  & Move unit towards target to perform animations
         QuickTimeEvent QTE;
         if (ActorUnit is Enemy) {
-            QTE = new QuickTimeEvent(battle.qteButton, QTEType.PRESS);
+            QTE = new QuickTimeEvent(battle.qteButton, new PressQTE());
         } else {
-            QTE = new QuickTimeEvent(battle.qteButton, ActorUnit.Weapon.QteType);
-        }
-        
-        float qteWindow;
-        switch (ActorUnit.Weapon.QteType) {
-            case QTEType.RELEASE:
-                qteWindow = QTE_RELEASE_WINDOW;
-                break;
-            case QTEType.MASH:
-                qteWindow = QTE_MASH_WINDOW;
-                break;
-            default:
-                qteWindow = QTE_WINDOW;
-                break;
+            QTE = new QuickTimeEvent(battle.qteButton, ActorUnit.MemberData.Weapon.GetQTE());
         }
 
-        battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
+        WeaponQTE qteAttribute = ActorUnit.MemberData.Weapon.GetQTE();
 
-        for (int i = 0; i < ActorUnit.Weapon.Hits; i++) {
-            battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] {KeyCode.A, KeyCode.S}, qteWindow, QTE_LEAD_TIME));
+        battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, qteAttribute.GetLeadTime()));
+
+        /// <summary>
+        /// Counter only used for press QTEs
+        /// </summary>
+        int failAllowance = 0;
+        for (int i = 0; i < qteAttribute.Hits; i++) {
+            // The QTE itself
+            battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] { KeyCode.A, KeyCode.S }, qteAttribute.GetWindowTime(), qteAttribute.GetLeadTime()));
 
             // Perform Attack animation
             if (ActorUnit.Object.GetComponent<Animator>() != null)
@@ -55,26 +43,36 @@ public class BasicAttack : BattleAction {
 
             yield return QTE.WaitForQTEFinish();
 
-            // Perform weapon dependent battle effects
-            switch (QTE.Type) {
-                case QTEType.PRESS:
-                    PressAttack(battle, QTE.Result);
-                    break;
-                case QTEType.MASH:
-                    MashAttack(battle, QTE.Result);
-                    break;
-                case QTEType.RELEASE:
-                    ReleaseAttack(battle, QTE.Result);
-                    break;
-                default:
-                    break;
+            // Perform Attack itself
+            if (QTE.Type is PressQTE) {
+                int QTEResult = QTE.Result;
+
+                if (QTEResult != QuickTimeEvent.QTE_SUCCESS_RESULT && failAllowance < ((PressQTE)qteAttribute).FailAllowance) {
+                    failAllowance++;
+                    QTEResult = QuickTimeEvent.QTE_SUCCESS_RESULT;
+                }
+                PressAttack(battle, QTEResult);
+            } else if (QTE.Type is MashQTE) {
+                MashAttack(battle, QTE.Result + ((MashQTE)qteAttribute).MashHitBonus);
+            } else if (QTE.Type is ReleaseQTE) {
+                ReleaseAttack(battle, QTE.Result);
             }
-            
+
+            // Perform Weapon Battle Effects (Done by adding actions to the queue)
+            foreach (WeaponAttribute attr in ActorUnit.MemberData.Weapon.GetWeaponLevel(ActorUnit.MemberData.Weapon.CurrentStats.Level).Attributes) {
+                // if (attr.Type != AttrType.ACTIVE) continue;
+
+                if (attr is HealAttr) {
+                    HealAttr healAttr = (HealAttr)attr;
+                    battle.PushBattleActionToNext(new Heal(ActorUnit, healAttr.HP, 0));
+                }
+            }
+
             yield return new WaitForSeconds(0.5f);
         }
 
         // Move unit back
-        yield return MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME);
+        yield return MoveTo(targetPosition, originalActorPosition, qteAttribute.GetLeadTime());
         
         yield return null;
     }
@@ -117,7 +115,7 @@ public class BasicAttack : BattleAction {
 
         // Update Text & Entity Info
         int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.WeaponName} for {damage} damage!";
+        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.WeaponName} for {damage} damage!";
         battle.mainTextbox.text = battleText;
     }
     private void ReleaseAttack(BattleStateMachine battle, int qteResult) {
@@ -135,9 +133,9 @@ public class BasicAttack : BattleAction {
 
             // Update Text & Entity Info
             int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-            battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.WeaponName} for {damage} damage!";
+            battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.WeaponName} for {damage} damage!";
         } else {
-            battleText = $"Miss! {ActorUnit.Name} failed to attack {TargetUnit.Name}!";
+            battleText = $"Miss! {ActorUnit.MemberData.Name} failed to attack {TargetUnit.MemberData.Name}!";
         }
 
         battle.mainTextbox.text = battleText;
@@ -149,14 +147,14 @@ public class BasicAttack : BattleAction {
 
         // Check QTE
         if (ActorUnit is Enemy) {
-            damageModifier = 1 - Math.Clamp(Mathf.Log(qteResult, 4) - 1, 0, 0.5f);
+            damageModifier = 1 - Math.Clamp(Mathf.Log(qteResult, 5) - 1, 0, 0.5f);
         } else {
-            damageModifier = 1 + Math.Clamp(Mathf.Log(qteResult, 4) - 1, 0, 0.5f);
+            damageModifier = 1 + Math.Clamp(Mathf.Log(qteResult, 5) - 1, 0, 0.5f);
         }
 
         // Update Text & Entity Info
         int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-        battleText += $"{ActorUnit.Name} attacked {TargetUnit.Name} using {ActorUnit.Weapon.WeaponName} for {damage} damage!";
+        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.WeaponName} for {damage} damage!";
         battle.mainTextbox.text = battleText;
     }
 

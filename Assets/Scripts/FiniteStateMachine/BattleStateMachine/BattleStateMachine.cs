@@ -19,9 +19,10 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     public GameObject enemyObjectPrefab;
     public TMP_Text mainTextbox;
     public GameObject qteButton;
-
+    public GameObject endBattleScreen;
     public GameObject playerUnitPrefab;
     public GameObject playerSide;
+    public UnitInfoUI[] endBattlePlayerInfoPanels;
     #endregion
 
     /// <summary> List of enemy objects in the battle </summary>
@@ -60,13 +61,18 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
         OnEnterActionSequenceState.RemoveAllListeners();
     }
 
-    public void AddBattleAction(BattleAction action) {
-        Debug.Log($"[BattleStateMachine] Battle Action Added: {action}" );
+    public void PushBattleAction(BattleAction action) {
+        Debug.Log($"[BattleStateMachine] Battle Action Pushed: {action}" );
         actionSequence.Add(action);
+    }
+    
+    public void PushBattleActionToNext(BattleAction action) {
+        Debug.Log($"[BattleStateMachine] Battle Action Inserted to top: {action}" );
+        actionSequence.Insert(1, action);
     }
 
     #region IPlayerTurnListener
-    
+
     /// <summary>
     /// Triggers when an enemy is clicked on during enemy target selection
     /// </summary>
@@ -96,6 +102,6 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     }
 
     public void EndBattle() {
-        gameContext.EndBattle();
+        gameContext.SavePartyData();
     }
 }   

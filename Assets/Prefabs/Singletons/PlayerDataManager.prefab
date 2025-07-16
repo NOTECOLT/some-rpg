@@ -59,7 +59,12 @@ MonoBehaviour:
         Defense: 0
         Speed: 0
       Name: Jim
-      Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+      Weapon:
+        Data: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+        CurrentStats:
+          Level: 1
+          LevelXP: 0
+          CumulativeXP: 0
     - BaseStats:
         HitPoints: 20
         ManaPoints: 10
@@ -73,7 +78,12 @@ MonoBehaviour:
         Defense: 0
         Speed: 0
       Name: Pam
-      Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+      Weapon:
+        Data: {fileID: 11400000, guid: f6be38e6c295ef54a84908904b47888d, type: 2}
+        CurrentStats:
+          Level: 1
+          LevelXP: 0
+          CumulativeXP: 0
     - BaseStats:
         HitPoints: 20
         ManaPoints: 10
@@ -87,7 +97,12 @@ MonoBehaviour:
         Defense: 0
         Speed: 0
       Name: Roy
-      Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+      Weapon:
+        Data: {fileID: 11400000, guid: a0f0aad74d2792b45afb54b11428f5f2, type: 2}
+        CurrentStats:
+          Level: 1
+          LevelXP: 0
+          CumulativeXP: 0
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
   Data:
@@ -105,7 +120,12 @@ MonoBehaviour:
         Defense: 0
         Speed: 0
       Name: 
-      Weapon: {fileID: 0}
+      Weapon:
+        Data: {fileID: 0}
+        CurrentStats:
+          Level: 1
+          LevelXP: 0
+          CumulativeXP: 0
     - BaseStats:
         HitPoints: 0
         ManaPoints: 0
@@ -119,7 +139,12 @@ MonoBehaviour:
         Defense: 0
         Speed: 0
       Name: 
-      Weapon: {fileID: 0}
+      Weapon:
+        Data: {fileID: 0}
+        CurrentStats:
+          Level: 1
+          LevelXP: 0
+          CumulativeXP: 0
     - BaseStats:
         HitPoints: 0
         ManaPoints: 0
@@ -133,6 +158,11 @@ MonoBehaviour:
         Defense: 0
         Speed: 0
       Name: 
-      Weapon: {fileID: 0}
+      Weapon:
+        Data: {fileID: 0}
+        CurrentStats:
+          Level: 1
+          LevelXP: 0
+          CumulativeXP: 0
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2

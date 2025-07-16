@@ -14,7 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyName: Boar
   Sprite: {fileID: 21300000, guid: 8c890e7f80282f4498812b6f85c8fb63, type: 3}
-  Weapon: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+  WeaponItem:
+    Data: {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
+    CurrentStats:
+      Level: 1
+      LevelXP: 0
+      CumulativeXP: 0
+      ActiveModifiers: []
   BaseStats:
     HitPoints: 35
     ManaPoints: 9
