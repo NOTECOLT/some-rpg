@@ -64,7 +64,7 @@ public class DialogueManager : MonoBehaviour {
     private void EquipWeapon(string weaponid, int playerid) {
         // Access the ItemDatabase component to be able to reference item ids
         // ? Not my favorite solution but i'll keep it like this for now 
-        PlayerDataManager.Instance.Data.PartyStats[playerid].Weapon = GameStateMachine.Instance.Weapons[weaponid];
+        PlayerDataManager.Instance.Data.PartyStats[playerid].Weapon = new WeaponItem(GameStateMachine.Instance.Weapons[weaponid]);
         Debug.Log($"[Dialogue Manager] Script Function Executed: {FUNC_EQUIP_WEAPON}({weaponid})");
     }
     
@@ -92,7 +92,7 @@ public class DialogueManager : MonoBehaviour {
     public void TriggerDialogue(TextAsset inkJson) {
         _currentStory = new Story(inkJson.text);
         EnableDialogueUI();
-        OnDialogueOpen.Invoke();
+        OnDialogueOpen?.Invoke();
 
         _currentStory.BindExternalFunction(FUNC_EQUIP_WEAPON, (string weaponid, int playerid) => EquipWeapon(weaponid, playerid));
 
@@ -115,7 +115,7 @@ public class DialogueManager : MonoBehaviour {
             DisableDialogueUI();
             _currentStory.UnbindExternalFunction(FUNC_EQUIP_WEAPON);
             _currentStory = null;
-            OnDialogueClose.Invoke();
+            OnDialogueClose?.Invoke();
         }
     }
 

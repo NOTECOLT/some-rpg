@@ -17,6 +17,11 @@ public class SceneLoader : MonoBehaviour {
     [SerializeField] private GameObject _camera;
     [SerializeField] private GameObject _panelFade;
 
+    /// <summary>
+    /// Holds the list of encounters when a player runs into a wild enemy. <br></br>
+    /// Used as a "communication" variable between the GameStateMachine & BattleStateMachine <br></br>
+    /// Data is dumped here from the GSM upon scene transition, and the BSM usues the data to load enemies
+    /// </summary>
     public List<EnemyType> Encounters { get; private set; }
     public static SceneLoader Instance { get; private set; }
 

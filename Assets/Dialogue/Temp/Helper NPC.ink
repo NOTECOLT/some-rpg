@@ -21,15 +21,15 @@ Whose weapon would you like to change?
         ~ playerName = "Roy"
         
 - What would you like to change your weapon to?
-    * [Basic Blade]
-        ~ choiceid = "basicblade"
-        ~ choiceName = "Basic Blade"
-    * [Mallet]
-        ~ choiceid = "mallet"
-        ~ choiceName = "Mallet"
-    * [Simple Bow]
-        ~ choiceid = "simplebow"
-        ~ choiceName = "Simple Bow"
+    * [Rusty Sword]
+        ~ choiceid = "rustysword"
+        ~ choiceName = "Rusty Sword"
+    * [Club]
+        ~ choiceid = "club"
+        ~ choiceName = "Club"
+    * [Old Bow]
+        ~ choiceid = "oldbow"
+        ~ choiceName = "Old Bow"
     * [Wooden Staff]
         ~ choiceid = "woodenstaff"
         ~ choiceName = "Wooden Staff"

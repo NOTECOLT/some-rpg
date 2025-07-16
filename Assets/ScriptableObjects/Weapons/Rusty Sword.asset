@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83025fc9e6aea2f4d96fac10cfaeb872, type: 3}
-  m_Name: Wooden Staff
+  m_Name: Rusty Sword
   m_EditorClassIdentifier: 
-  WeaponType: 2
-  WeaponName: Wooden Staff
-  weaponid: woodenstaff
-  Sprite: {fileID: -1941045431, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
+  WeaponType: 0
+  WeaponName: Rusty Sword
+  weaponid: rustysword
+  Sprite: {fileID: 1575564080, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
   QTEAttribute:
-    rid: 2942160446607851529
+    rid: 2942160446607851522
   Levels:
   - Experience: 0
     Attack: 10
@@ -25,17 +25,19 @@ MonoBehaviour:
   - Experience: 20
     Attack: 11
     Attributes:
-    - rid: 2942160446607851530
+    - rid: 2942160446607851525
   references:
     version: 2
     RefIds:
-    - rid: 2942160446607851529
-      type: {class: ReleaseQTE, ns: , asm: Assembly-CSharp}
+    - rid: 2942160446607851522
+      type: {class: PressQTE, ns: , asm: Assembly-CSharp}
       data:
         _windowTime: -1
         Hits: 1
-    - rid: 2942160446607851530
-      type: {class: ReleaseQTE, ns: , asm: Assembly-CSharp}
+        FailAllowance: 0
+    - rid: 2942160446607851525
+      type: {class: PressQTE, ns: , asm: Assembly-CSharp}
       data:
-        _windowTime: 0.5
-        Hits: 1
+        _windowTime: -1
+        Hits: 2
+        FailAllowance: 1

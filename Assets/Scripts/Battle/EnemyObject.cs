@@ -15,12 +15,13 @@ public class EnemyObject : MonoBehaviour, IPointerClickHandler {
     public event System.Action<Enemy> OnEnemyClicked;
     
     public void OnPointerClick(PointerEventData eventData) {
-        OnEnemyClicked.Invoke(Enemy);
+        OnEnemyClicked?.Invoke(Enemy);
     }
 
     void OnDestroy() {
-        foreach(Delegate d in OnEnemyClicked.GetInvocationList()) {
-            OnEnemyClicked -= (Action<Enemy>)d;
-        }
+        OnEnemyClicked = null;
+        // foreach (Delegate d in OnEnemyClicked.GetInvocationList()) {
+        //     OnEnemyClicked -= (Action<Enemy>)d;
+        // }
     }  
 }

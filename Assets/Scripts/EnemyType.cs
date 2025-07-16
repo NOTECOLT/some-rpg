@@ -11,7 +11,7 @@ using UnityEngine;
 public class EnemyType : ScriptableObject {
     public string EnemyName;
     public Sprite Sprite;
-    public Weapon Weapon;
+    public WeaponItem WeaponItem;
 
     // Refers to the base stats of an enemy and remains static in gameplay
     public EntityStats BaseStats = new EntityStats();

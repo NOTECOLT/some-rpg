@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83025fc9e6aea2f4d96fac10cfaeb872, type: 3}
-  m_Name: Wooden Staff
+  m_Name: Old Bow
   m_EditorClassIdentifier: 
-  WeaponType: 2
-  WeaponName: Wooden Staff
-  weaponid: woodenstaff
-  Sprite: {fileID: -1941045431, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
+  WeaponType: 3
+  WeaponName: Old Bow
+  weaponid: oldbow
+  Sprite: {fileID: -423875004, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}
   QTEAttribute:
-    rid: 2942160446607851529
+    rid: 2942160446607851521
   Levels:
   - Experience: 0
     Attack: 10
@@ -25,17 +25,17 @@ MonoBehaviour:
   - Experience: 20
     Attack: 11
     Attributes:
-    - rid: 2942160446607851530
+    - rid: 2942160427512496128
   references:
     version: 2
     RefIds:
-    - rid: 2942160446607851529
-      type: {class: ReleaseQTE, ns: , asm: Assembly-CSharp}
-      data:
-        _windowTime: -1
-        Hits: 1
-    - rid: 2942160446607851530
+    - rid: 2942160427512496128
       type: {class: ReleaseQTE, ns: , asm: Assembly-CSharp}
       data:
         _windowTime: 0.5
+        Hits: 1
+    - rid: 2942160446607851521
+      type: {class: ReleaseQTE, ns: , asm: Assembly-CSharp}
+      data:
+        _windowTime: -1
         Hits: 1
