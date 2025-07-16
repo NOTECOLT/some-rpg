@@ -25,6 +25,11 @@ public class PressQTE : WeaponQTE {
     private static float DEFAULT_PRESS_WINDOW = 0.2f;
     private static float DEFAULT_PRESS_LEAD = 0.3f;
 
+    /// <summary>
+    /// In a series of QTE hits, fail leeway dictates how many QTEs can be "failed" and still bonus damage
+    /// </summary>
+    [Min(0)] public int FailAllowance = 0;
+
     public override float GetWindowTime() {
         if (_windowTime == -1) {
             return DEFAULT_PRESS_WINDOW;

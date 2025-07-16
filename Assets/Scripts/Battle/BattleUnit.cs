@@ -51,7 +51,7 @@ public class BattleUnit {
     /// <param name="damageModifier">Damage Modifier is multiplied to the calculated damage</param>
     /// <returns>Returns the damage dealt as integer</returns>
     public int DealDamage(BattleUnit attackingUnit, float damageModifier = 1) {
-        int damage = Mathf.CeilToInt(Mathf.Pow(attackingUnit.MemberData.CurrentStats.Attack, 2) / (1.5f * MemberData.CurrentStats.Defense) * attackingUnit.MemberData.Weapon.Data.Attack * damageModifier);
+        int damage = Mathf.CeilToInt(Mathf.Pow(attackingUnit.MemberData.Weapon.GetWeaponAttack(), 2) / (1.5f * MemberData.CurrentStats.Defense) * damageModifier);
 
         int oldHP = MemberData.CurrentStats.HitPoints;
         int newHP = (MemberData.CurrentStats.HitPoints - damage < 0) ? 0 : MemberData.CurrentStats.HitPoints - damage;

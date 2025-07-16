@@ -28,7 +28,11 @@ public class BasicAttack : BattleAction {
         WeaponQTE qteAttribute = ActorUnit.MemberData.Weapon.GetQTE();
 
         battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, qteAttribute.GetLeadTime()));
-        
+
+        /// <summary>
+        /// Counter only used for press QTEs
+        /// </summary>
+        int failAllowance = 0;
         for (int i = 0; i < qteAttribute.Hits; i++) {
             // The QTE itself
             battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] { KeyCode.A, KeyCode.S }, qteAttribute.GetWindowTime(), qteAttribute.GetLeadTime()));
@@ -41,7 +45,13 @@ public class BasicAttack : BattleAction {
 
             // Perform Attack itself
             if (QTE.Type is PressQTE) {
-                PressAttack(battle, QTE.Result);
+                int QTEResult = QTE.Result;
+
+                if (QTEResult != QuickTimeEvent.QTE_SUCCESS_RESULT && failAllowance < ((PressQTE)qteAttribute).FailAllowance) {
+                    failAllowance++;
+                    QTEResult = QuickTimeEvent.QTE_SUCCESS_RESULT;
+                }
+                PressAttack(battle, QTEResult);
             } else if (QTE.Type is MashQTE) {
                 MashAttack(battle, QTE.Result + ((MashQTE)qteAttribute).MashHitBonus);
             } else if (QTE.Type is ReleaseQTE) {

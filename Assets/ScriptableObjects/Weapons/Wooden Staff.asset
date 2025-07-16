@@ -16,17 +16,26 @@ MonoBehaviour:
   WeaponName: Wooden Staff
   weaponid: woodenstaff
   Sprite: {fileID: -1941045431, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
-  Attack: 0.5
   QTEAttribute:
-    rid: 2942160446607851523
-  Hits: 3
+    rid: 2942160446607851529
   Levels:
   - Experience: 0
+    Attack: 10
     Attributes: []
+  - Experience: 20
+    Attack: 11
+    Attributes:
+    - rid: 2942160446607851530
   references:
     version: 2
     RefIds:
-    - rid: 2942160446607851523
-      type: {class: PressQTE, ns: , asm: Assembly-CSharp}
+    - rid: 2942160446607851529
+      type: {class: ReleaseQTE, ns: , asm: Assembly-CSharp}
       data:
         _windowTime: -1
+        Hits: 1
+    - rid: 2942160446607851530
+      type: {class: ReleaseQTE, ns: , asm: Assembly-CSharp}
+      data:
+        _windowTime: 0.5
+        Hits: 1

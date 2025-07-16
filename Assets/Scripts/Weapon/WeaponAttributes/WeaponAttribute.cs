@@ -23,5 +23,13 @@ public enum AttrType {
 public class HealAttr : WeaponAttribute {
     // new public string Name { get; protected set; } = "Heal";
     // new public AttrType Type { get; protected set; } = AttrType.ACTIVE;
-    public int HP;
+    public int HP = 0;
+}
+
+[Serializable]
+public class AttackAttr : WeaponAttribute {
+    /// <summary>
+    /// Replaces the original Attack stat
+    /// </summary> 
+    public float Attack = 1;
 }

@@ -16,14 +16,14 @@ MonoBehaviour:
   WeaponName: Old Bow
   weaponid: oldbow
   Sprite: {fileID: -423875004, guid: 3dc61aa49978b5544ac3ad20d8101398, type: 3}
-  Attack: 1
   QTEAttribute:
     rid: 2942160446607851521
-  Hits: 1
   Levels:
   - Experience: 0
+    Attack: 10
     Attributes: []
   - Experience: 20
+    Attack: 11
     Attributes:
     - rid: 2942160427512496128
   references:
@@ -33,7 +33,9 @@ MonoBehaviour:
       type: {class: ReleaseQTE, ns: , asm: Assembly-CSharp}
       data:
         _windowTime: 0.5
+        Hits: 1
     - rid: 2942160446607851521
       type: {class: ReleaseQTE, ns: , asm: Assembly-CSharp}
       data:
         _windowTime: -1
+        Hits: 1

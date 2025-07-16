@@ -19,7 +19,6 @@ public class Weapon : ScriptableObject {
     // ?   having the weaponid be a string may make it prone spelling mistakes but it makes it more readable then integer ids
     public string weaponid;
     public Sprite Sprite;
-    public float Attack = 1;
 
     [SerializeReference, SubclassSelector] public WeaponQTE QTEAttribute;
 
@@ -41,13 +40,7 @@ public class WeaponLevel {
     /// </summary>
     public int Experience = 20;
 
-    // public WeaponAttribute GetModifier(string name) {
-    //     WeaponAttribute ret = Attributes.FirstOrDefault(attr => attr.Name == name);
-    //     if (ret != null)
-    //         return ret;
-    //     else
-    //         throw new Exception($"Weapon Attribute {name} does not exist.");
-    // }
+    public int Attack = 1;
     
     [SerializeReference, SubclassSelector]
     public List<WeaponAttribute> Attributes = new List<WeaponAttribute>();

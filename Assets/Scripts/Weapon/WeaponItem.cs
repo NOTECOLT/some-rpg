@@ -36,6 +36,10 @@ public class WeaponItem : ICloneable {
         }
     }
 
+    public int GetWeaponAttack() {
+        return GetCurrentWeaponLevel().Attack;
+    }
+
     public WeaponLevel GetCurrentWeaponLevel() {
         return Data.Levels[CurrentStats.Level - 1];
     }
