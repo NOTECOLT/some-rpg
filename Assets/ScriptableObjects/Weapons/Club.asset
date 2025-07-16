@@ -17,13 +17,26 @@ MonoBehaviour:
   weaponid: club
   Sprite: {fileID: 598585791, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
   Attack: 1
-  QteType: 1
-  Hits: 1
+  QTEAttribute:
+    rid: 2942160446607851520
   Levels:
   - Experience: 0
     Attributes: []
   - Experience: 20
-    Attributes: []
+    Attributes:
+    - rid: 2942160446607851524
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 2942160446607851520
+      type: {class: MashQTE, ns: , asm: Assembly-CSharp}
+      data:
+        _windowTime: -1
+        Hits: 1
+        MashHitBonus: 0
+    - rid: 2942160446607851524
+      type: {class: MashQTE, ns: , asm: Assembly-CSharp}
+      data:
+        _windowTime: -1
+        Hits: 1
+        MashHitBonus: 1

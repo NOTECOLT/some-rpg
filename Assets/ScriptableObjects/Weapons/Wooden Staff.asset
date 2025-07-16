@@ -17,8 +17,16 @@ MonoBehaviour:
   weaponid: woodenstaff
   Sprite: {fileID: -1941045431, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
   Attack: 0.5
-  QteType: 0
+  QTEAttribute:
+    rid: 2942160446607851523
   Hits: 3
   Levels:
   - Experience: 0
-    Modifiers: []
+    Attributes: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2942160446607851523
+      type: {class: PressQTE, ns: , asm: Assembly-CSharp}
+      data:
+        _windowTime: -1

@@ -20,8 +20,8 @@ public class Weapon : ScriptableObject {
     public string weaponid;
     public Sprite Sprite;
     public float Attack = 1;
-    public QTEType QteType;
-    [Min(1)] public int Hits = 1;
+
+    [SerializeReference, SubclassSelector] public WeaponQTE QTEAttribute;
 
     // TODO: need an elegant way to implement current Level/experience and base experience
     /// <summary>

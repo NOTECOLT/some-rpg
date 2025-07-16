@@ -5,13 +5,6 @@ using System.Linq;
 using UnityEngine;
 
 public class BasicAttack : BattleAction {
-    private static float QTE_PRESS_WINDOW = 0.2f;
-    private static float QTE_MASH_WINDOW = 1.0f;
-    private static float QTE_RELEASE_WINDOW = 0.3f;
-
-    private static float QTE_LEAD_TIME = 0.3f;
-    
-
     public BasicAttack(BattleUnit targetUnit, BattleUnit actorUnit) : base("Basic Attack", targetUnit, actorUnit) {
         
     }
@@ -27,40 +20,18 @@ public class BasicAttack : BattleAction {
         //  & Move unit towards target to perform animations
         QuickTimeEvent QTE;
         if (ActorUnit is Enemy) {
-            QTE = new QuickTimeEvent(battle.qteButton, QTEType.PRESS);
+            QTE = new QuickTimeEvent(battle.qteButton, new PressQTE());
         } else {
-            QTE = new QuickTimeEvent(battle.qteButton, ActorUnit.MemberData.Weapon.Data.QteType);
+            QTE = new QuickTimeEvent(battle.qteButton, ActorUnit.MemberData.Weapon.GetQTE());
         }
+
+        WeaponQTE qteAttribute = ActorUnit.MemberData.Weapon.GetQTE();
+
+        battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, qteAttribute.GetLeadTime()));
         
-        float qteWindow;
-        switch (ActorUnit.MemberData.Weapon.Data.QteType) {
-            case QTEType.RELEASE:
-                qteWindow = QTE_RELEASE_WINDOW;
-                break;
-            case QTEType.MASH:
-                qteWindow = QTE_MASH_WINDOW;
-                break;
-            default:
-                qteWindow = QTE_PRESS_WINDOW;
-                break;
-        }
-
-        {
-            // WEAPON ATTRIBUTE THAT MODIFIES QTE WINDOW
-            WeaponAttribute attr = ActorUnit.MemberData.Weapon.GetCurrentWeaponLevel().Attributes.FirstOrDefault(attr => attr is QTEModifier);
-            if (attr != null) {
-                QTEModifier qteAttr = (QTEModifier)attr;
-                if (qteAttr.qteWindow != -1) {
-                    qteWindow = qteAttr.qteWindow;
-                }
-            }
-        }
-
-
-        battle.StartCoroutine(MoveTo(originalActorPosition, targetPosition, QTE_LEAD_TIME));
-
-        for (int i = 0; i < ActorUnit.MemberData.Weapon.Data.Hits; i++) {
-            battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] { KeyCode.A, KeyCode.S }, qteWindow, QTE_LEAD_TIME));
+        for (int i = 0; i < qteAttribute.Hits; i++) {
+            // The QTE itself
+            battle.StartCoroutine(QTE.GenerateQTE(new KeyCode[] { KeyCode.A, KeyCode.S }, qteAttribute.GetWindowTime(), qteAttribute.GetLeadTime()));
 
             // Perform Attack animation
             if (ActorUnit.Object.GetComponent<Animator>() != null)
@@ -68,24 +39,18 @@ public class BasicAttack : BattleAction {
 
             yield return QTE.WaitForQTEFinish();
 
-            // Perform QTE
-            switch (QTE.Type) {
-                case QTEType.PRESS:
-                    PressAttack(battle, QTE.Result);
-                    break;
-                case QTEType.MASH:
-                    MashAttack(battle, QTE.Result);
-                    break;
-                case QTEType.RELEASE:
-                    ReleaseAttack(battle, QTE.Result);
-                    break;
-                default:
-                    break;
+            // Perform Attack itself
+            if (QTE.Type is PressQTE) {
+                PressAttack(battle, QTE.Result);
+            } else if (QTE.Type is MashQTE) {
+                MashAttack(battle, QTE.Result + ((MashQTE)qteAttribute).MashHitBonus);
+            } else if (QTE.Type is ReleaseQTE) {
+                ReleaseAttack(battle, QTE.Result);
             }
 
             // Perform Weapon Battle Effects (Done by adding actions to the queue)
             foreach (WeaponAttribute attr in ActorUnit.MemberData.Weapon.GetWeaponLevel(ActorUnit.MemberData.Weapon.CurrentStats.Level).Attributes) {
-                if (attr.Type != AttrType.ACTIVE) continue;
+                // if (attr.Type != AttrType.ACTIVE) continue;
 
                 if (attr is HealAttr) {
                     HealAttr healAttr = (HealAttr)attr;
@@ -97,7 +62,7 @@ public class BasicAttack : BattleAction {
         }
 
         // Move unit back
-        yield return MoveTo(targetPosition, originalActorPosition, QTE_LEAD_TIME);
+        yield return MoveTo(targetPosition, originalActorPosition, qteAttribute.GetLeadTime());
         
         yield return null;
     }
@@ -172,9 +137,9 @@ public class BasicAttack : BattleAction {
 
         // Check QTE
         if (ActorUnit is Enemy) {
-            damageModifier = 1 - Math.Clamp(Mathf.Log(qteResult, 4) - 1, 0, 0.5f);
+            damageModifier = 1 - Math.Clamp(Mathf.Log(qteResult, 5) - 1, 0, 0.5f);
         } else {
-            damageModifier = 1 + Math.Clamp(Mathf.Log(qteResult, 4) - 1, 0, 0.5f);
+            damageModifier = 1 + Math.Clamp(Mathf.Log(qteResult, 5) - 1, 0, 0.5f);
         }
 
         // Update Text & Entity Info

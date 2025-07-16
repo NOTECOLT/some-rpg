@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -16,6 +17,23 @@ public class WeaponItem : ICloneable {
         Data = weapon;
         int level = 1;
         CurrentStats = new WeaponStats(level, 0, 0);
+    }
+
+    public WeaponQTE GetQTE() {
+        WeaponAttribute attr = GetCurrentWeaponLevel().Attributes.FirstOrDefault(attr => attr is WeaponQTE);
+        if (attr == null) {
+            attr = Data.QTEAttribute;
+        }
+
+        if (attr is PressQTE) {
+            return (PressQTE)attr;
+        } else if (attr is MashQTE) {
+            return (MashQTE)attr;
+        } else if (attr is ReleaseQTE) {
+            return (ReleaseQTE)attr;
+        } else {
+            return new PressQTE();
+        }
     }
 
     public WeaponLevel GetCurrentWeaponLevel() {
