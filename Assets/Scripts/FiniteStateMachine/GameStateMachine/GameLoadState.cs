@@ -40,7 +40,7 @@ public class GameLoadState : GenericState<GameStateMachine.StateKey> {
 
         foreach (Weapon w in _weaponsList) {
             if (w.weaponid == "") {
-                Utils.LogWarning($"[Item Database] Object {w.name} does not have weaponid. Weapon cannot be referenced in game.");
+                Debug.LogWarning($"[Item Database] Object {w.name} does not have weaponid. Weapon cannot be referenced in game.");
                 continue;
             }
             

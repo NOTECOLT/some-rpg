@@ -30,7 +30,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
             enemyObject.GetComponent<UnitInfoUI>().Instantiate(enemy);
 
             _context.enemyObjectList.Add(enemyObject);
-            Utils.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.MemberData.CurrentStats.HitPoints + ";");
+            Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.MemberData.CurrentStats.HitPoints + ";");
         }
         
         // Load all Player Units

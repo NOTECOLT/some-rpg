@@ -25,7 +25,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
         SortBattleActions();
 
         foreach (BattleAction action in _context.actionSequence)
-            Utils.Log($"[BattleStateMachine] {action}");
+            Debug.Log($"[BattleStateMachine] {action}");
 
         _context.StartCoroutine(ActionSequence());
     }
@@ -78,7 +78,7 @@ public class BattleActionSequenceState : GenericState<BattleStateMachine.StateKe
 
         while (_context.actionSequence.Count > 0) {
             BattleAction action = _context.actionSequence[0];
-            Utils.Log($"[Action Sequence] Action to Excecute: {action}");
+            Debug.Log($"[Action Sequence] Action to Excecute: {action}");
             yield return action.DoAction(_context);
             _context.actionSequence.RemoveAt(0);
 

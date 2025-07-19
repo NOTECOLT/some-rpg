@@ -43,7 +43,7 @@ public class DataPersistenceManager<T> {
         
         File.Create(savefile).Dispose();
         File.WriteAllText(savefile, JsonUtility.ToJson(new MetaDataWrapper(obj, SAVE_VERSION)));
-        Utils.Log($"[DataPersistence] Created new data to {savefile}. (Save Version = {SAVE_VERSION})");
+        Debug.Log($"[DataPersistence] Created new data to {savefile}. (Save Version = {SAVE_VERSION})");
     }
 
     public bool Exists(string filename) {
@@ -60,12 +60,12 @@ public class DataPersistenceManager<T> {
     public int SaveData(string filename, T obj) {
         string savefile = Path.Combine(SAVE_PATH, $"{filename}.json");
         if (!File.Exists(savefile)) {
-            Utils.LogWarning($"[DataPeristence] Error loading save file. {savefile} does not exist! (Save Version = {SAVE_VERSION})");
+            Debug.LogWarning($"[DataPeristence] Error loading save file. {savefile} does not exist! (Save Version = {SAVE_VERSION})");
             return RET_SAVE_FAIL;
         }
 
         File.WriteAllText(savefile, JsonUtility.ToJson(new MetaDataWrapper(obj, SAVE_VERSION)));
-        Utils.Log($"[DataPersistence] Successfully saved data to {savefile}. (Save Version = {SAVE_VERSION})");
+        Debug.Log($"[DataPersistence] Successfully saved data to {savefile}. (Save Version = {SAVE_VERSION})");
         return RET_SAVE_SUCCESS;
     }
 
@@ -78,7 +78,7 @@ public class DataPersistenceManager<T> {
     public int LoadData(string filename, ref T obj) {
         string savefile = Path.Combine(SAVE_PATH, $"{filename}.json");
         if (!File.Exists(savefile)) {
-            Utils.LogError($"[DataPeristence] Error loading save file. {savefile} does not exist! (Save Version = {SAVE_VERSION})");
+            Debug.LogError($"[DataPeristence] Error loading save file. {savefile} does not exist! (Save Version = {SAVE_VERSION})");
             return RET_SAVE_FAIL;
         }
 
@@ -86,15 +86,15 @@ public class DataPersistenceManager<T> {
             MetaDataWrapper dataWrapper = JsonUtility.FromJson<MetaDataWrapper>(File.ReadAllText(savefile));
 
             if (dataWrapper.Version != SAVE_VERSION) {
-                Utils.LogWarning($"[DataPersistence] SaveData in {savefile} is of Save Version {dataWrapper.Version} and does not match the current save version! (Save Version = {SAVE_VERSION})");
+                Debug.LogWarning($"[DataPersistence] SaveData in {savefile} is of Save Version {dataWrapper.Version} and does not match the current save version! (Save Version = {SAVE_VERSION})");
                 return RET_SAVE_WRONG_VERSION;
             }
 
             obj = dataWrapper.Data;
-            Utils.Log($"[DataPersistence] Successfully loaded data from {savefile}. (Save Version = {SAVE_VERSION})");
+            Debug.Log($"[DataPersistence] Successfully loaded data from {savefile}. (Save Version = {SAVE_VERSION})");
             return RET_SAVE_SUCCESS;
         } catch (FormatException) {
-            Utils.LogError($"[DataPersistence] Error loading save file. {savefile} is not of type {typeof(T)}! (Save Version = {SAVE_VERSION})");
+            Debug.LogError($"[DataPersistence] Error loading save file. {savefile} is not of type {typeof(T)}! (Save Version = {SAVE_VERSION})");
             return RET_SAVE_FAIL;
         }
     }

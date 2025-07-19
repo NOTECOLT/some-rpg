@@ -38,7 +38,7 @@ public class WeaponStats : ICloneable {
 
         if (LevelXP >= weapon.Levels[Level].Experience) {
             // foreach (WeaponModifier modifier in weapon.Levels[Level].Modifiers) {
-            //     Utils.Log($"effect: {modifier.Effect}");
+            //     Debug.Log($"effect: {modifier.Effect}");
             //     Modifiers.Add(modifier);
             // }
 

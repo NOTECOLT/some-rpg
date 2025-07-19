@@ -65,7 +65,7 @@ public class DialogueManager : MonoBehaviour {
         // Access the ItemDatabase component to be able to reference item ids
         // ? Not my favorite solution but i'll keep it like this for now 
         PlayerDataManager.Instance.Data.PartyStats[playerid].Weapon = new WeaponItem(GameStateMachine.Instance.Weapons[weaponid]);
-        Utils.Log($"[Dialogue Manager] Script Function Executed: {FUNC_EQUIP_WEAPON}({weaponid})");
+        Debug.Log($"[Dialogue Manager] Script Function Executed: {FUNC_EQUIP_WEAPON}({weaponid})");
     }
     
     #endregion
