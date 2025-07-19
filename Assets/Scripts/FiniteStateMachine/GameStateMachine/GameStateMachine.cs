@@ -40,7 +40,7 @@ public class GameStateMachine : FiniteStateMachine<GameStateMachine.StateKey> {
 
     protected override void Start() {
         if (SceneLoader.Instance is null) {
-            Debug.LogError("Scene does not have SceneLoader Component! Battle failed to load.");
+            Utils.LogError("Scene does not have SceneLoader Component! Battle failed to load.");
             return;
         }
 
@@ -81,7 +81,7 @@ public class GameStateMachine : FiniteStateMachine<GameStateMachine.StateKey> {
 
             // Failsafe condition to ensure that waiting does not create infinite loop.
             if (timeElapsed > maxWaitTime) {
-                Debug.LogWarning($"[Game State Machine] Warning! WaitUntilState<{typeof(T)}> took longer than maxWaitTime of {maxWaitTime} seconds. Breaking out of loop.");
+                Utils.LogWarning($"[Game State Machine] Warning! WaitUntilState<{typeof(T)}> took longer than maxWaitTime of {maxWaitTime} seconds. Breaking out of loop.");
                 break;
             }
         }

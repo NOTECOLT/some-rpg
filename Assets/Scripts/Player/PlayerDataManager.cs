@@ -75,7 +75,7 @@ public class PlayerDataManager : MonoBehaviour {
                         CurrentStats = (WeaponStats)dsStats.Weapon.CurrentStats.Clone()
                     };
                 } else {
-                    Debug.LogWarning($"Weapon {dsStats.Weapon.Data.WeaponName} does not exist in Weapons Dictionary! Cannot serialize Weapon data.");
+                    Utils.LogWarning($"Weapon {dsStats.Weapon.Data.WeaponName} does not exist in Weapons Dictionary! Cannot serialize Weapon data.");
                     stats.Weapon = new SerializedWeaponItem() {
                         Data = "",
                         CurrentStats = (WeaponStats)dsStats.Weapon.CurrentStats.Clone()
@@ -105,7 +105,7 @@ public class PlayerDataManager : MonoBehaviour {
                         CurrentStats = (WeaponStats)sStats.Weapon.CurrentStats.Clone()
                     };
                 } else {
-                    Debug.LogWarning($"Weapon {sStats.Weapon} does not exist in Weapons Dictionary! Cannot Deserialize Weapon data.");
+                    Utils.LogWarning($"Weapon {sStats.Weapon} does not exist in Weapons Dictionary! Cannot Deserialize Weapon data.");
                     stats.Weapon = new WeaponItem() {
                         Data = null, 
                         CurrentStats = null

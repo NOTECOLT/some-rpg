@@ -107,7 +107,7 @@ public class BattleUnit {
             int newXP = MemberData.Weapon.CurrentStats.LevelXP + XPToLevelUp;
             int totalXP = MemberData.Weapon.GetNextWeaponLevel().Experience;
 
-            // Debug.Log($"{MemberData.Weapon.Data.name} {oldXP} {newXP} {totalXP}");
+            // Utils.Log($"{MemberData.Weapon.Data.name} {oldXP} {newXP} {totalXP}");
 
             OnXPChange?.Invoke(oldXP, newXP, totalXP, ANIMATION_TIME * ((float)XPToLevelUp / xp));
             MemberData.Weapon.AddExperience(XPToLevelUp);

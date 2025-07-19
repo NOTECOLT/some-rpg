@@ -41,7 +41,7 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
 
     protected override void Start() {
         if (SceneLoader.Instance is null) {
-            Debug.LogError("Scene does not have SceneLoader Component! Battle failed to load.");
+            Utils.LogError("Scene does not have SceneLoader Component! Battle failed to load.");
             return;
         }
 
@@ -62,12 +62,12 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     }
 
     public void PushBattleAction(BattleAction action) {
-        Debug.Log($"[BattleStateMachine] Battle Action Pushed: {action}" );
+        Utils.Log($"[BattleStateMachine] Battle Action Pushed: {action}" );
         actionSequence.Add(action);
     }
     
     public void PushBattleActionToNext(BattleAction action) {
-        Debug.Log($"[BattleStateMachine] Battle Action Inserted to top: {action}" );
+        Utils.Log($"[BattleStateMachine] Battle Action Inserted to top: {action}" );
         actionSequence.Insert(1, action);
     }
 

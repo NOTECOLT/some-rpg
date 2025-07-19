@@ -83,7 +83,7 @@ public class GameOverworldState : GenericState<GameStateMachine.StateKey> {
             nameList += $"{encounter.name} ";
         }
         
-        Debug.Log($"Encounter with {nameList}}}!");
+        Utils.Log($"Encounter with {nameList}}}!");
         _isBattleTriggered = true;
     }
 

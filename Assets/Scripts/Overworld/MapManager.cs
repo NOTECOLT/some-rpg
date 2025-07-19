@@ -22,7 +22,7 @@ public class MapManager : MonoBehaviour {
         foreach (TileData tileData in _tileDatas) {
             foreach (TileBase tileBase in tileData.Tiles) {
                 if (_tileDictionary.ContainsKey(tileBase)) {
-                    Debug.LogWarning($"Tile Dictionary already contains definition for {tileBase.name} from {_tileDictionary[tileBase].name}. Ignoring new definition from {tileData.name}.");
+                    Utils.LogWarning($"Tile Dictionary already contains definition for {tileBase.name} from {_tileDictionary[tileBase].name}. Ignoring new definition from {tileData.name}.");
                     continue;
                 }
                 _tileDictionary.Add(tileBase, tileData);

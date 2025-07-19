@@ -35,7 +35,7 @@ public class BattleAction {
     /// This function is public-facing and redirects to either DoPlayerAction or DoNonPlayerAction depending on the ActorUnit
     /// </summary>
     public virtual IEnumerator DoAction(BattleStateMachine battle) {
-        Debug.LogWarning($"Action {ActionName} 'DoPlayerAction' has not been implemented!");
+        Utils.LogWarning($"Action {ActionName} 'DoPlayerAction' has not been implemented!");
         yield return null;
     }
 }
