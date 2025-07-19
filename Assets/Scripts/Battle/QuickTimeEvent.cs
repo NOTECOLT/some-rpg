@@ -94,7 +94,7 @@ public class QuickTimeEvent {
         qteFlashText.text = "Press!";
 
         while (_qteIsActive) {
-            Utils.Log($"[QTE System] Time left: {_currentTime}");
+            Debug.Log($"[QTE System] Time left: {_currentTime}");
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
                 SetQTEFail();
@@ -106,7 +106,7 @@ public class QuickTimeEvent {
             if (Input.anyKey) {
                 if (Input.GetKey(QTEKey)) {
                     Result = QTE_SUCCESS_RESULT;
-                    Utils.Log("[QTE System] QTE Success!");
+                    Debug.Log("[QTE System] QTE Success!");
                     _qteIsActive = false;     
                     break;     
                 } else {
@@ -150,7 +150,7 @@ public class QuickTimeEvent {
         int inputNumber = 0;
 
         while (_qteIsActive) {
-            Utils.Log($"[QTE System] Time left: {_currentTime}");
+            Debug.Log($"[QTE System] Time left: {_currentTime}");
 
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
@@ -171,7 +171,7 @@ public class QuickTimeEvent {
 
         qteFlashText.text = "";
         _animator.SetBool("IsActive", false);
-        Utils.Log($"[QTE System] QTE Mashed: {inputNumber}!");
+        Debug.Log($"[QTE System] QTE Mashed: {inputNumber}!");
         _qteButton.transform.localScale = Vector3.one;
         Result = inputNumber;
         EndQTE();
@@ -208,7 +208,7 @@ public class QuickTimeEvent {
         qteFlashText.text = "Release!";
 
         while (_qteIsActive) {
-            Utils.Log($"[QTE System] Time left: {_currentTime}");
+            Debug.Log($"[QTE System] Time left: {_currentTime}");
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
                 SetQTEFail();
@@ -219,7 +219,7 @@ public class QuickTimeEvent {
             // Check for any input for the QTE
             if (Input.GetKeyUp(QTEKey)) {
                 Result = QTE_SUCCESS_RESULT;
-                Utils.Log("[QTE System] QTE Success!");
+                Debug.Log("[QTE System] QTE Success!");
                 _qteIsActive = false;     
                 break; 
             }
@@ -238,7 +238,7 @@ public class QuickTimeEvent {
 
     private void SetQTEFail() {
         Result = QTE_FAIL_RESULT;
-        Utils.Log($"[QTE System] QTE Fail!");
+        Debug.Log($"[QTE System] QTE Fail!");
     }
 
     private void EndQTE() {

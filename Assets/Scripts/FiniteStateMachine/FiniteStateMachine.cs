@@ -27,11 +27,11 @@ public class FiniteStateMachine<StateKey> : MonoBehaviour where StateKey : Enum 
     /// ? Idea: turn this into coroutine?
     /// </summary>
     private void ChangeState(StateKey newState) {
-        Utils.Log($"[{name}] [Exit State: {currentState.ToString().ToUpper()}]");
+        Debug.Log($"[{name}] [Exit State: {currentState.ToString().ToUpper()}]");
         currentState.ExitState();
         
         currentState = States[newState];
-        Utils.Log($"[{name}] [Enter State: {currentState.ToString().ToUpper()}]");
+        Debug.Log($"[{name}] [Enter State: {currentState.ToString().ToUpper()}]");
         currentState.EnterState();
     }
 }
