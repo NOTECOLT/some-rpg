@@ -66,6 +66,10 @@ public class GameStateMachine : FiniteStateMachine<GameStateMachine.StateKey> {
         return (T)currentState;
     }
 
+    public StateKey GetCurrentStateKey() {
+        return currentState.Key;
+    }
+
     /// <summary>
     /// IEnumerator that waits for the current state to change before running an action 
     /// </summary>

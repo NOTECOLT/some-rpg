@@ -73,17 +73,21 @@ public class GameOverworldState : GenericState<GameStateMachine.StateKey> {
         
         int encounters = _rnd.Next(1, 4);
         _context.encounters = new List<EnemyType>();
-        string nameList = "{";
+        string nameList = "";
 
         for (int i = 0; i < encounters; i++) {
             EnemyType encounter = GenerateWildEncounter();
             if (encounter is null) return;
     
             _context.encounters.Add(encounter);
-            nameList += $"{encounter.name} ";
+            nameList += $"{encounter.EnemyName} ";
         }
         
-        Debug.Log($"Encounter with {nameList}}}!");
+        Debug.Log($"[Game Overworld State] Encounter with {{{nameList}}}!");
+        SetBattleTriggered();
+    }
+
+    public void SetBattleTriggered() {
         _isBattleTriggered = true;
     }
 

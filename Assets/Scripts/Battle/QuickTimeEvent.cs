@@ -90,11 +90,11 @@ public class QuickTimeEvent {
         
         // WINDOW  -----------------------------------------
         _currentTime = window;
+        Debug.Log($"[QTE System] QTE Window: {_currentTime}");
         _animator.SetBool("IsActive", true);
         qteFlashText.text = "Press!";
 
         while (_qteIsActive) {
-            // Debug.Log($"[QTE System] Time left: {_currentTime}");
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
                 SetQTEFail();
@@ -147,11 +147,10 @@ public class QuickTimeEvent {
         _qteButton.SetActive(true);
         _animator.SetBool("IsActive", true);
         _currentTime = window;
+        Debug.Log($"[QTE System] QTE Window: {_currentTime}");
         int inputNumber = 0;
 
         while (_qteIsActive) {
-            // Debug.Log($"[QTE System] Time left: {_currentTime}");
-
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
                 _qteIsActive = false;
@@ -205,10 +204,10 @@ public class QuickTimeEvent {
         // WINDOW -----------------------------------------
         _animator.SetBool("IsActive", true);
         _currentTime = window;
+        Debug.Log($"[QTE System] QTE Window: {_currentTime}");
         qteFlashText.text = "Release!";
 
         while (_qteIsActive) {
-            // Debug.Log($"[QTE System] Time left: {_currentTime}");
             // Check if the QTE's window reached the end
             if (_currentTime <= 0) {
                 SetQTEFail();
