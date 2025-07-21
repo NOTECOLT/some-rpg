@@ -96,8 +96,9 @@ public class ScreenLogger : MonoBehaviour {
         File.WriteAllText(logfile, $"Date Produced: {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}\n"
                             + $"Game Version: {Application.version}\n"
                             + $"Unity Version: {Application.unityVersion}\n"
-                            + $"Device Info: {SystemInfo.deviceType}, {SystemInfo.deviceModel}\n"
-                            + "Log:\n"
+                            + $"Operating System: {SystemInfo.operatingSystem}\n"
+                            + $"Device Info: {SystemInfo.deviceModel} ({SystemInfo.deviceType}) \n"
+                            + "------------------------------------------------------------\n\n"
                             + string.Join("\n", _fullLog.ToArray()));
     }
 }

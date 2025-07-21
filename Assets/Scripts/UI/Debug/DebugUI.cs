@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DebugUI : MonoBehaviour {
+    private GUIStyle _style = null;
     private int _currentPage = 0;
     private int _maxPages = 3;
     public static DebugUI Instance { get; private set; }
@@ -45,6 +46,29 @@ public class DebugUI : MonoBehaviour {
                         break;
                 }
             }
+        }
+    }
+
+    void OnGUI() {
+        if (_style == null) {
+            _style = new GUIStyle() {
+                fontSize = 25,
+                normal = {
+                    textColor = Color.white
+                },
+                wordWrap = true,
+            };
+        }
+        
+        if (Debug.isDebugBuild) {
+            int startX = Screen.width - 450; int startY = 10;
+            int endX = Screen.width - 10; int endY = 50;
+
+            GUILayout.BeginArea(new Rect(startX, startY, endX, endY));
+            GUILayout.Label($"Development Build version: {Application.version}", _style);
+
+            GUILayout.EndArea();
+
         }
     }
 } 

@@ -40,8 +40,8 @@ public class EncounterGenerator : MonoBehaviour {
         }
 
         { // Encounter List
-            int startX = 20; int startY = 70;
-            int endX = 220; int endY = 170;
+            int startX = 20; int startY = 75;
+            int endX = 220; int endY = 175;
 
             List<string> encounterList = GameStateMachine.Instance.encounters.Select(e => e.EnemyName).ToList();
 
@@ -52,8 +52,8 @@ public class EncounterGenerator : MonoBehaviour {
 
         if (GameStateMachine.Instance.GetCurrentStateKey() == GameStateMachine.StateKey.OVERWORLD_STATE) { // Text
             {
-                int startX = 220; int startY = 70;
-                int endX = 420; int endY = 470;
+                int startX = 220; int startY = 75;
+                int endX = 420; int endY = 475;
                 int buttonSizeY = 50;
                 GUILayout.BeginArea(new Rect(startX, startY, endX, endY));
                 for (int i = 0; i < _enemyTypes.Count; i++) {
