@@ -10,7 +10,7 @@ using UnityEngine;
 /// <typeparam name="T"></typeparam>
 public class DataPersistenceManager<T> {
     private static string SAVE_PATH = Application.persistentDataPath + "/saves";
-    
+
     #region Return Signals
     public static int RET_SAVE_FAIL = 0;
     public static int RET_SAVE_SUCCESS = 1;
@@ -40,7 +40,7 @@ public class DataPersistenceManager<T> {
         string savefile = Path.Combine(SAVE_PATH, $"{filename}.json");
         if (!Directory.Exists(SAVE_PATH))
             Directory.CreateDirectory(SAVE_PATH);
-        
+
         File.Create(savefile).Dispose();
         File.WriteAllText(savefile, JsonUtility.ToJson(new MetaDataWrapper(obj, SAVE_VERSION)));
         Debug.Log($"[DataPersistence] Created new data to {savefile}. (Save Version = {SAVE_VERSION})");
@@ -82,7 +82,7 @@ public class DataPersistenceManager<T> {
             return RET_SAVE_FAIL;
         }
 
-        try {  
+        try {
             MetaDataWrapper dataWrapper = JsonUtility.FromJson<MetaDataWrapper>(File.ReadAllText(savefile));
 
             if (dataWrapper.Version != SAVE_VERSION) {
