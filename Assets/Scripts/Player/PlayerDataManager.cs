@@ -57,6 +57,7 @@ public class PlayerDataManager : MonoBehaviour {
         public List<SerializedPartyMember> PartyStats = new List<SerializedPartyMember>();
         public Vector3Int Cell = Vector3Int.zero;
         public Direction Direction = Direction.DOWN;
+        public int ExperiencePool = 0;
 
         public SerializedPlayerData(PlayerData pd) {
             this.PartyStats = new List<SerializedPartyMember>();
@@ -79,7 +80,7 @@ public class PlayerDataManager : MonoBehaviour {
                     stats.Weapon = new SerializedWeaponItem() {
                         Data = "",
                         CurrentStats = (WeaponStats)dsStats.Weapon.CurrentStats.Clone()
-                    };             
+                    };
                 }
 
                 this.PartyStats.Add(stats);
@@ -87,6 +88,7 @@ public class PlayerDataManager : MonoBehaviour {
 
             this.Cell = pd.Cell;
             this.Direction = pd.Direction;
+            this.ExperiencePool = pd.ExperiencePool;
         }
 
         public PlayerData DeserializePlayerData() {
@@ -117,6 +119,7 @@ public class PlayerDataManager : MonoBehaviour {
 
             pd.Cell = new Vector3Int(this.Cell.x, this.Cell.y, this.Cell.z);
             pd.Direction = this.Direction;
+            pd.ExperiencePool = this.ExperiencePool;
 
             return pd;
         }

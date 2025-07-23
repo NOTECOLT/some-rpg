@@ -5,15 +5,15 @@ using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// Object that stores a weapon's data & stats. Stored in PlayerData structures. A serialized version of the class exists in savedata
+/// Inventory Item that stores Weapon data
 /// </summary>
 [Serializable]
-public class WeaponItem : ICloneable {
-    public Weapon Data;
+public class WeaponItem : IStorable, ICloneable {
+    public WeaponData Data;
     public WeaponStats CurrentStats;
 
     public WeaponItem() { }
-    public WeaponItem(Weapon weapon) {
+    public WeaponItem(WeaponData weapon) {
         Data = weapon;
         int level = 1;
         CurrentStats = new WeaponStats(level, 0, 0);
@@ -62,6 +62,18 @@ public class WeaponItem : ICloneable {
     public void AddExperience(int amount) {
         CurrentStats.AddExperience(amount, Data);
     }
+
+    #region IStorable
+
+    public string GetName() {
+        return Data.WeaponName;
+    }
+
+    public Sprite GetSprite() {
+        return Data.Sprite;
+    }
+
+    #endregion
 
     public object Clone() {
         return new WeaponItem() {

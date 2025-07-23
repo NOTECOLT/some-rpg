@@ -12,11 +12,13 @@ public class PlayerData {
     public List<PartyMember> PartyStats = new List<PartyMember>();
     public Vector3Int Cell = Vector3Int.zero;
     public Direction Direction = Direction.DOWN;
+    public int ExperiencePool = 0;
 
     public object Clone() {
         PlayerData pd = new PlayerData() {
             Cell = new Vector3Int(this.Cell.x, this.Cell.y, this.Cell.z),
             Direction = this.Direction,
+            ExperiencePool = this.ExperiencePool,
         };
 
         List<PartyMember> ps = new List<PartyMember>();

@@ -6,9 +6,10 @@ using UnityEngine;
 
 /// <summary>
 /// Equippable items that will affect the type of attack the player will perform.
+/// Scriptable Object form that is not stored in savedata or serialized. Merely holds all relevant data to weapon.
 /// </summary>
-[CreateAssetMenu(fileName = "Weapon", menuName = "Weapon", order = 1)]
-public class Weapon : ScriptableObject {
+[CreateAssetMenu(fileName = "WeaponData", menuName = "WeaponData", order = 1)]
+public class WeaponData : ScriptableObject {
     public WeaponType WeaponType;
     public string WeaponName;
 
