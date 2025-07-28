@@ -22,7 +22,7 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     public GameObject endBattleScreen;
     public GameObject playerUnitPrefab;
     public GameObject playerSide;
-    public UnitInfoUI[] endBattlePlayerInfoPanels;
+    public UnitInfoMenuUI[] endBattlePlayerInfoPanels;
     #endregion
 
     /// <summary> List of enemy objects in the battle </summary>

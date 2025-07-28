@@ -12,9 +12,12 @@ public class GameMenuUI : MonoBehaviour {
     private GameMenuAction _inputActions;
     private bool _isMenuOpen = false;
     private bool _isPartyOpen = false;
+    private bool _isInventoryOpen = false;
+
     [SerializeField] private GameObject _menuParent;
     [SerializeField] private GameObject _partyParent;
-    [SerializeField] private UnitInfoUI[] _playerInfo;
+    [SerializeField] private GameObject _inventoryParent;
+    [SerializeField] private UnitInfoMenuUI[] _playerInfo;
 
     /// <summary>
     /// Unity Event that gets sent whenever the menu is opened
@@ -60,16 +63,16 @@ public class GameMenuUI : MonoBehaviour {
         _isMenuOpen = false;
         _menuParent.SetActive(_isMenuOpen);
 
-        _isPartyOpen = false;
-        _partyParent.SetActive(_isPartyOpen);
+        SetPartyMenuVisible(false);
+        SetInventoryMenuVisible(false);
     }
 
     void OnMenuInput(InputAction.CallbackContext context) {
         _isMenuOpen = !_isMenuOpen;
         _menuParent.SetActive(_isMenuOpen);
 
-        _isPartyOpen = false;
-        _partyParent.SetActive(_isPartyOpen);
+        SetPartyMenuVisible(false);
+        SetInventoryMenuVisible(false);
 
         if (_isMenuOpen) OnMenuOpen?.Invoke();
         else OnMenuClose?.Invoke();
@@ -90,17 +93,36 @@ public class GameMenuUI : MonoBehaviour {
         OnMenuClose?.Invoke();    
     }
 
-    public void PartyMenu() {
-        _isPartyOpen = !_isPartyOpen;
+    public void SetPartyMenuVisible(bool isActive) {
+        _isPartyOpen = isActive;
         _partyParent.SetActive(_isPartyOpen);
+    }
+
+    public void SetInventoryMenuVisible(bool isActive) {
+        _isInventoryOpen = isActive;
+        _inventoryParent.SetActive(_isInventoryOpen);
+    }
+
+    public void PartyMenu() {
+        SetPartyMenuVisible(!_isPartyOpen);
+        SetInventoryMenuVisible(false);
 
         if (_isPartyOpen) {
             PlayerData playerData = PlayerDataManager.Instance.Data;
             for (int i = 0; i < PlayerDataManager.Instance.Data.PartyStats.Count; i++) {
                 _playerInfo[i].Instantiate(playerData.PartyStats[i]);
-            } 
-        } 
+            }
+        }
     }
+
+    public void InventoryMenu() {
+        SetInventoryMenuVisible(!_isInventoryOpen);
+        SetPartyMenuVisible(false);
+    }
+
+
+
+
 
     private void DisableInputActions() {
         _inputActions.Disable();

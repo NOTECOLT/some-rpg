@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5888161757148834122}
   - component: {fileID: 5333315991204282442}
   - component: {fileID: 7812552787588630688}
+  - component: {fileID: 326341596334934028}
   m_Layer: 5
   m_Name: XP Bar
   m_TagString: Untagged
@@ -75,6 +76,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &326341596334934028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207801718889957417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71a3264f1fd97d84bb6b2865bc86db4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _progressBar: {fileID: 7812552787588630688}
+  _progressLabel: {fileID: 0}
+  labelFormat: C/T
 --- !u!1 &935691786579095346
 GameObject:
   m_ObjectHideFlags: 0
@@ -774,6 +790,7 @@ GameObject:
   - component: {fileID: 8649965172664159306}
   - component: {fileID: 2816840444148145808}
   - component: {fileID: 2431069917640924}
+  - component: {fileID: 3062450932553699164}
   m_Layer: 5
   m_Name: MP Bar
   m_TagString: Untagged
@@ -838,6 +855,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3062450932553699164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2220484779072788057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71a3264f1fd97d84bb6b2865bc86db4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _progressBar: {fileID: 2431069917640924}
+  _progressLabel: {fileID: 3678103690545608521}
+  labelFormat: C/T
 --- !u!1 &3037378869200174491
 GameObject:
   m_ObjectHideFlags: 0
@@ -983,6 +1015,7 @@ GameObject:
   - component: {fileID: 7594593653460551293}
   - component: {fileID: 7255456585112904224}
   - component: {fileID: 8367317191961300599}
+  - component: {fileID: 2612612047849241540}
   m_Layer: 5
   m_Name: HP Bar
   m_TagString: Untagged
@@ -1047,6 +1080,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2612612047849241540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3488453746964445067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71a3264f1fd97d84bb6b2865bc86db4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _progressBar: {fileID: 8367317191961300599}
+  _progressLabel: {fileID: 3175888083341936272}
+  labelFormat: C/T
 --- !u!1 &6632681397708517244
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,6 +1351,9 @@ MonoBehaviour:
   _entityName: {fileID: 5931273439716972931}
   _hitPoints: {fileID: 3175888083341936272}
   _manaPoints: {fileID: 3678103690545608521}
+  _hpAnimatedBar: {fileID: 2612612047849241540}
+  _mpAnimatedBar: {fileID: 3062450932553699164}
+  _xpAnimatedBar: {fileID: 326341596334934028}
   _weaponSprite: {fileID: 3707627080707328725}
   _weaponName: {fileID: 6820423764374128034}
   _levelText: {fileID: 5045764761362346660}

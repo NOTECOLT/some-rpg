@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class OnUnitHover : MonoBehaviour {
-    private UnitInfoUI _entityInfoUI;
+    private UnitInfoBattleUI _entityInfoUI;
     
     void Start() {
-        _entityInfoUI = GetComponent<UnitInfoUI>();
+        _entityInfoUI = GetComponent<UnitInfoBattleUI>();
         _entityInfoUI.ViewShowLimited();
     }
 
