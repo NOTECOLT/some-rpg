@@ -54,7 +54,7 @@ public class UnitInfoMenuUI : MonoBehaviour {
         if (_weaponSprite != null)
             _weaponSprite.sprite = member.Weapon.Data.Sprite;
         if (_weaponName != null)
-            _weaponName.text = member.Weapon.Data.WeaponName;
+            _weaponName.text = member.Weapon.Data.ItemName;
         if (_levelText != null)
             _levelText.text = $"Lv. {member.Weapon.CurrentStats.Level}";
     }

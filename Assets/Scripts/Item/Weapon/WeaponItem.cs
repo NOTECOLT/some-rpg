@@ -8,7 +8,7 @@ using UnityEngine;
 /// Inventory Item that stores Weapon data
 /// </summary>
 [Serializable]
-public class WeaponItem : IStorable, ICloneable {
+public class WeaponItem : IStorable, ISerializable, ICloneable {
     public WeaponData Data;
     public WeaponStats CurrentStats;
 
@@ -50,7 +50,7 @@ public class WeaponItem : IStorable, ICloneable {
 
     public WeaponLevel GetWeaponLevel(int level) {
         if (level - 1 >= Data.Levels.Count || level - 1 < 0) {
-            throw new Exception($"Level {level} is an invalid weapon for {Data.WeaponName}");
+            throw new Exception($"Level {level} is an invalid weapon for {Data.ItemName}");
         } else {
             return Data.Levels[level - 1];
         }
@@ -66,11 +66,36 @@ public class WeaponItem : IStorable, ICloneable {
     #region IStorable
 
     public string GetName() {
-        return Data.WeaponName;
+        return Data.ItemName;
     }
 
     public Sprite GetSprite() {
         return Data.Sprite;
+    }
+
+    public string GetID() {
+        return Data.itemid;
+    }
+
+    #endregion
+
+    #region ISerializable
+
+    public IDeserializable Serialize() {
+        return new SerializedWeaponItem() {
+            WeaponId = Data.itemid,
+            CurrentStats = (WeaponStats)CurrentStats.Clone()
+        };
+            
+        // if (GameStateMachine.Instance.Weapons.ContainsValue(Data)) {
+
+        // } else {
+        //     Debug.LogWarning($"Weapon {Data.WeaponName} does not exist in Weapons Dictionary! Cannot serialize Weapon data.");
+        //     return new SerializedWeaponItem() {
+        //         WeaponId = "",
+        //         CurrentStats = (WeaponStats)CurrentStats.Clone()
+        //     };
+        // }
     }
 
     #endregion
@@ -80,5 +105,50 @@ public class WeaponItem : IStorable, ICloneable {
             Data = this.Data,
             CurrentStats = (WeaponStats)this.CurrentStats.Clone()
         };
+    }
+
+}
+
+[Serializable]
+public class SerializedWeaponItem : ICloneable, IDeserializable, IStorable {
+    public string WeaponId;
+    public WeaponStats CurrentStats;
+
+    #region IDeserializable
+
+    public ISerializable Deserialize() {
+        if (GameStateMachine.Instance.Items.ContainsKey(WeaponId)) {
+            return new WeaponItem() {
+                Data = (WeaponData)GameStateMachine.Instance.Items[WeaponId],
+                CurrentStats = (WeaponStats)CurrentStats.Clone()
+            };
+        } else {
+            Debug.LogWarning($"Weapon {this} does not exist in Weapons Dictionary! Cannot Deserialize Weapon data.");
+            return new WeaponItem() {
+                Data = null,
+                CurrentStats = null
+            };
+        }
+    }
+
+    #endregion
+
+    public object Clone() {
+        return new SerializedWeaponItem() {
+            WeaponId = this.WeaponId,
+            CurrentStats = (WeaponStats)this.CurrentStats.Clone()
+        };
+    }
+
+    public string GetID() {
+        throw new NotImplementedException();
+    }
+
+    public string GetName() {
+        throw new NotImplementedException();
+    }
+
+    public Sprite GetSprite() {
+        throw new NotImplementedException();
     }
 }

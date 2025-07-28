@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83025fc9e6aea2f4d96fac10cfaeb872, type: 3}
   m_Name: Wooden Staff
   m_EditorClassIdentifier: 
-  WeaponType: 2
-  WeaponName: Wooden Staff
-  weaponid: woodenstaff
+  ItemName: Wooden Staff
   Sprite: {fileID: -1941045431, guid: 2c11d671b9b46ce4abba5b1d5e8f2249, type: 3}
+  itemid: woodenstaff
+  WeaponType: 2
   QTEAttribute:
     rid: 2942160446607851529
   Levels:

@@ -21,7 +21,7 @@ public class DataPersistenceManager<T> {
     /// Corresponds to the currently used save version of the game. This value is updated as the savedata goes through new iterations.
     /// Helps prevent data corruption or game crashing from outdate savefiles.
     /// </summary>
-    private static int SAVE_VERSION = 3;
+    private static int SAVE_VERSION = 4;
 
     /// <summary>
     /// Wrapper that is serialized in to json. Holds external metadata about the save.

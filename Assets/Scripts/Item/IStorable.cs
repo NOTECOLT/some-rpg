@@ -8,4 +8,5 @@ using UnityEngine;
 public interface IStorable {
     string GetName();
     Sprite GetSprite();
+    string GetID();
 }

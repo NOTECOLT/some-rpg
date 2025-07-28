@@ -115,7 +115,7 @@ public class BasicAttack : BattleAction {
 
         // Update Text & Entity Info
         int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.WeaponName} for {damage} damage!";
+        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.ItemName} for {damage} damage!";
         battle.mainTextbox.text = battleText;
     }
     private void ReleaseAttack(BattleStateMachine battle, int qteResult) {
@@ -133,7 +133,7 @@ public class BasicAttack : BattleAction {
 
             // Update Text & Entity Info
             int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-            battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.WeaponName} for {damage} damage!";
+            battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.ItemName} for {damage} damage!";
         } else {
             battleText = $"Miss! {ActorUnit.MemberData.Name} failed to attack {TargetUnit.MemberData.Name}!";
         }
@@ -154,7 +154,7 @@ public class BasicAttack : BattleAction {
 
         // Update Text & Entity Info
         int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.WeaponName} for {damage} damage!";
+        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.ItemName} for {damage} damage!";
         battle.mainTextbox.text = battleText;
     }
 
