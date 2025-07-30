@@ -8,10 +8,10 @@ using UnityEngine;
 public class GameLoadState : GenericState<GameStateMachine.StateKey> {
     private GameStateMachine _context;
     private bool _isDoneLoading;
-    private List<ItemData> _itemsList;
-    public GameLoadState(GameStateMachine context, List<ItemData> weaponsList, GameStateMachine.StateKey key) : base(key) {
+    private List<InventoryObjectData> _itemsList;
+    public GameLoadState(GameStateMachine context, List<InventoryObjectData> itemList, GameStateMachine.StateKey key) : base(key) {
         _context = context;
-        _itemsList = weaponsList;
+        _itemsList = itemList;
     }
 
     public override void EnterState() {
@@ -36,9 +36,9 @@ public class GameLoadState : GenericState<GameStateMachine.StateKey> {
     public override void ExitState() { }
 
     public void InstantiateItemsDB() {
-        _context.Items = new Dictionary<string, ItemData>();
+        _context.Items = new Dictionary<string, InventoryObjectData>();
 
-        foreach (ItemData i in _itemsList) {
+        foreach (InventoryObjectData i in _itemsList) {
             if (i.itemid == "") {
                 Debug.LogWarning($"[Item Database] Object {i.name} does not have itemid. Weapon cannot be referenced in game.");
                 continue;

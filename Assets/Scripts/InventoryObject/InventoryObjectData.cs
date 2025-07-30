@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Inventory Items
 /// Scriptable Object form that is not stored in savedata or serialized. Merely holds all relevant data to item.
+/// Inventory Items, Weapons, are stored here
 /// </summary>
-[CreateAssetMenu(fileName = "ItemData", menuName = "ItemData", order = 1)]
-public class ItemData : ScriptableObject {
+public class InventoryObjectData : ScriptableObject {
     public string ItemName;
     public Sprite Sprite;
 

@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 /// <summary>
 /// Regular non-equippable Inventory Items
 /// </summary>`
-public class Item : IStorable, ISerializable {
+[Serializable]
+public class Item : InventoryObject, IStorable, ISerializable, ICloneable {
     public ItemData Data;
 
     #region IStorable
@@ -33,10 +35,16 @@ public class Item : IStorable, ISerializable {
     }
 
     #endregion
+
+    public object Clone() {
+        return new Item() {
+            Data = this.Data,
+        };
+    }
 }
 
 [Serializable]
-public class SerializedItem : ICloneable, IDeserializable, IStorable {
+public class SerializedItem : InventoryObject, ICloneable, IDeserializable {
     public string ItemId;
 
 
@@ -45,10 +53,10 @@ public class SerializedItem : ICloneable, IDeserializable, IStorable {
     public ISerializable Deserialize() {
         if (GameStateMachine.Instance.Items.ContainsKey(ItemId)) {
             return new Item() {
-                Data = GameStateMachine.Instance.Items[ItemId],
+                Data = (ItemData)GameStateMachine.Instance.Items[ItemId],
             };
         } else {
-            Debug.LogWarning($"Weapon {this} does not exist in Weapons Dictionary! Cannot Deserialize Weapon data.");
+            Debug.LogWarning($"Item {this} does not exist in Item Dictionary! Cannot Deserialize Item data.");
             return new Item() {
                 Data = null,
             };
@@ -61,17 +69,5 @@ public class SerializedItem : ICloneable, IDeserializable, IStorable {
         return new SerializedItem() {
             ItemId = this.ItemId
         };
-    }
-
-    public string GetID() {
-        throw new NotImplementedException();
-    }
-
-    public string GetName() {
-        throw new NotImplementedException();
-    }
-
-    public Sprite GetSprite() {
-        throw new NotImplementedException();
     }
 }

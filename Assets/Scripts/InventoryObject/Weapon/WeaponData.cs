@@ -9,7 +9,7 @@ using UnityEngine;
 /// Scriptable Object form that is not stored in savedata or serialized. Merely holds all relevant data to weapon.
 /// </summary>
 [CreateAssetMenu(fileName = "WeaponData", menuName = "WeaponData", order = 2)]
-public class WeaponData : ItemData {
+public class WeaponData : InventoryObjectData {
     public WeaponType WeaponType;
 
     [SerializeReference, SubclassSelector] public WeaponQTE QTEAttribute;

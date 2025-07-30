@@ -8,7 +8,7 @@ using UnityEngine;
 /// Inventory Item that stores Weapon data
 /// </summary>
 [Serializable]
-public class WeaponItem : IStorable, ISerializable, ICloneable {
+public class WeaponItem : InventoryObject, IStorable, ISerializable, ICloneable {
     public WeaponData Data;
     public WeaponStats CurrentStats;
 
@@ -83,7 +83,7 @@ public class WeaponItem : IStorable, ISerializable, ICloneable {
 
     public IDeserializable Serialize() {
         return new SerializedWeaponItem() {
-            WeaponId = Data.itemid,
+            ItemId = Data.itemid,
             CurrentStats = (WeaponStats)CurrentStats.Clone()
         };
             
@@ -110,20 +110,20 @@ public class WeaponItem : IStorable, ISerializable, ICloneable {
 }
 
 [Serializable]
-public class SerializedWeaponItem : ICloneable, IDeserializable, IStorable {
-    public string WeaponId;
+public class SerializedWeaponItem : InventoryObject, ICloneable, IDeserializable {
+    public string ItemId;
     public WeaponStats CurrentStats;
 
     #region IDeserializable
 
     public ISerializable Deserialize() {
-        if (GameStateMachine.Instance.Items.ContainsKey(WeaponId)) {
+        if (GameStateMachine.Instance.Items.ContainsKey(ItemId)) {
             return new WeaponItem() {
-                Data = (WeaponData)GameStateMachine.Instance.Items[WeaponId],
+                Data = (WeaponData)GameStateMachine.Instance.Items[ItemId],
                 CurrentStats = (WeaponStats)CurrentStats.Clone()
             };
         } else {
-            Debug.LogWarning($"Weapon {this} does not exist in Weapons Dictionary! Cannot Deserialize Weapon data.");
+            Debug.LogWarning($"Weapon {this} does not exist in Item Dictionary! Cannot Deserialize Weapon data.");
             return new WeaponItem() {
                 Data = null,
                 CurrentStats = null
@@ -135,20 +135,8 @@ public class SerializedWeaponItem : ICloneable, IDeserializable, IStorable {
 
     public object Clone() {
         return new SerializedWeaponItem() {
-            WeaponId = this.WeaponId,
+            ItemId = this.ItemId,
             CurrentStats = (WeaponStats)this.CurrentStats.Clone()
         };
-    }
-
-    public string GetID() {
-        throw new NotImplementedException();
-    }
-
-    public string GetName() {
-        throw new NotImplementedException();
-    }
-
-    public Sprite GetSprite() {
-        throw new NotImplementedException();
     }
 }

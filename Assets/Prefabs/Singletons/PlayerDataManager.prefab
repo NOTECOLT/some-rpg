@@ -105,6 +105,10 @@ MonoBehaviour:
           CumulativeXP: 0
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
+    ExperiencePool: 0
+    Inventory:
+    - rid: 2942160767916703749
+    - rid: 2942160767916703750
   Data:
     PartyStats:
     - BaseStats:
@@ -166,3 +170,20 @@ MonoBehaviour:
           CumulativeXP: 0
     Cell: {x: 0, y: 0, z: 0}
     Direction: 2
+    ExperiencePool: 0
+    Inventory: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2942160767916703749
+      type: {class: Item, ns: , asm: Assembly-CSharp}
+      data:
+        Data: {fileID: 11400000, guid: 2003f0b94c1f60a4baab7a3df6e3ddaf, type: 2}
+    - rid: 2942160767916703750
+      type: {class: WeaponItem, ns: , asm: Assembly-CSharp}
+      data:
+        Data: {fileID: 11400000, guid: a069d982ab8a653449a6516ed0f0453c, type: 2}
+        CurrentStats:
+          Level: 1
+          LevelXP: 0
+          CumulativeXP: 0

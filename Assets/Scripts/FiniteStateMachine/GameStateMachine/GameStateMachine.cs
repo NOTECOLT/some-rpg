@@ -23,13 +23,13 @@ public class GameStateMachine : FiniteStateMachine<GameStateMachine.StateKey> {
         DontDestroyOnLoad(this.gameObject);
     }
 
-    [SerializeField] private List<ItemData> _itemsList;
+    [SerializeField] private List<InventoryObjectData> _itemsList;
 
     /// <summary>
     /// Holds references to every item in the game so that external scripts and savedata can use it
     /// ? Not my favorite solution but i'll keep it like this for now 
     /// </summary>
-    public Dictionary<string, ItemData> Items = null;
+    public Dictionary<string, InventoryObjectData> Items = null;
 
     /// <summary>
     /// Holds the list of encounters when a player runs into a wild enemy. <br></br>

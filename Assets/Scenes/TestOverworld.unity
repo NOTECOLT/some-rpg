@@ -892,6 +892,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a0f0aad74d2792b45afb54b11428f5f2, type: 2}
   - {fileID: 11400000, guid: ec52ececb680d2c48ae585f83bdb241b, type: 2}
   - {fileID: 11400000, guid: a069d982ab8a653449a6516ed0f0453c, type: 2}
+  - {fileID: 11400000, guid: 2003f0b94c1f60a4baab7a3df6e3ddaf, type: 2}
   encounters: []
 --- !u!4 &453649422
 Transform:
@@ -12535,6 +12536,46 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[-2]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[2942160767916703744]
+      value: Assembly-CSharp SerializedItem
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[2942160767916703745]
+      value: Assembly-CSharp Item
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[2942160767916703746]
+      value: Assembly-CSharp WeaponItem
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[2942160767916703745].Data
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[2942160767916703746].Data
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[2942160767916703744].ItemId
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[2942160767916703746].CurrentStats.Level
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[2942160767916703746].CurrentStats.LevelXP
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893954125882401521, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
+      propertyPath: managedReferences[2942160767916703746].CurrentStats.CumulativeXP
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8414039721845048124, guid: fea5ef1868faa164fb0dd5fbf388d300, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.264645
