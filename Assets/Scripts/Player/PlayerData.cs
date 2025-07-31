@@ -110,27 +110,21 @@ public class SerializedPlayerData : IDeserializable {
 
         foreach (SerializedItem item in Items) {
             if (GameStateMachine.Instance.Items.ContainsKey(item.ItemId)) {
-                return new Item() {
+                inventory.Add(new Item() {
                     Data = (ItemData)GameStateMachine.Instance.Items[item.ItemId],
-                };
+                });
             } else {
                 Debug.LogWarning($"Item {this} does not exist in Items Dictionary! Cannot Deserialize Item data.");
-                return new Item() {
-                    Data = null,
-                };
             }
         }
 
         foreach (SerializedWeaponItem weapon in WeaponItems) {
             if (GameStateMachine.Instance.Items.ContainsKey(weapon.ItemId)) {
-                return new WeaponItem() {
+                inventory.Add(new WeaponItem() {
                     Data = (WeaponData)GameStateMachine.Instance.Items[weapon.ItemId],
-                };
+                });
             } else {
                 Debug.LogWarning($"Weapon {this} does not exist in Items Dictionary! Cannot Deserialize Weapon data.");
-                return new WeaponItem() {
-                    Data = null,
-                };
             }
         }
 
