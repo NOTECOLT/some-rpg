@@ -32,13 +32,14 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
             _context.enemyObjectList.Add(enemyObject);
             Debug.Log("[BattleStateMachine] Instantiated EnemyTarget gameObject name=" + enemyObject.name + "; name=" + enemyType.EnemyName + "; current HP=" + enemy.MemberData.CurrentStats.HitPoints + ";");
         }
-        
+
         // Load all Player Units
         foreach (PartyMember member in PlayerDataManager.Instance.Data.PartyStats) {
             GameObject obj = GameObject.Instantiate(_context.playerUnitPrefab, _context.playerSide.transform);
             BattleUnit memberUnit = new BattleUnit(member, obj);
             _context.playerBattleUnits.Add(memberUnit);
             obj.GetComponent<UnitInfoBattleUI>().Instantiate(memberUnit);
+            obj.GetComponent<WeaponInfo>().Instantiate(memberUnit);
         }
         
         _context.playerSide.GetComponent<ArrangeChildren>().Arrange();

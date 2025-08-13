@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6820263810169097229}
   - component: {fileID: 1174756999777148949}
   - component: {fileID: 4544042992940730056}
+  - component: {fileID: 7563235097615805051}
   m_Layer: 0
   m_Name: Player Object
   m_TagString: Untagged
@@ -104,8 +105,7 @@ MonoBehaviour:
   _entityName: {fileID: 5126152010101121918}
   _hpAnimatedBar: {fileID: 2411991334701574774}
   _mpAnimatedBar: {fileID: 141466710777296522}
-  _weaponSprite: {fileID: 3353421855768331519}
-  _levelText: {fileID: 0}
+  _weaponInfo: {fileID: 0}
 --- !u!95 &6820263810169097229
 Animator:
   serializedVersion: 5
@@ -184,6 +184,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.9375, y: 1.3125}
   m_EdgeRadius: 0
+--- !u!114 &7563235097615805051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3894001717062068555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8929255803f5ffe4b89ecc412547916d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _xpAnimatedBar: {fileID: 0}
+  _weaponSprite: {fileID: 3353421855768331519}
+  _weaponName: {fileID: 0}
+  _levelText: {fileID: 0}
 --- !u!1001 &2250782919685941061
 PrefabInstance:
   m_ObjectHideFlags: 0

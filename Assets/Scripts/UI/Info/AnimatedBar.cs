@@ -6,6 +6,7 @@ using TMPro;
 
 public class AnimatedBar : MonoBehaviour {
     [SerializeField] private Image _progressBar;
+    [SerializeField] private Image _progressBarBG;
     [SerializeField] private TMP_Text _progressLabel;
 
     /// <summary>
@@ -18,17 +19,20 @@ public class AnimatedBar : MonoBehaviour {
 
     public void ShowAll() {
         _progressBar?.gameObject.SetActive(true);
+        _progressBarBG?.gameObject.SetActive(true);
         _progressLabel?.gameObject.SetActive(true);
     }
 
     public void ShowBarOnly() {
         _progressBar?.gameObject.SetActive(true);
+        _progressBarBG?.gameObject.SetActive(true);
         _progressLabel?.gameObject.SetActive(false);
 
     }
 
     public void ShowNone() {
         _progressBar?.gameObject.SetActive(false);
+        _progressBarBG?.gameObject.SetActive(false);
         _progressLabel?.gameObject.SetActive(false);
 
     }

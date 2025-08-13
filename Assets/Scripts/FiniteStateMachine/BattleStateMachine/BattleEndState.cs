@@ -21,6 +21,7 @@ public class BattleEndState : GenericState<BattleStateMachine.StateKey> {
 
         for (int i = 0; i < _context.playerBattleUnits.Count; i++) {
             _context.endBattlePlayerInfoPanels[i].Instantiate(_context.playerBattleUnits[i]);
+            _context.endBattlePlayerInfoPanels[i].gameObject.GetComponent<WeaponInfo>().Instantiate(_context.playerBattleUnits[i]);
         }
 
         // Add experience for remaining party members if all enemies are dead

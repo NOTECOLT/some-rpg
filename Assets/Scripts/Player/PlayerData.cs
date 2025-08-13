@@ -122,6 +122,7 @@ public class SerializedPlayerData : IDeserializable {
             if (GameStateMachine.Instance.Items.ContainsKey(weapon.ItemId)) {
                 inventory.Add(new WeaponItem() {
                     Data = (WeaponData)GameStateMachine.Instance.Items[weapon.ItemId],
+                    CurrentStats = weapon.CurrentStats,
                 });
             } else {
                 Debug.LogWarning($"Weapon {this} does not exist in Items Dictionary! Cannot Deserialize Weapon data.");

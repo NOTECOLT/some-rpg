@@ -14,26 +14,19 @@ public class UnitInfoBattleUI : MonoBehaviour {
     [SerializeField] private AnimatedBar _hpAnimatedBar;
     [SerializeField] private AnimatedBar _mpAnimatedBar;
 
-    [SerializeField] private Image _weaponSprite;
-    [SerializeField] private TMP_Text _levelText;
+    [SerializeField] private WeaponInfo _weaponInfo;
 
     public void Instantiate(BattleUnit unit) {
         Instantiate(unit.MemberData);
 
         unit.OnHPChange += SetHPBarValue;
         unit.OnMPChange += SetMPBarValue;
-        unit.OnLevelChange += SetLevel;
     }
 
     public void Instantiate(PartyMember member) {
         _entityName.text = member.Name;
         _hpAnimatedBar?.SetBarValue(0, member.CurrentStats.HitPoints, member.BaseStats.HitPoints);
         _mpAnimatedBar?.SetBarValue(0, member.CurrentStats.ManaPoints, member.BaseStats.ManaPoints);
-
-        if (_weaponSprite != null)
-            _weaponSprite.sprite = member.Weapon.Data.Sprite;
-        if (_levelText != null)
-            _levelText.text = $"Lv. {member.Weapon.CurrentStats.Level}";
     }
 
 
@@ -47,11 +40,6 @@ public class UnitInfoBattleUI : MonoBehaviour {
         _mpAnimatedBar?.SetBarValue(oldMP, newMP, totalMP, time);
     }
 
-    public void SetLevel(int level) {
-        if (_levelText != null)
-            _levelText.text = $"Lv. {level}";
-    }
-
     #endregion
 
     #region View Functions
@@ -60,24 +48,18 @@ public class UnitInfoBattleUI : MonoBehaviour {
         _hpAnimatedBar?.ShowBarOnly();
         _mpAnimatedBar?.ShowBarOnly();
         _entityName.gameObject.SetActive(true);
-
-        _weaponSprite.gameObject.SetActive(false);
     }
 
     public void ViewShowFull() {
         _hpAnimatedBar?.ShowAll();
         _mpAnimatedBar?.ShowAll();
         _entityName.gameObject.SetActive(true);
-
-        _weaponSprite.gameObject.SetActive(true);
     }
 
     public void ViewClear() {
         _hpAnimatedBar?.ShowNone();
         _mpAnimatedBar?.ShowNone();
         _entityName.gameObject.SetActive(false);
-
-        _weaponSprite.gameObject.SetActive(false);   
     }
 
     #endregion

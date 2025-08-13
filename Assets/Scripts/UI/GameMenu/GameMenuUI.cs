@@ -17,7 +17,6 @@ public class GameMenuUI : MonoBehaviour {
     [SerializeField] private GameObject _menuParent;
     [SerializeField] private GameObject _partyParent;
     [SerializeField] private GameObject _inventoryParent;
-    [SerializeField] private UnitInfoMenuUI[] _playerInfo;
 
     /// <summary>
     /// Unity Event that gets sent whenever the menu is opened
@@ -106,23 +105,12 @@ public class GameMenuUI : MonoBehaviour {
     public void PartyMenu() {
         SetPartyMenuVisible(!_isPartyOpen);
         SetInventoryMenuVisible(false);
-
-        if (_isPartyOpen) {
-            PlayerData playerData = PlayerDataManager.Instance.Data;
-            for (int i = 0; i < PlayerDataManager.Instance.Data.PartyStats.Count; i++) {
-                _playerInfo[i].Instantiate(playerData.PartyStats[i]);
-            }
-        }
     }
 
     public void InventoryMenu() {
         SetInventoryMenuVisible(!_isInventoryOpen);
         SetPartyMenuVisible(false);
     }
-
-
-
-
 
     private void DisableInputActions() {
         _inputActions.Disable();
