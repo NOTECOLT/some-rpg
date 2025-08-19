@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Debug Script which displays the debug log on screen.
+/// </summary>
 public class ScreenLogger : MonoBehaviour {
     [SerializeField] private int _logSize = 15;
     private Queue<string> _displayLog = new Queue<string>();
@@ -68,14 +71,14 @@ public class ScreenLogger : MonoBehaviour {
             int startX = 220; int startY = 20;
             int endX = 420; int endY = 70;
             GUILayout.BeginArea(new Rect(startX, startY, endX, endY));
-            bool onExport = GUI.Button(new Rect(0, 0, endX-startX, endY-startY), "Export Log", _buttonStyle);
+            bool onExport = GUI.Button(new Rect(0, 0, endX - startX, endY - startY), "Export Log", _buttonStyle);
             if (onExport) OnExportLog();
             GUILayout.EndArea();
         }
 
         { // ScreenLogger
             int startX = 20; int startY = 75;
-            int endX = Screen.width-startX; int endY = Screen.height-startY;     
+            int endX = Screen.width - startX; int endY = Screen.height - startY;
             GUILayout.BeginArea(new Rect(startX, startY, endX, endY));
             GUILayout.Label("\n" + string.Join("\n", _displayLog.ToArray()), _style);
             GUILayout.EndArea();
@@ -90,9 +93,9 @@ public class ScreenLogger : MonoBehaviour {
 
         if (!Directory.Exists(logsPath))
             Directory.CreateDirectory(logsPath);
-        
+
         File.Create(logfile).Dispose();
-        
+
         File.WriteAllText(logfile, $"Date Produced: {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}\n"
                             + $"Game Version: {Application.version}\n"
                             + $"Unity Version: {Application.unityVersion}\n"

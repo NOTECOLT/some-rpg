@@ -30,7 +30,7 @@ public class WeaponStats : ICloneable {
     /// <summary>
     /// Add experience to weapon. Levels up the weapon if experience reaches threshold.
     /// </summary>
-    public void AddExperience(int amount, Weapon weapon) {
+    public void AddExperience(int amount, WeaponData weapon) {
         if (Level >= weapon.Levels.Count) return;
 
         LevelXP = Mathf.Clamp(LevelXP + amount, 0, weapon.Levels[Level].Experience);
