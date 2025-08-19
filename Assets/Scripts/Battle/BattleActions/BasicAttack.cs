@@ -47,6 +47,7 @@ public class BasicAttack : BattleAction {
             if (QTE.Type is PressQTE) {
                 int QTEResult = QTE.Result;
 
+                if (ActorUnit is not Enemy)
                 if (QTEResult != QuickTimeEvent.QTE_SUCCESS_RESULT && failAllowance < ((PressQTE)qteAttribute).FailAllowance) {
                     failAllowance++;
                     QTEResult = QuickTimeEvent.QTE_SUCCESS_RESULT;
