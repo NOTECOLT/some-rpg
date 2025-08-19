@@ -5,6 +5,9 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Debug Script which allows the user to generate custom battles on the fly
+/// </summary>
 public class EncounterGenerator : MonoBehaviour {
 
     private GUIStyle _style = null;
@@ -69,15 +72,15 @@ public class EncounterGenerator : MonoBehaviour {
                 int endX = Screen.width; int endY = 70;
                 int buttonSizeX = 240;
                 GUILayout.BeginArea(new Rect(startX, startY, endX, endY));
-                bool clearEncounters = GUI.Button(new Rect(0, 0, buttonSizeX, endY-startY), "Clear Encounters", _buttonStyle);
+                bool clearEncounters = GUI.Button(new Rect(0, 0, buttonSizeX, endY - startY), "Clear Encounters", _buttonStyle);
                 if (clearEncounters) {
                     GameStateMachine.Instance.encounters = new List<EnemyType>();
                 }
 
-                bool genEncounter = GUI.Button(new Rect(250, 0, buttonSizeX, endY-startY), "Generate Encounter", _buttonStyle);
+                bool genEncounter = GUI.Button(new Rect(250, 0, buttonSizeX, endY - startY), "Generate Encounter", _buttonStyle);
                 if (genEncounter && GameStateMachine.Instance.encounters.Count > 0) {
                     GameStateMachine.Instance.GetCurrentStateContext<GameOverworldState>().SetBattleTriggered();
-                } 
+                }
                 GUILayout.EndArea();
             }
         }

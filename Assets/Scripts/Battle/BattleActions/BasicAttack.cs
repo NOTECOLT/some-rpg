@@ -47,10 +47,11 @@ public class BasicAttack : BattleAction {
             if (QTE.Type is PressQTE) {
                 int QTEResult = QTE.Result;
 
-                if (QTEResult != QuickTimeEvent.QTE_SUCCESS_RESULT && failAllowance < ((PressQTE)qteAttribute).FailAllowance) {
-                    failAllowance++;
-                    QTEResult = QuickTimeEvent.QTE_SUCCESS_RESULT;
-                }
+                if (ActorUnit is not Enemy)
+                    if (QTEResult != QuickTimeEvent.QTE_SUCCESS_RESULT && failAllowance < ((PressQTE)qteAttribute).FailAllowance) {
+                        failAllowance++;
+                        QTEResult = QuickTimeEvent.QTE_SUCCESS_RESULT;
+                    }
                 PressAttack(battle, QTEResult);
             } else if (QTE.Type is MashQTE) {
                 MashAttack(battle, QTE.Result + ((MashQTE)qteAttribute).MashHitBonus);
@@ -115,7 +116,7 @@ public class BasicAttack : BattleAction {
 
         // Update Text & Entity Info
         int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.WeaponName} for {damage} damage!";
+        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.ItemName} for {damage} damage!";
         battle.mainTextbox.text = battleText;
     }
     private void ReleaseAttack(BattleStateMachine battle, int qteResult) {
@@ -133,7 +134,7 @@ public class BasicAttack : BattleAction {
 
             // Update Text & Entity Info
             int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-            battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.WeaponName} for {damage} damage!";
+            battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.ItemName} for {damage} damage!";
         } else {
             battleText = $"Miss! {ActorUnit.MemberData.Name} failed to attack {TargetUnit.MemberData.Name}!";
         }
@@ -154,7 +155,7 @@ public class BasicAttack : BattleAction {
 
         // Update Text & Entity Info
         int damage = TargetUnit.DealDamage(ActorUnit, damageModifier);
-        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.WeaponName} for {damage} damage!";
+        battleText += $"{ActorUnit.MemberData.Name} attacked {TargetUnit.MemberData.Name} using {ActorUnit.MemberData.Weapon.Data.ItemName} for {damage} damage!";
         battle.mainTextbox.text = battleText;
     }
 

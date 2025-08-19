@@ -8,16 +8,16 @@ using UnityEngine;
 public class GameLoadState : GenericState<GameStateMachine.StateKey> {
     private GameStateMachine _context;
     private bool _isDoneLoading;
-    private List<Weapon> _weaponsList;
-    public GameLoadState(GameStateMachine context, List<Weapon> weaponsList, GameStateMachine.StateKey key) : base(key) {
+    private List<InventoryObjectData> _itemsList;
+    public GameLoadState(GameStateMachine context, List<InventoryObjectData> itemList, GameStateMachine.StateKey key) : base(key) {
         _context = context;
-        _weaponsList = weaponsList;
+        _itemsList = itemList;
     }
 
     public override void EnterState() {
         _isDoneLoading = false;
         
-        InstantiateWeaponsDB();
+        InstantiateItemsDB();
         PlayerDataManager.Instance.LoadPlayerData();
 
         _isDoneLoading = true;
@@ -35,16 +35,16 @@ public class GameLoadState : GenericState<GameStateMachine.StateKey> {
 
     public override void ExitState() { }
 
-    public void InstantiateWeaponsDB() {
-        _context.Weapons = new Dictionary<string, Weapon>();
+    public void InstantiateItemsDB() {
+        _context.Items = new Dictionary<string, InventoryObjectData>();
 
-        foreach (Weapon w in _weaponsList) {
-            if (w.weaponid == "") {
-                Debug.LogWarning($"[Item Database] Object {w.name} does not have weaponid. Weapon cannot be referenced in game.");
+        foreach (InventoryObjectData i in _itemsList) {
+            if (i.itemid == "") {
+                Debug.LogWarning($"[Item Database] Object {i.name} does not have itemid. Weapon cannot be referenced in game.");
                 continue;
             }
             
-            _context.Weapons.Add(w.weaponid, w);
+            _context.Items.Add(i.itemid, i);
         }
     }
 }
