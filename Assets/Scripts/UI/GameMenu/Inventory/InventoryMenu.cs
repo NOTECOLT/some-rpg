@@ -67,14 +67,17 @@ public class InventoryMenu : MonoBehaviour {
         if (inv[_selectedItem.inventoryObjectIndex] is not WeaponItem) return;
 
         WeaponItem oldWeapon = unitInfo.member.Weapon;
+        WeaponItem newWeapon = (WeaponItem)inv[_selectedItem.inventoryObjectIndex];
 
-        // Set new weapon to member's equipped
-        unitInfo.member.Weapon = (WeaponItem)inv[_selectedItem.inventoryObjectIndex];
-        unitInfo.gameObject.GetComponent<WeaponInfo>().Instantiate(unitInfo.member.Weapon);
+        oldWeapon.ClearInfoUIListeners();
 
         // Remove new weapon from inventory
         inv.RemoveAt(_selectedItem.inventoryObjectIndex);
         RemoveInventoryListItem(_selectedItem.inventoryObjectIndex);
+
+        // Set new weapon to member's equipped
+        unitInfo.member.Weapon = newWeapon;
+        unitInfo.gameObject.GetComponent<WeaponInfo>().Instantiate(unitInfo.member.Weapon);
 
         // Add old weapon back to inventory
         inv.Add(oldWeapon);
@@ -92,6 +95,7 @@ public class InventoryMenu : MonoBehaviour {
     private void RemoveInventoryListItem(int inventoryIndex) {
         foreach (Transform invListItem in _invListParent) {
             if (invListItem.gameObject.GetComponent<InventoryListItem>().inventoryObjectIndex == inventoryIndex) {
+                Debug.Log("Destroying from InvMenu");
                 Destroy(invListItem.gameObject);
                 return;
             }
@@ -112,9 +116,20 @@ public class InventoryMenu : MonoBehaviour {
 
     #region Weapon Options
     public void AddExperience() {
-        List<InventoryObject> inv = PlayerDataManager.Instance.Data.Inventory;
+        PlayerData data = PlayerDataManager.Instance.Data;
+        if (data.ExperiencePool < 5) return;
 
-        if (inv[_selectedItem.inventoryObjectIndex] is not WeaponItem) return;
+        data.AddExperience(-5);
+
+        if (_selectedMember is not null) {
+            StartCoroutine(_selectedMember.GetComponent<UnitInfoMenuUI>().member.Weapon.AddExperience(5));
+        } else if (_selectedItem is not null) {
+            List<InventoryObject> inv = PlayerDataManager.Instance.Data.Inventory;
+            if (inv[_selectedItem.inventoryObjectIndex] is not WeaponItem) return;
+
+
+            StartCoroutine(((WeaponItem)inv[_selectedItem.inventoryObjectIndex]).AddExperience(5));
+        }
     }
 
     // public void Equip() {

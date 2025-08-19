@@ -39,7 +39,7 @@ public class BattleLoadState : GenericState<BattleStateMachine.StateKey> {
             BattleUnit memberUnit = new BattleUnit(member, obj);
             _context.playerBattleUnits.Add(memberUnit);
             obj.GetComponent<UnitInfoBattleUI>().Instantiate(memberUnit);
-            obj.GetComponent<WeaponInfo>().Instantiate(memberUnit);
+            obj.GetComponent<WeaponInfo>().Instantiate(memberUnit.MemberData.Weapon);
         }
         
         _context.playerSide.GetComponent<ArrangeChildren>().Arrange();

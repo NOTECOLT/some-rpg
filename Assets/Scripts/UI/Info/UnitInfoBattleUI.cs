@@ -9,12 +9,8 @@ using UnityEngine.UI;
 /// </summary>
 public class UnitInfoBattleUI : MonoBehaviour {
     [SerializeField] private TMP_Text _entityName;
-
-
     [SerializeField] private AnimatedBar _hpAnimatedBar;
     [SerializeField] private AnimatedBar _mpAnimatedBar;
-
-    [SerializeField] private WeaponInfo _weaponInfo;
 
     public void Instantiate(BattleUnit unit) {
         Instantiate(unit.MemberData);

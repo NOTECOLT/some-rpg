@@ -10,12 +10,28 @@ using UnityEngine;
 /// </summary>
 [Serializable]
 public class PlayerData : ISerializable {
+    private static float ANIMATION_TIME = 0.3f; // HP animation time in seconds
+
+
     public List<PartyMember> PartyStats = new List<PartyMember>();
     public Vector3Int Cell = Vector3Int.zero;
     public Direction Direction = Direction.DOWN;
     public int ExperiencePool = 0;
+    public int ExperienceMax = 100;
+
+    public event Action<int, int, int, float> OnXPChange;
 
     [SerializeReference, SubclassSelector] public List<InventoryObject> Inventory;
+
+    public void AddExperience(int xp) {
+        int oldXP = ExperiencePool;
+
+        if (ExperiencePool + xp > ExperienceMax) ExperiencePool = ExperienceMax;
+        else if (ExperiencePool + xp < 0) ExperiencePool = 0;
+        else ExperiencePool += xp;
+        
+        OnXPChange.Invoke(oldXP, ExperiencePool, ExperienceMax, ANIMATION_TIME);
+    }
 
     #region ISerializable
 
@@ -30,6 +46,7 @@ public class PlayerData : ISerializable {
         ret.Cell = this.Cell;
         ret.Direction = this.Direction;
         ret.ExperiencePool = this.ExperiencePool;
+        ret.ExperienceMax = this.ExperienceMax;
 
         List<SerializedItem> items = new List<SerializedItem>();
         List<SerializedWeaponItem> weapons = new List<SerializedWeaponItem>();
@@ -39,7 +56,7 @@ public class PlayerData : ISerializable {
                 SerializedItem i = (SerializedItem)((Item)obj).Serialize();
                 items.Add(i);
             } else if (obj is WeaponItem) {
-                SerializedWeaponItem i = (SerializedWeaponItem)((WeaponItem)obj).Serialize(); 
+                SerializedWeaponItem i = (SerializedWeaponItem)((WeaponItem)obj).Serialize();
                 weapons.Add(i);
             }
         }
@@ -91,6 +108,7 @@ public class SerializedPlayerData : IDeserializable {
     public Vector3Int Cell = Vector3Int.zero;
     public Direction Direction = Direction.DOWN;
     public int ExperiencePool = 0;
+    public int ExperienceMax = 100;
     public List<SerializedItem> Items;
     public List<SerializedWeaponItem> WeaponItems;
 
@@ -105,6 +123,7 @@ public class SerializedPlayerData : IDeserializable {
         ret.Cell = new Vector3Int(Cell.x, Cell.y, Cell.z);
         ret.Direction = Direction;
         ret.ExperiencePool = ExperiencePool;
+        ret.ExperienceMax = ExperienceMax;
 
         List<InventoryObject> inventory = new List<InventoryObject>();
 

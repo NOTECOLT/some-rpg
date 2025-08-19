@@ -9,8 +9,12 @@ using UnityEngine;
 /// </summary>
 [Serializable]
 public class WeaponItem : InventoryObject, IStorable, ISerializable, ICloneable {
+    private static float ANIMATION_TIME = 0.3f; // HP animation time in seconds
+
     public WeaponData Data;
     public WeaponStats CurrentStats;
+    public event Action<int, int, int, float> OnXPChange;
+    public event Action<int> OnLevelChange;
 
     public WeaponItem() { }
     public WeaponItem(WeaponData weapon) {
@@ -59,8 +63,53 @@ public class WeaponItem : InventoryObject, IStorable, ISerializable, ICloneable 
     /// <summary>
     /// Add experience to weapon. Levels up the weapon if experience reaches threshold.
     /// </summary>
-    public void AddExperience(int amount) {
-        CurrentStats.AddExperience(amount, Data);
+    public IEnumerator AddExperience(int amount) {
+        int remainingXP = amount;
+
+        // ? Kind of not really an elegant solution
+        // Implementation takes into account gaining XP through multiple levels
+        while (remainingXP > 0) {
+            if (CurrentStats.Level >= Data.Levels.Count)
+                yield break;
+
+            int XPToLevelUp = GetNextWeaponLevel().Experience - CurrentStats.LevelXP;
+
+            if (XPToLevelUp > remainingXP) XPToLevelUp = remainingXP;
+            remainingXP -= XPToLevelUp;
+
+            int oldXP = CurrentStats.LevelXP;
+            int newXP = CurrentStats.LevelXP + XPToLevelUp;
+            int totalXP = GetNextWeaponLevel().Experience;
+
+            // Debug.Log($"{MemberData.Weapon.Data.name} {oldXP} {newXP} {totalXP}");
+
+            OnXPChange?.Invoke(oldXP, newXP, totalXP, ANIMATION_TIME * ((float)XPToLevelUp / amount));
+            CurrentStats.AddExperience(XPToLevelUp, Data);
+
+            // Wait for animation to finish before snapping the XP bar to final fill ammount
+            yield return new WaitForSeconds(ANIMATION_TIME * ((float)XPToLevelUp / amount) + 0.6f);
+            OnLevelChange?.Invoke(CurrentStats.Level);
+
+            if (CurrentStats.Level < Data.Levels.Count) {
+                OnXPChange?.Invoke(0, CurrentStats.LevelXP, GetNextWeaponLevel().Experience, 0);
+
+            }
+        }
+    }
+
+    public void AddInfoUIListeners(Action<int, int, int, float> SetXPBarValue, Action<int> SetLevel) {
+        OnXPChange += SetXPBarValue;
+        OnLevelChange += SetLevel;
+    }
+
+    public void ClearInfoUIListeners() {
+        OnXPChange = null;
+        OnLevelChange = null; 
+    }
+
+    public void RemoveInfoUIListeners(Action<int, int, int, float> SetXPBarValue, Action<int> SetLevel) {
+        OnXPChange -= SetXPBarValue;
+        OnLevelChange -= SetLevel;
     }
 
     #region IStorable

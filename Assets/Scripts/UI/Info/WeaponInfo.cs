@@ -11,11 +11,12 @@ public class WeaponInfo : MonoBehaviour {
     [SerializeField] private TMP_Text _weaponName;
     [SerializeField] private TMP_Text _levelText;
 
-    public void Instantiate(BattleUnit unit) {
-        Instantiate(unit.MemberData.Weapon);
+    private WeaponItem weapon;
 
-        unit.OnXPChange += SetXPBarValue;
-        unit.OnLevelChange += SetLevel;
+    void OnDestroy() {
+        if (weapon == null) return;
+
+        weapon.RemoveInfoUIListeners(SetXPBarValue, SetLevel);
     }
 
     public void Instantiate(WeaponItem weapon) {
@@ -43,6 +44,9 @@ public class WeaponInfo : MonoBehaviour {
             _weaponName.text = weapon.Data.ItemName;
         if (_levelText != null)
             _levelText.text = $"Lv. {weapon.CurrentStats.Level}";
+
+        weapon.AddInfoUIListeners(SetXPBarValue, SetLevel);
+        this.weapon = weapon;
     }
 
     public void SetLevel(int level) {
