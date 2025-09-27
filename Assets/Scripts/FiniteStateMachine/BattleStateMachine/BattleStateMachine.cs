@@ -29,7 +29,7 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     public List<GameObject> enemyObjectList = new List<GameObject>();
     public ActionType playerSelectedAction;
     public List<BattleUnit> playerBattleUnits = new List<BattleUnit>();
-    public UnityEvent<string> OnEnterPlayerTurnState;
+    public UnityEvent<string> OnResetBattleMenuUI;
     public UnityEvent OnEnterActionSequenceState;
 
     /// <summary>
@@ -57,7 +57,7 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     }
 
     void OnDestroy() {
-        OnEnterPlayerTurnState.RemoveAllListeners();
+        OnResetBattleMenuUI.RemoveAllListeners();
         OnEnterActionSequenceState.RemoveAllListeners();
     }
 
@@ -66,21 +66,18 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
         actionSequence.Add(action);
     }
     
-    public void PushBattleActionToNext(BattleAction action) {
-        Debug.Log($"[BattleStateMachine] Battle Action Inserted to top: {action}" );
+    public void InsertBattleActionToTop(BattleAction action) {
+        Debug.Log($"[BattleStateMachine] Battle Action Inserted to top: {action}");
         actionSequence.Insert(1, action);
     }
-
-    #region IPlayerTurnListener
 
     /// <summary>
     /// Triggers when an enemy is clicked on during enemy target selection
     /// </summary>
     /// <param name="targetEnemy">Passed Target Id of the clicked enemy</param>
     public void OnEnemyClicked(Enemy targetEnemy) {
-        if (currentState is IPlayerTurnListener) {
-            IPlayerTurnListener listener = (IPlayerTurnListener)currentState;
-            listener.OnEnemyClicked(targetEnemy);
+        if (currentState is BattlePlayerTurnState) {
+            ((BattlePlayerTurnState)currentState).OnEnemyClicked(targetEnemy);
         }
     }
 
@@ -89,16 +86,18 @@ public class BattleStateMachine : FiniteStateMachine<BattleStateMachine.StateKey
     /// </summary>
     /// <param name="action">The Selected action (i.e. ATTACK, HEAL, etc.)</param> <summary>
     public void SetPlayerAction(ActionType action) {
-        if (currentState is IPlayerTurnListener) {
-            IPlayerTurnListener listener = (IPlayerTurnListener)currentState;
-            listener.OnPlayerSetAction(action);
+        if (currentState is BattlePlayerTurnState) {
+            ((BattlePlayerTurnState)currentState).OnPlayerSetAction(action);
         }
     }
 
-    #endregion
-
     public void SetPlayerActionNull() {
         playerSelectedAction = ActionType.NULL;
+    }
+
+    public void CancelCurrentPlayerAction() {
+        if (currentState is not BattlePlayerTurnState) return;
+        ((BattlePlayerTurnState)currentState).SetFocusPreviousMember();
     }
 
     public void EndBattle() {

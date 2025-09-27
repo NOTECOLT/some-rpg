@@ -8,18 +8,26 @@ using UnityEngine;
 /// Toggles visibility & manages the state of the Battle UI
 /// </summary> 
 public class BattleMenuUI : MonoBehaviour {
+    private bool _isInventoryOpen = false;
+
     [SerializeField] TMP_Text _mainTextbox;
     [SerializeField] GameObject _attackButton;
-    [SerializeField] GameObject _healButton;
+    [SerializeField] GameObject _invButton;
     [SerializeField] GameObject _cancelButton;
+    [SerializeField] GameObject _backButton;
     [SerializeField] GameObject _fleeButton;
+
+    [SerializeField] GameObject _inventoryParent;
+    [SerializeField] BattleStateMachine _battleStateMachine;
+
+    
     private string _currentPlayerName;
 
     void Start() {
-        FindObjectOfType<BattleStateMachine>().OnEnterPlayerTurnState.AddListener(ResetBattleMenuUI);
-        FindObjectOfType<BattleStateMachine>().OnEnterActionSequenceState.AddListener(ClearBattleMenuButtons);
+        _battleStateMachine.OnResetBattleMenuUI.AddListener(ResetBattleMenuUI);
+        _battleStateMachine.OnEnterActionSequenceState.AddListener(ClearBattleMenuButtons);
     }
-    
+
     #region Listeners
 
     public void ResetBattleMenuUI(string playerName) {
@@ -28,14 +36,16 @@ public class BattleMenuUI : MonoBehaviour {
         _attackButton.SetActive(true);
         _cancelButton.SetActive(false);
         _fleeButton.SetActive(true);
-        _healButton.SetActive(true);
+        _invButton.SetActive(true);
+        _backButton.SetActive(true);
     }
 
     public void ClearBattleMenuButtons() {
         _attackButton.SetActive(false);
         _cancelButton.SetActive(false);
         _fleeButton.SetActive(false);
-        _healButton.SetActive(false);
+        _invButton.SetActive(false);
+        _backButton.SetActive(false);
     }
 
     #endregion
@@ -44,24 +54,30 @@ public class BattleMenuUI : MonoBehaviour {
 
     public void OnAttackButtonClick() {
         _mainTextbox.text = "Who to attack?";
-        FindObjectOfType<BattleStateMachine>().SetPlayerAction(ActionType.BASIC_ATTACK);
+        _battleStateMachine.SetPlayerAction(ActionType.BASIC_ATTACK);
         _attackButton.SetActive(false);
         _cancelButton.SetActive(true);
         _fleeButton.SetActive(true);
-        _healButton.SetActive(false);
+        _invButton.SetActive(false);
+        _backButton.SetActive(false);
     }
 
-    public void OnHealButtonClick() {
-        FindObjectOfType<BattleStateMachine>().SetPlayerAction(ActionType.HEAL);
+    public void OnInventoryButtonClick() {
+        _isInventoryOpen = !_isInventoryOpen;
+        _inventoryParent.SetActive(_isInventoryOpen);
     }
 
     public void OnCancelButtonClick() {
         ResetBattleMenuUI(_currentPlayerName);
-        FindObjectOfType<BattleStateMachine>().SetPlayerActionNull();
+        _battleStateMachine.SetPlayerActionNull();
+    }
+
+    public void OnBackButtonClick() {
+        _battleStateMachine.CancelCurrentPlayerAction();
     }
 
     public void ReturnToOverworldScene() {
-        FindObjectOfType<BattleStateMachine>().EndBattle();
+        _battleStateMachine.EndBattle();
     }
     #endregion
 

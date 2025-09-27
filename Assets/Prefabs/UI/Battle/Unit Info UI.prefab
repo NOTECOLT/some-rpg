@@ -89,6 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _progressBar: {fileID: 1595003851152117297}
+  _progressBarBG: {fileID: 0}
   _progressLabel: {fileID: 0}
   labelFormat: C/T
 --- !u!1 &2445395439354668290

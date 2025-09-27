@@ -298,6 +298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _progressBar: {fileID: 1595003851152117297}
+  _progressBarBG: {fileID: 0}
   _progressLabel: {fileID: 2553180194474004324}
   labelFormat: C/T
 --- !u!1 &2445395439354668290
@@ -466,7 +467,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &718444250589616808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -782,6 +783,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _progressBar: {fileID: 919397129301003115}
+  _progressBarBG: {fileID: 0}
   _progressLabel: {fileID: 2145939369162635706}
   labelFormat: C/T
 --- !u!1 &8951023361939259812

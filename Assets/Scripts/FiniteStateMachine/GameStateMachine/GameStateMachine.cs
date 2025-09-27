@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameStateMachine : FiniteStateMachine<GameStateMachine.StateKey> {
-    // TODO: ADD TRANSITION INTO GAME BATTLE STATE
-    // TODO: ADD PROPER GAME RELOAD
     public enum StateKey {
         LOAD_GAME_STATE,
         OVERWORLD_STATE,

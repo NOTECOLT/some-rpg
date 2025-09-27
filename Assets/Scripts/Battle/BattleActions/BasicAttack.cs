@@ -65,7 +65,7 @@ public class BasicAttack : BattleAction {
 
                 if (attr is HealAttr) {
                     HealAttr healAttr = (HealAttr)attr;
-                    battle.PushBattleActionToNext(new Heal(ActorUnit, healAttr.HP, 0));
+                    battle.InsertBattleActionToTop(new Heal(ActorUnit, healAttr.HP, 0));
                 }
             }
 
